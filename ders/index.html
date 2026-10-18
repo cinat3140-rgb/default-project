@@ -1,233 +1,341 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="DersPark — Kitaplarını oku, soru çöz, koçünle çalış.">
-<meta name="robots" content="index, follow">
-<link rel="icon" type="image/svg+xml" href="images/logo.svg">
-<link href="https://fonts.googleapis.com/css2?family=Segoe+UI+Variable:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/desk.css?v=639278625117477176">
-<title>DersPark — Ders Çalışma</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Study 3D - Dijital Defter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Caveat:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --accent: #a29bfe;
+            --bg: #2d3436;
+            --paper: #fdfdfd;
+            --panel-bg: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            background-image: radial-gradient(circle, #3d4446 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: white;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* SOL PANEL */
+        .side-panel {
+            width: 250px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+
+        .side-panel h2 {
+            font-size: 24px;
+            text-align: center;
+            letter-spacing: 3px;
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 10px;
+        }
+
+        .panel-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: left;
+        }
+
+        .panel-btn:hover {
+            background: var(--primary);
+            transform: translateX(10px);
+        }
+
+        /* ANA ALAN */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            perspective: 1500px;
+        }
+
+        /* ÜST BAR */
+        .top-bar {
+            width: 80%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            z-index: 5;
+        }
+
+        .control-group {
+            background: rgba(0,0,0,0.4);
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            border: 1px solid var(--accent);
+        }
+
+        .control-group input {
+            width: 50px;
+            background: transparent;
+            border: 1px solid white;
+            color: white;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        /* 3D DEFTER */
+        .notebook-container {
+            position: relative;
+            width: 800px;
+            height: 500px;
+            transform: rotateX(10deg) rotateY(-5deg);
+            transition: 0.5s;
+            transform-style: preserve-3d;
+            margin-top: 50px;
+        }
+
+        .notebook-container:hover {
+            transform: rotateX(0deg) rotateY(0deg);
+        }
+
+        .page {
+            position: absolute;
+            width: 380px;
+            height: 100%;
+            background: var(--paper);
+            color: #333;
+            padding: 40px;
+            box-shadow: 5px 5px 20px rgba(0,0,0,0.5);
+            box-sizing: border-box;
+            font-family: 'Caveat', cursive;
+            font-size: 20px;
+            line-height: 30px;
+            background-image: linear-gradient(#e1e1e1 1px, transparent 1px);
+            background-size: 100% 30px;
+        }
+
+        .left-page {
+            left: 20px;
+            border-radius: 10px 0 0 10px;
+            transform: rotateY(5deg);
+            border-right: 2px solid #ddd;
+        }
+
+        .right-page {
+            right: 20px;
+            border-radius: 0 10px 10px 0;
+            transform: rotateY(-5deg);
+            border-left: 2px solid #ddd;
+        }
+
+        .spiral {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            width: 40px;
+            height: 100%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 2;
+        }
+
+        .ring {
+            width: 50px;
+            height: 12px;
+            background: linear-gradient(to bottom, #bdc3c7, #2c3e50, #bdc3c7);
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        /* ZAMANLAYICI */
+        .timer-card {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(108, 92, 231, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 2px solid var(--accent);
+            width: 150px;
+            transform: rotateZ(-5deg);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotateZ(-5deg); }
+            50% { transform: translateY(-20px) rotateZ(5deg); }
+        }
+
+        .timer-display {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .timer-btn {
+            background: white;
+            color: var(--primary);
+            border: none;
+            padding: 5px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* PDF EKLEME ALANI */
+        .pdf-upload {
+            position: absolute;
+            top: 100px;
+            right: 50px;
+            width: 200px;
+            height: 120px;
+            border: 2px dashed var(--accent);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .pdf-upload:hover {
+            background: rgba(162, 155, 254, 0.2);
+            transform: scale(1.05);
+        }
+
+    </style>
 </head>
-<body class="dark">
+<body>
 
-<!-- ═══════ TÜM SİTEYİ KAPLAYAN İŞLEM KATMANI ═══════ -->
-<div class="perde" id="perde" hidden>
-  <div class="perde-kutu">
-    <div class="perde-nabiz"><span></span><span></span><span></span></div>
-    <b id="perdeBas">İşleniyor…</b>
-    <p id="perdeAlt">Lütfen bekle</p>
-    <div class="perde-cubuk"><i id="perdeCubuk"></i></div>
-  </div>
-</div>
-
-<!-- ═══════ KENAR ÇUBUĞU ═══════ -->
-<aside class="yan" id="yan">
-  <div class="yan-ust">
-    <a class="yan-marka" href="../../hub.html">
-      <img src="images/logo.svg" alt="">
-      <b>DersPark</b>
-    </a>
-    <button class="yan-kapat" id="yanKapat" title="Menuyu kapat" aria-label="Menuyu kapat">&#10005;</button>
-  </div>
-
-  <nav class="yan-menu">
-    <button class="y-item aktif" data-s="panel"><span class="y-ikon">🏠</span>Panel</button>
-    <button class="y-item" data-s="kutup"><span class="y-ikon">📚</span>Kitaplık</button>
-    <button class="y-item" data-s="masa"><span class="y-ikon">🖥️</span>Masam</button>
-    <button class="y-item" data-s="coz"><span class="y-ikon">📝</span>Soru Çöz</button>
-    <button class="y-item" data-s="koc"><span class="y-ikon">🤖</span>Koç</button>
-  </nav>
-
-  <div class="yan-alt">
-    <div class="yan-ist">
-      <div class="yi-satir">Bugün<b id="yiBugun">0</b></div>
-      <div class="yi-satir">Doğru<b id="yiDogru" style="color:var(--ok)">0</b></div>
-      <div class="yi-satir">Yanlış<b id="yiYanlis" style="color:var(--hata)">0</b></div>
-      <div class="yi-cubuk"><i id="yiCubuk"></i></div>
-      <div class="yi-not" id="yiNot">Hedef: 20 soru</div>
+    <div class="side-panel">
+        <h2>PANEL</h2>
+        <button class="panel-btn">📚 Ders Notlarım</button>
+        <button class="panel-btn">📅 Planlayıcı</button>
+        <button class="panel-btn">✅ Görevler</button>
+        <button class="panel-btn">⚙️ Ayarlar</button>
+        <div style="margin-top: auto; font-size: 12px; text-align: center; opacity: 0.5;">
+            Pro Study v1.0 <br> by AI & You
+        </div>
     </div>
-    <button class="y-btn" id="yTema"><span>🌙</span>Tema</button>
-    <button class="y-btn" id="yAyar"><span>⚙️</span>Ayar</button>
-  </div>
-</aside>
 
-<!-- ═══════ ÜST ÇUBUK ═══════ -->
-<header class="ust">
-  <button class="u-btn u-menu" id="ustMenu" title="Menüyü aç/kapat" aria-label="Menüyü aç/kapat">&#9776;</button>
-  <div class="ust-sol">
-    <h1 id="ustBas">Panel</h1>
-    <p id="ustAlt">Bugünkü çalışman</p>
-  </div><div class="ust-sag">
-    <div class="ust-sure" id="ustSure">
-      <button class="u-btn" id="sSure">▶</button>
-      <span id="sSureYazi">00:00</span>
-      <button class="u-btn" id="sSureSifirla">↺</button>
+    <div class="main-content">
+        <div class="top-bar">
+            <div class="control-group">
+                <span>🔍 Zoom:</span>
+                <input type="text" value="100%">
+            </div>
+            <div class="control-group">
+                <span>Sayfa:</span>
+                <button class="timer-btn">&lt;</button>
+                <input type="text" value="20">
+                <button class="timer-btn">&gt;</button>
+            </div>
+        </div>
+
+        <div class="pdf-upload" onclick="alert('PDF seçme ekranı açılıyor...')">
+            <span>📄 PDF EKLE</span>
+            <small style="font-size: 10px; opacity: 0.7;">Dosyayı buraya sürükle</small>
+        </div>
+
+        <div class="notebook-container">
+            <div class="spiral">
+                <!-- Spiral halkaları -->
+                <div class="ring"></div><div class="ring"></div><div class="ring"></div>
+                <div class="ring"></div><div class="ring"></div><div class="ring"></div>
+                <div class="ring"></div><div class="ring"></div><div class="ring"></div>
+                <div class="ring"></div><div class="ring"></div><div class="ring"></div>
+            </div>
+            <div class="page left-page">
+                <h3 style="text-align: center; margin-top: 0;">📌 Günün Notları</h3>
+                <p>Bugün öğrenilecekler:</p>
+                <ul>
+                    <li>HTML/CSS 3D Efektleri</li>
+                    <li>Yapay Zeka ile Tasarım</li>
+                    <li>JavaScript Zamanlayıcılar</li>
+                </ul>
+                <p style="margin-top: 50px; color: #888;">Not: Buraya istediğin notu yazabilirsin, her şey senin kontrolünde!</p>
+            </div>
+            <div class="page right-page">
+                <h3 style="text-align: center; margin-top: 0;">💡 Fikirler</h3>
+                <p>Proje geliştirme aşamaları:</p>
+                <ol>
+                    <li>Paint ile taslak çiz (Yapıldı ✅)</li>
+                    <li>AI ile kodla (Yapılıyor 🚀)</li>
+                    <li>Dünyaya yayınla (Sırada 🌍)</li>
+                </ol>
+                <div style="margin-top: 40px; border: 1px solid #ccc; padding: 10px; border-radius: 5px;">
+                    <strong>Hatırlatıcı:</strong> Çok çalışma, arada mola ver! ☕
+                </div>
+            </div>
+        </div>
     </div>
-    <button class="u-btn u-seri" id="uSeri" title="Gün serisi">🔥 0</button>
-    <button class="u-btn" id="uKoc" title="Koç">🤖</button>
-  </div>
-</header>
 
-<!-- ═══════ İÇERİK ═══════ -->
-<main class="icerik" id="icerik"></main>
-
-<!-- ═══════ KİTAP OKUYUCU ═══════ -->
-<div class="okuyucu" id="okuyucu" hidden>
-  <div class="ok-ust">
-    <button class="u-btn" id="okKapat">✕</button>
-    <b id="okAd">Kitap</b>
-    <div class="ok-grup">
-      <button class="u-btn" id="okSol">◀</button>
-      <div class="ok-no"><input type="number" id="okNo" min="1" value="1"><span id="okToplam">/1</span></div>
-      <button class="u-btn" id="okSag">▶</button>
+    <div class="timer-card">
+        <div style="font-size: 14px; margin-bottom: 5px;">Focus Timer</div>
+        <div class="timer-display" id="timer">25:00</div>
+        <button class="timer-btn" onclick="toggleTimer()" id="timerBtn">BAŞLAT</button>
     </div>
-    <div class="ok-grup">
-      <button class="u-btn aktif" id="okCift" title="Çift sayfa">📖</button>
-      <button class="u-btn" id="okTek" title="Tek sayfa">📄</button>
-      <button class="u-btn" id="okUzak" title="Uzaklaştır (Ctrl −)">−</button>
-      <span class="ok-yuzde" id="okYuzde">100%</span>
-      <button class="u-btn" id="okYakin" title="Yakınlaştır (Ctrl +)">+</button>
-      <button class="u-btn" id="okSigar" title="Ekrana sığdır">⛶</button>
-      <button class="u-btn" id="okYuzde100" title="Normal boyut (Ctrl 0)">1:1</button>
-    </div>
-    <div class="ok-sag">
-      <button class="u-btn" id="okTest">📝 Çöz</button>
-      <button class="u-btn" id="okMesaj">💬 Koç</button>
-      <button class="u-btn" id="okTam" title="Tam ekran">⛶</button>
-    </div>
-  </div>
-  <div class="ok-govde" id="okGovde"></div>
-  <div class="ok-alt">
-    <button class="u-btn" id="okIlk">⏮</button>
-    <div class="ok-serit" id="okSerit"></div>
-    <button class="u-btn" id="okSon">⏭</button>
-  </div>
-</div>
 
-<!-- ═══════ KOÇ PANELİ ═══════ -->
-<aside class="koc" id="koc">
-  <div class="koc-ust">
-    <div class="koc-kim">
-      <div class="koc-yuz">🤖</div>
-      <div><b>Koç</b><small id="kocDurum">Hazır</small></div>
-    </div>
-    <button class="u-btn" id="kocAyar" title="AI Ayarı">⚙️</button>
-    <button class="u-btn" id="kocKapat">✕</button>
-  </div>
+    <script>
+        // ZAMANLAYICI MANTIĞI
+        let timeLeft = 25 * 60;
+        let timerId = null;
+        const timerDisplay = document.getElementById('timer');
+        const timerBtn = document.getElementById('timerBtn');
 
-  <div class="koc-ai" id="kocAi" hidden>
-    <div class="koc-ai-bas">🔑 AI Anahtarı Bağla</div>
-    <p>Koçün gerçekten cevap vermesi için anahtar gerekiyor. Ücretsiz al:</p>
-    <div class="koc-ai-link">
-      <button class="p-btn" data-ai="https://aistudio.google.com/app/apikey">Google Gemini</button>
-      <button class="p-btn" data-ai="https://console.groq.com/keys">Groq</button>
-      <button class="p-btn" data-ai="https://platform.openai.com/api-keys">OpenAI</button>
-    </div>
-    <input class="a-girdi" id="kocKey" type="password" placeholder="Anahtarı buraya yapıştır…">
-    <div class="koc-ai-eylem">
-      <button class="p-btn ana" id="kocKeyKaydet" style="flex:1">Bağla</button>
-      <button class="p-btn" id="kocKeySil">Sil</button>
-    </div>
-    <p class="koc-ai-not">Anahtar sadece bu tarayıcıda saklanır, sunucuya gitmez.</p>
-  </div>
+        function updateTimer() {
+            let minutes = Math.floor(timeLeft / 60);
+            let seconds = timeLeft % 60;
+            timerDisplay.textContent = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
 
-  <div class="koc-ozet" id="kocOzet"></div>
-  <div class="koc-mesaj" id="kocMesaj"></div>
-  <div class="koc-hizli" id="kocHizli"></div>
-  <form class="koc-form" id="kocForm">
-    <input id="kocGirdi" placeholder="Sorunu sor, yardım iste…" autocomplete="off">
-    <button class="u-btn" type="submit">➤</button>
-  </form>
-</aside>
-
-<!-- ═══════ SORU SEÇİMİ ═══════ -->
-<div class="suru" id="suru" hidden>
-  <div class="suru-kutu">
-    <div class="suru-ust">
-      <div><b id="suruAd">Sorular</b><small id="suruSayi">0 soru</small></div>
-      <button class="u-btn" id="suruKapat">✕</button>
-    </div>
-    <div class="suru-arac">
-      <button class="p-btn" id="suruTumu">Tümü</button>
-      <button class="p-btn" id="suruYok">Hiçbiri</button>
-      <button class="p-btn" id="suruIlk10">İlk 10</button>
-      <button class="p-btn" id="suruRastgele">🎲 Rastgele</button>
-      <span class="bos"></span>
-      <span class="suru-sayi" id="suruSecilen">0 seçili</span>
-    </div>
-    <div class="suru-liste" id="suruListe"></div>
-    <div class="suru-alt">
-      <button class="p-btn" id="suruKapat2">Vazgeç</button>
-      <button class="u-btn ana" id="suruBasla" style="width:auto;padding:0 20px">Çözmeye Başla ▶</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════ AYAR PANELİ ═══════ -->
-<div class="suru" id="ayarPanel" hidden>
-  <div class="suru-kutu" style="max-width:520px">
-    <div class="suru-ust">
-      <div><b>Ayarlar</b><small>AI, veri ve tema</small></div>
-      <button class="u-btn" id="ayarKapat">✕</button>
-    </div>
-    <div style="padding:18px;overflow-y:auto">
-      <div class="a-grup">
-        <label>AI Servis Adresi</label>
-        <input class="a-girdi" id="aUrl">
-      </div>
-      <div class="a-iki">
-        <div class="a-grup"><label>Model</label><input class="a-girdi" id="aModel"></div>
-        <div class="a-grup"><label>API Anahtarı</label><input class="a-girdi" id="aKey" type="password" placeholder="sk-..."></div>
-      </div>
-      <button class="u-btn ana" id="aKaydet" style="width:100%;margin-bottom:18px">💾 Kaydet</button>
-
-      <div class="a-bas">Veri</div>
-      <div class="a-eylem" id="aYedekBtn">
-        <button class="p-btn" id="aYedek">⬇ Yedek Al</button>
-        <button class="p-btn" id="aYukle">⬆ Yedek Yükle</button>
-        <button class="p-btn tehlike" id="aSil">🗑 Sıfırla</button>
-      </div>
-      <p id="aKota" style="font-size:11.5px;color:var(--metin-3);margin:8px 0 0">Kullanılan: hesaplanıyor…</p>
-      <p style="font-size:11px;color:var(--metin-3);margin:4px 0 0;line-height:1.5">
-        PDF ve fotoğraflar tarayıcında saklanır (IndexedDB) — dosya boyutu sınırı yok.
-        Tarayıcı verisini silersen kaybolur, bu yüzden düzenli <b>Yedek Al</b>.
-      </p>
-      <input type="file" id="aDosya" accept="application/json" hidden>
-
-      <div class="a-bas">Not</div>
-      <textarea class="a-girdi" id="aNot" placeholder="Ders notun…" style="min-height:110px"></textarea>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════ PDF EKLEME ═══════ -->
-<div class="kaydir" id="kaydir" hidden>
-  <div class="kaydir-kutu">
-    <div class="kd-ikon">📄</div>
-    <b>Dosyaları buraya bırak</b>
-    <small>PDF, PNG, JPG · sinirsiz boyut</small>
-    <div class="kd-secenek">
-      <button class="p-btn" id="kdSec">📁 Dosya Seç</button>
-      <button class="p-btn" id="kdIptal">İptal</button>
-    </div>
-  </div>
-</div>
-
-<div class="ocr-bar" id="ocrBar" hidden>
-  <div class="ocr-ikon">🔍</div>
-  <b id="ocrAd">Dosya</b>
-  <div id="ocrDurum">Okunuyor…</div>
-  <div class="ocr-cubuk"><i id="ocrCubuk"></i></div>
-</div>
-
-<div class="bildirim-kap" id="bildirimler"></div>
-<input type="file" id="pdfDosya" accept="application/pdf,image/png,image/jpeg,image/jpg,image/webp,.pdf,.png,.jpg,.jpeg,.webp" multiple hidden>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
-<script src="js/kanallar.js?v=639278625117477176"></script>
-<script src="js/masa.js?v=639278625117477176"></script>
+        function toggleTimer() {
+            if (timerId) {
+                clearInterval(timerId);
+                timerId = null;
+                timerBtn.textContent = "DEVAM ET";
+            } else {
+                timerId = setInterval(() => {
+                    timeLeft--;
+                    updateTimer();
+                    if (timeLeft <= 0) {
+                        clearInterval(timerId);
+                        alert("Süre doldu! Mola zamanı. 🎉");
+                    }
+                }, 1000);
+                timerBtn.textContent = "DURDUR";
+            }
+        }
+    </script>
 </body>
 </html>
