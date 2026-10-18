@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FocusSpace - Dijital Çalışma Alanı</title>
+    <title>FocusSpace Pro - Fonksiyonel Çalışma Alanı</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Caveat:wght@700&display=swap" rel="stylesheet">
+    <!-- PDF.js Kütüphanesi -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <style>
         :root {
-            --bg-dark: #1a1a1a;
-            --panel-dark: #252525;
-            --accent: #7289da;
+            --bg-dark: #121212;
+            --panel-dark: #1e1e1e;
+            --accent: #bb86fc;
             --text-main: #e0e0e0;
-            --paper: #fdfdfd;
+            --paper: #ffffff;
         }
 
         body, html {
@@ -23,236 +25,116 @@
             overflow: hidden;
         }
 
-        /* GİRİŞ EKRANI (FOCUS MODE) */
+        /* GİRİŞ EKRANI */
         #focus-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, #2c2c2c 0%, #1a1a1a 100%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            transition: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(135deg, #1a1a1a 0%, #000 100%);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 100; transition: 0.6s ease;
         }
-
-        #focus-screen.hidden {
-            transform: translateY(-100%);
-            opacity: 0;
-        }
-
-        .welcome-card {
-            text-align: center;
-            animation: fadeIn 1.5s ease;
-        }
+        #focus-screen.hidden { transform: translateY(-100%); opacity: 0; }
 
         .upload-btn {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 20px 40px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            margin-top: 20px;
+            background: var(--accent); color: black; border: none;
+            padding: 20px 40px; font-size: 18px; font-weight: bold;
+            border-radius: 12px; cursor: pointer; transition: 0.3s;
         }
 
-        .upload-btn:hover {
-            transform: scale(1.05);
-            background: #5b73c7;
-        }
-
-        /* ANA ÇALIŞMA ALANI */
+        /* ANA UYGULAMA */
         .app-container {
-            display: flex;
-            height: 100vh;
-            opacity: 0;
-            transition: 1s ease;
+            display: flex; height: 100vh; opacity: 0; transition: 1s ease;
         }
-
-        .app-container.active {
-            opacity: 1;
-        }
+        .app-container.active { opacity: 1; }
 
         /* SOL PANEL */
         .side-panel {
-            width: 280px;
-            background: var(--panel-dark);
-            border-right: 1px solid #333;
-            display: flex;
-            flex-direction: column;
-            padding: 25px;
-            gap: 20px;
+            width: 300px; background: var(--panel-dark);
+            border-right: 1px solid #333; display: flex; flex-direction: column;
+            padding: 20px; gap: 20px;
         }
 
-        .todo-section {
-            background: rgba(0,0,0,0.2);
-            padding: 15px;
-            border-radius: 10px;
-            flex-grow: 1;
+        .todo-section { background: #252525; padding: 15px; border-radius: 12px; }
+        .todo-list { list-style: none; padding: 0; margin: 10px 0; }
+        .todo-item { 
+            display: flex; align-items: center; gap: 10px; margin-bottom: 8px; 
+            background: #333; padding: 8px; border-radius: 5px; font-size: 14px;
         }
+        .todo-item button { margin-left: auto; background: none; border: none; color: #ff5555; cursor: pointer; }
 
-        .todo-list {
-            list-style: none;
-            padding: 0;
-            font-size: 14px;
-        }
-
-        .todo-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-            opacity: 0.8;
-        }
-
-        /* SAĞ ANA ALAN */
+        /* ANA ÇALIŞMA ALANI */
         .main-stage {
-            flex: 1;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: #1e1e1e;
+            flex: 1; position: relative; display: flex;
+            flex-direction: column; align-items: center; background: #181818;
         }
 
-        /* KİTAP GÖRÜNÜMÜ (Sadece PDF yüklendiğinde gelir) */
-        .book-interface {
-            display: none; /* Başlangıçta gizli */
-            position: relative;
-            width: 850px;
-            height: 550px;
-            perspective: 1500px;
+        /* PDF GÖRÜNÜMÜ */
+        #pdf-viewer {
+            width: 80%; height: 80vh; margin-top: 20px;
+            background: #333; border-radius: 10px; overflow-y: auto;
+            display: none; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            padding: 20px;
         }
+        canvas { display: block; margin: 0 auto 20px auto; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
 
-        .page {
-            position: absolute;
-            width: 400px;
-            height: 100%;
-            background: var(--paper);
-            color: #333;
-            padding: 40px;
-            box-sizing: border-box;
+        /* NOT DEFTERİ */
+        .notebook {
+            position: absolute; right: 20px; top: 20px;
+            width: 300px; height: 400px; background: var(--paper);
+            color: #333; border-radius: 10px; padding: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            font-family: 'Caveat', cursive;
-            font-size: 22px;
-            line-height: 32px;
-            background-image: linear-gradient(#e5e5e5 1px, transparent 1px);
-            background-size: 100% 32px;
+            font-family: 'Caveat', cursive; font-size: 20px;
+            display: none; flex-direction: column;
+        }
+        .notebook textarea {
+            width: 100%; height: 90%; border: none; background: transparent;
+            font-family: 'Caveat', cursive; font-size: 20px; resize: none; outline: none;
+            line-height: 30px; background-image: linear-gradient(#e5e5e5 1px, transparent 1px);
+            background-size: 100% 30px;
         }
 
-        .left-page { left: 25px; border-radius: 10px 0 0 10px; transform: rotateY(5deg); }
-        .right-page { right: 25px; border-radius: 0 10px 10px 0; transform: rotateY(-5deg); }
-
-        .spiral {
-            position: absolute;
-            left: 50%; top: 0; width: 30px; height: 100%;
-            transform: translateX(-50%);
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around;
-            align-items: center;
-        }
-
-        .ring {
-            width: 45px; height: 12px;
-            background: linear-gradient(to bottom, #bdc3c7, #7f8c8d, #bdc3c7);
-            border-radius: 10px;
-        }
-
-        /* ARAÇLAR (Zamanlayıcı & Müzik) */
-        .widgets {
-            position: absolute;
-            bottom: 30px;
-            right: 30px;
-            display: flex;
-            gap: 20px;
-        }
-
-        .widget-card {
-            background: var(--panel-dark);
-            padding: 15px;
-            border-radius: 15px;
-            border: 1px solid #444;
-            text-align: center;
-            min-width: 150px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-        }
-
-        .timer-display {
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: var(--accent);
-        }
-
-        .btn-small {
-            background: var(--accent);
-            border: none; color: white;
-            padding: 5px 15px; border-radius: 5px;
-            cursor: pointer; font-weight: bold;
-        }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        /* WIDGETS */
+        .widgets { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 20px; }
+        .widget-card { background: var(--panel-dark); padding: 15px; border-radius: 15px; border: 1px solid #444; text-align: center; min-width: 140px; }
+        .timer-display { font-size: 24px; font-weight: bold; color: var(--accent); margin-bottom: 10px; }
+        .btn-small { background: var(--accent); border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
 
     </style>
 </head>
 <body>
 
-    <!-- 1. GİRİŞ EKRANI -->
+    <!-- GİRİŞ EKRANI -->
     <div id="focus-screen">
-        <div class="welcome-card">
-            <h1 style="font-size: 48px; margin-bottom: 10px;">FocusSpace</h1>
-            <p style="opacity: 0.6; font-size: 18px;">Zihnini boşalt, çalışmaya odaklan.</p>
-            <button class="upload-btn" onclick="startStudying()">📄 Kitap / PDF Yükle ve Başla</button>
-        </div>
+        <h1 style="font-size: 40px; margin-bottom: 10px;">FocusSpace Pro</h1>
+        <p style="opacity: 0.6; margin-bottom: 30px;">PDF Kitabını Yükle ve Çalışmaya Başla</p>
+        <input type="file" id="file-input" accept="application/pdf" style="display:none" onchange="handleFileUpload(event)">
+        <button class="upload-btn" onclick="document.getElementById('file-input').click()">📄 PDF Seç ve Başla</button>
     </div>
 
-    <!-- 2. ANA UYGULAMA -->
+    <!-- ANA UYGULAMA -->
     <div class="app-container" id="app">
         <div class="side-panel">
-            <h2>Çalışma Alanı</h2>
-            
+            <h2>Panel</h2>
             <div class="todo-section">
-                <h4 style="margin-top:0">📌 Hedeflerim</h4>
-                <ul class="todo-list">
-                    <li class="todo-item"><input type="checkbox"> PDF'i bitir</li>
-                    <li class="todo-item"><input type="checkbox"> Özet çıkar</li>
-                    <li class="todo-item"><input type="checkbox"> Soru çöz</li>
-                </ul>
-                <input type="text" placeholder="+ Yeni hedef ekle..." style="width:90%; background:transparent; border:1px solid #444; color:white; padding:5px; border-radius:5px;">
+                <h4>📌 Görev Listem</h4>
+                <div style="display:flex; gap:5px;">
+                    <input type="text" id="todo-input" placeholder="Yeni görev..." style="flex:1; background:#333; border:none; color:white; padding:5px; border-radius:5px;">
+                    <button onclick="addTodo()" class="btn-small">+</button>
+                </div>
+                <ul class="todo-list" id="todo-list"></ul>
             </div>
-
-            <div class="music-section" style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px;">
-                <h4 style="margin-top:0">🎵 Lo-Fi Odaklanma</h4>
-                <iframe width="100%" height="80" src="https://www.youtube.com/embed/jfKfPfyLpws" frameborder="0" allow="autoplay" style="border-radius: 10px;"></iframe>
+            <div class="music-section" style="background:#252525; padding:15px; border-radius:12px;">
+                <h4>🎵 Lo-Fi Beat</h4>
+                <iframe width="100%" height="60" src="https://www.youtube.com/embed/jfKfPfyLpws" frameborder="0" style="border-radius: 10px;"></iframe>
             </div>
         </div>
 
         <div class="main-stage">
-            <!-- Kitap Arayüzü (Yükleme sonrası açılır) -->
-            <div class="book-interface" id="book">
-                <div class="spiral">
-                    <div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="ring"></div>
-                    <div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="ring"></div>
-                    <div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="ring"></div>
-                </div>
-                <div class="page left-page">
-                    <h3 style="text-align:center">📌 Ders Notları</h3>
-                    <p>Yüklediğiniz PDF içerikleri burada işlenecek...</p>
-                    <div style="margin-top:20px; opacity:0.6">Buraya notlarınızı alabilir veya PDF'den kopyaladığınız kısımları yapıştırabilirsiniz.</div>
-                </div>
-                <div class="page right-page">
-                    <h3 style="text-align:center">💡 Önemli Hatırlatmalar</h3>
-                    <p>- Konu başlıklarını belirle.</p>
-                    <p>- Önemli tarihleri işaretle.</p>
-                    <p>- Formülleri tekrar et.</p>
-                </div>
+            <div id="pdf-viewer"></div>
+            
+            <div class="notebook" id="notebook">
+                <h3 style="margin-top:0; text-align:center; border-bottom:1px solid #ddd">Notlarım</h3>
+                <textarea id="notes-area" placeholder="Notlarını buraya yaz, otomatik kaydedilir..."></textarea>
             </div>
 
             <div class="widgets">
@@ -262,29 +144,102 @@
                     <button class="btn-small" onclick="toggleTimer()" id="timerBtn">BAŞLAT</button>
                 </div>
                 <div class="widget-card">
-                    <div style="font-size: 12px; opacity: 0.7;">Durum</div>
-                    <div style="font-size: 18px; font-weight: bold; margin: 10px 0; color: #4caf50;">Odaklanmış ⚡</div>
-                    <button class="btn-small" style="background:#444" onclick="location.reload()">Çıkış</button>
+                    <div style="font-size: 12px; opacity: 0.7;">Mod</div>
+                    <div style="font-weight:bold; margin:10px 0; color:#4caf50;">Süper Odak ⚡</div>
+                    <button class="btn-small" style="background:#444" onclick="location.reload()">Kapat</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // GİRİŞ VE GEÇİŞ MANTIĞI
-        function startStudying() {
-            // 1. Giriş ekranını kaldır
+        // PDF.JS KURULUMU
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
+        async function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Ekran geçişleri
             document.getElementById('focus-screen').classList.add('hidden');
-            
-            // 2. Uygulamayı aktif et
-            const app = document.getElementById('app');
-            app.classList.add('active');
-            
-            // 3. Kitabı görünür yap (PDF yüklendi varsayımıyla)
-            setTimeout(() => {
-                document.getElementById('book').style.display = 'block';
-            }, 800);
+            document.getElementById('app').classList.add('active');
+            document.getElementById('pdf-viewer').style.display = 'block';
+            document.getElementById('notebook').style.display = 'flex';
+
+            // PDF Okuma
+            const reader = new FileReader();
+            reader.onload = async function() {
+                const typedarray = new Uint8Array(this.result);
+                const pdf = await pdfjsLib.getDocument(typedarray).promise;
+                const viewer = document.getElementById('pdf-viewer');
+                viewer.innerHTML = ''; // Temizle
+
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const viewport = page.getViewport({ scale: 1.5 });
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    await page.render({ canvasContext: context, viewport: viewport }).promise;
+                    viewer.appendChild(canvas);
+                }
+            };
+            reader.readAsArrayBuffer(file);
         }
 
-        // POMODORO ZAMANLAYICI
-        let timeLeft = 25 * 60;*
+        // NOTLAR SİSTEMİ (LocalStorage)
+        const notesArea = document.getElementById('notes-area');
+        notesArea.value = localStorage.getItem('studyNotes') || '';
+        notesArea.addEventListener('input', () => {
+            localStorage.setItem('studyNotes', notesArea.value);
+        });
+
+        // TO-DO SİSTEMİ (LocalStorage)
+        let todos = JSON.parse(localStorage.getItem('studyTodos')) || [];
+        function renderTodos() {
+            const list = document.getElementById('todo-list');
+            list.innerHTML = '';
+            todos.forEach((todo, index) => {
+                list.innerHTML += `<li class="todo-item">
+                    <input type="checkbox" ${todo.done ? 'checked' : ''} onchange="toggleTodo(${index})">
+                    <span style="${todo.done ? 'text-decoration:line-through; opacity:0.5' : ''}">${todo.text}</span>
+                    <button onclick="deleteTodo(${index})">✕</button>
+                </li>`;
+            });
+            localStorage.setItem('studyTodos', JSON.stringify(todos));
+        }
+        function addTodo() {
+            const input = document.getElementById('todo-input');
+            if (input.value) {
+                todos.push({ text: input.value, done: false });
+                input.value = '';
+                renderTodos();
+            }
+        }
+        function toggleTodo(index) { todos[index].done = !todos[index].done; renderTodos(); }
+        function deleteTodo(index) { todos.splice(index, 1); renderTodos(); }
+        renderTodos();
+
+        // POMODORO
+        let timeLeft = 25 * 60;
+        let timerId = null;
+        function updateTimer() {
+            let m = Math.floor(timeLeft / 60), s = timeLeft % 60;
+            document.getElementById('timer').textContent = `${m<10?'0':''}${m}:${s<10?'0':''}${s}`;
+        }
+        function toggleTimer() {
+            const btn = document.getElementById('timerBtn');
+            if (timerId) {
+                clearInterval(timerId); timerId = null; btn.textContent = "DEVAM ET";
+            } else {
+                timerId = setInterval(() => {
+                    timeLeft--; updateTimer();
+                    if (timeLeft <= 0) { clearInterval(timerId); alert("Süre bitti!"); }
+                }, 1000);
+                btn.textContent = "DURDUR";
+            }
+        }
+    </script>
+</body>
+</html>
