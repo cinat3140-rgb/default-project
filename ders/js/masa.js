@@ -12,6 +12,11 @@ const MASA = (function () {
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
     .replace(/"/g,'&quot;').replace(/'/g,'&#039;');
 
+  if (window.pdfjsLib && window.pdfjsLib.GlobalWorkerOptions) {
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+
   /* ═════════ VERİ TABANI ═════════ */
   const KONULAR = {
     'Matematik': ['türev','integral','denklem','eşitsizlik','fonksiyon','üçgen','çember',
@@ -471,6 +476,10 @@ const MASA = (function () {
 
   /* ═════════ DOSYA EKLEME ═════════ */
     async function ekle(dosyalar) {
+      if (typeof pdfjsLib === 'undefined') {
+        bildir('PDF.js yüklenemedi — internet bağlantısını kontrol et', 'hata');
+        return;
+      }
       PERDE.ac('Dosyalar işleniyor…', dosyalar.length + ' dosya hazırlanıyor');
       await new Promise(r => setTimeout(r, 60));
       let x = 400, y = 120, n = 0, hata = 0;
@@ -546,11 +555,158 @@ const MASA = (function () {
   }
 
   /* ═════════ PANEL ═════════ */
+  const POMO = {
+    odak: 25, mola: 5, durum: 'odak',
+    toplam: 25 * 60, kalan: 25 * 60,
+    kosu: false, tim: null, son: 0,
+    bugun: 0
+  };
+  function pomoYukle() {
+    try {
+      const s = JSON.parse(localStorage.getItem('dp_pomo') || '{}');
+      if (s.bugun && s.tarih === new Date().toDateString()) POMO.bugun = s.bugun;
+    } catch (e) {}
+  }
+  function pomoKaydet() {
+    try {
+      localStorage.setItem('dp_pomo', JSON.stringify({ bugun: POMO.bugun, tarih: new Date().toDateString() }));
+    } catch (e) {}
+  }
+  function pomoHero() {
+    const t4 = POMO.bugun % 4;
+    return `<div class="pomo-kutu">
+      <div class="pomo-ring">
+        <svg viewBox="0 0 200 200">
+          <circle class="pr-bg" cx="100" cy="100" r="88"></circle>
+          <circle class="pr-il" id="pomoRing" cx="100" cy="100" r="88"
+            stroke-dasharray="${(2 * Math.PI * 88).toFixed(1)}"
+            stroke-dashoffset="0" stroke-linecap="round"></circle>
+        </svg>
+        <div class="pomo-merkez"><b class="pomo-sure" id="pomoSure">${bicim(POMO.kalan)}</b>
+          <small id="pomoDurum">${POMO.durum === 'odak' ? 'Odak' : POMO.durum === 'mola' ? 'Kısa Mola' : 'Uzun Mola'}</small></div>
+      </div>
+      <div class="pomo-yan">
+        <div class="pomo-efsa">
+          <button class="pz-btn${POMO.odak === 25 ? ' aktif' : ''}" data-odak="25" data-mola="5">25/5</button>
+          <button class="pz-btn${POMO.odak === 50 ? ' aktif' : ''}" data-odak="50" data-mola="10">50/10</button>
+          <button class="pz-btn${POMO.odak === 90 ? ' aktif' : ''}" data-odak="90" data-mola="20">90/20</button>
+        </div>
+        <div class="pomo-kontrol">
+          <button class="u-btn ana" id="pomoBas">${POMO.kosu ? '⏸ Duraklat' : '▶ Başlat'}</button>
+          <button class="u-btn" id="pomoSifir" title="Sıfırla">↺</button>
+        </div>
+        <div class="pomo-stat">
+          <span>🍅 Döngü: <b id="pomoTur">${t4}</b>/4</span>
+          <span>Bugün: <b id="pomoBugun">${POMO.bugun}</b> odak</span>
+        </div>
+      </div>
+    </div>`;
+  }
+  function pomoRingGuncelle() {
+    const c = $('#pomoRing');
+    if (!c) return;
+    const C = 2 * Math.PI * 88;
+    const kesir = POMO.toplam ? (POMO.toplam - POMO.kalan) / POMO.toplam : 0;
+    c.style.strokeDashoffset = (C * (1 - kesir)).toFixed(1);
+    c.classList.toggle('mola', POMO.durum !== 'odak');
+  }
+  function pomoYaziGuncelle() {
+    const s = $('#pomoSure');
+    if (s) s.textContent = bicim(POMO.kalan);
+    const d = $('#pomoDurum');
+    if (d) d.textContent = POMO.durum === 'odak' ? 'Odak' : POMO.durum === 'mola' ? 'Kısa Mola' : 'Uzun Mola';
+    pomoRingGuncelle();
+    if (POMO.kosu) {
+      const f = $('#saatFabYazi');
+      if (f) {
+        f.textContent = bicim(POMO.kalan);
+        $('#saatFab').classList.add('calisiyor');
+      }
+    }
+  }
+  function pomoTick() {
+    const simdi = Date.now();
+    const fark = Math.round((simdi - POMO.son) / 1000);
+    if (fark > 0) { POMO.kalan -= fark; POMO.son = simdi; }
+    if (POMO.kalan <= 0) { POMO.kalan = 0; pomoBitti(); return; }
+    pomoYaziGuncelle();
+  }
+  function pomoBaslat() {
+    clearInterval(POMO.tim);
+    POMO.kosu = true; POMO.son = Date.now();
+    POMO.tim = setInterval(pomoTick, 1000);
+  }
+  function pomoDuraklat() {
+    clearInterval(POMO.tim); POMO.kosu = false; POMO.son = 0;
+    document.body.classList.remove('pomo-odakta');
+  }
+  function pomoSifirla(hedef) {
+    clearInterval(POMO.tim); POMO.kosu = false; POMO.son = 0;
+    document.body.classList.remove('pomo-odakta');
+    if (hedef) Object.assign(POMO, hedef);
+    POMO.kalan = POMO.toplam;
+  }
+  function pomoBitti() {
+    clearInterval(POMO.tim);
+    POMO.kosu = false; POMO.son = 0;
+    bip();
+    const tur = $('#pomoTur'), bugun = $('#pomoBugun');
+    if (POMO.durum === 'odak') {
+      POMO.bugun++; pomoKaydet();
+      V.ist.dakika = (V.ist.dakika || 0) + POMO.odak;
+      kaydet(); istCiz();
+      if (bugun) bugun.textContent = POMO.bugun;
+      if (tur) tur.textContent = POMO.bugun % 4;
+      if (POMO.bugun % 4 === 0) {
+        POMO.durum = 'uzunmola'; POMO.toplam = POMO.mola * 180; POMO.kalan = POMO.toplam;
+        bildir('🍅 4 odak tamam! Uzun mola başladı (' + POMO.mola * 3 + ' dk).');
+      } else {
+        POMO.durum = 'mola'; POMO.toplam = POMO.mola * 60; POMO.kalan = POMO.toplam;
+        bildir('🍅 Odak bitti! ' + POMO.mola + ' dk mola başladı.');
+      }
+      pomoBaslat();
+    } else {
+      POMO.durum = 'odak'; POMO.toplam = POMO.odak * 60; POMO.kalan = POMO.toplam;
+      bildir('☀️ Mola bitti. hazır mısın? Başlat\'a bas.', 'basari');
+    }
+    document.body.classList.remove('pomo-odakta');
+    pomoYaziGuncelle();
+    pomoCizTum();
+  }
+  function pomoCizTum() {
+    const kutu = $('#pomoKut');
+    if (kutu) {
+      kutu.innerHTML = pomoHero();
+      pomoBagla();
+    }
+    pomoYaziGuncelle();
+  }
+  function pomoBagla() {
+    const b = $('#pomoBas');
+    if (!b) return;
+    b.onclick = () => {
+      if (POMO.kosu) pomoDuraklat();
+      else {
+        if (POMO.kalan <= 0) POMO.kalan = POMO.toplam;
+        pomoBaslat();
+      }
+      b.textContent = POMO.kosu ? '⏸ Duraklat' : '▶ Başlat';
+    };
+    $('#pomoSifir').onclick = () => { pomoSifirla(); pomoCizTum(); };
+    $$('[data-odak]').forEach(x => x.onclick = () => {
+      const o = +x.dataset.odak, m = +x.dataset.mola;
+      pomoSifirla({ odak: o, mola: m, durum: 'odak', toplam: o * 60 });
+      $$('[data-odak]').forEach(y => y.classList.toggle('aktif', y === x));
+      pomoCizTum();
+    });
+  }
   function sayfaPanel() {
     const z = zayifListe();
     const ders = z.length ? [...new Set(z.slice(0,2).map(k => k.ders))] : ['Matematik'];
 
     $('#icerik').innerHTML = `<div class="ekran">
+      <div class="pomo" id="pomoKut">${pomoHero()}</div>
+
       <div class="ist">
         <div class="ist-k"><b>${V.ist.bugun||0}</b><small>Bugün Çözülen</small></div>
         <div class="ist-k"><b>${V.ist.soru}</b><small>Toplam Soru</small></div>
@@ -603,6 +759,7 @@ const MASA = (function () {
         </div>
       </div>
     </div>`;
+    pomoBagla();
   }
 
   function bosKutu(ikon, bas, alt, ekran) {
@@ -1132,6 +1289,7 @@ const MASA = (function () {
   }
     async function sayfaCiz() {
       const gov = $('#okGovde');
+      gov.classList.toggle('k3d', OKU.tip === 'kitap3d');
       gov.innerHTML = '';
       const ilerleme = document.createElement('div');
       ilerleme.className = 'ok-ilerleme';
@@ -1277,6 +1435,39 @@ const MASA = (function () {
       };
     }
 
+  let kitapDoniyor = false;
+  function kitapCevir(yon) {
+    if (OKU.tip !== 'kitap3d' || !OKU.pdf || kitapDoniyor) { sayfaGit(yon); return; }
+    const kitap = $('#okGovde .kp-kitap');
+    if (!kitap) { sayfaGit(yon); return; }
+    const kaynak = kitap.querySelector(yon > 0 ? '.kp-sag' : '.kp-sol');
+    if (!kaynak || sayfadaSon(yon)) { sayfaGit(yon); return; }
+    kitapDoniyor = true;
+    const kr = kaynak.getBoundingClientRect();
+    const kn = kitap.getBoundingClientRect();
+    const pf = document.createElement('div');
+    pf.className = 'kp-don';
+    pf.style.cssText = 'position:absolute;top:' + Math.round(kr.top - kn.top) + 'px;left:' +
+      Math.round(kr.left - kn.left) + 'px;width:' + Math.round(kr.width) + 'px;height:' +
+      Math.round(kr.height) + 'px;transform-origin:' + (yon > 0 ? '0 50%' : '100% 50%');
+    kitap.appendChild(pf);
+    void pf.offsetWidth;
+    pf.style.transform = yon > 0 ? 'rotateY(-168deg)' : 'rotateY(168deg)';
+    pf.style.opacity = '.97';
+    kitap.style.transition = 'transform .38s var(--e)';
+    kitap.style.transform = 'rotateX(13deg)';
+    setTimeout(() => {
+      kitap.style.transform = '';
+      pf.remove();
+      kitapDoniyor = false;
+      sayfaGit(yon);
+    }, 400);
+  }
+  function sayfadaSon(yon) {
+    const b = OKU.no; const sal = OKU.cift && b % 2 === 0 ? b - 1 : b;
+    if (yon > 0) return sal + 2 > OKU.toplam;
+    return sal <= 1;
+  }
   function sayfaGit(yon) {
     let b = OKU.no; if (OKU.cift && b%2===0) b--;
     let y = yon > 0 ? b+2 : b-2;
@@ -1284,8 +1475,8 @@ const MASA = (function () {
     if (y === OKU.no) return;
     okSayfayaGit(y);
   }
-  $('#okSol').onclick = () => sayfaGit(-1);
-  $('#okSag').onclick = () => sayfaGit(1);
+  $('#okSol').onclick = () => kitapCevir(-1);
+  $('#okSag').onclick = () => kitapCevir(1);
   $('#okIlk').onclick = () => okSayfayaGit(1);
   $('#okSon').onclick = () => okSayfayaGit(OKU.toplam);
   function okTipUygula() {
@@ -1336,8 +1527,8 @@ const MASA = (function () {
       else if (k === '0') { okSifirla(); e.preventDefault(); }
       return;
     }
-    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { sayfaGit(1); e.preventDefault(); }
-    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { sayfaGit(-1); e.preventDefault(); }
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { kitapCevir(1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { kitapCevir(-1); e.preventDefault(); }
     else if (e.key === 'Home') { okSayfayaGit(1); e.preventDefault(); }
     else if (e.key === 'End') { okSayfayaGit(OKU.toplam); e.preventDefault(); }
     else if (e.key === '+' || e.key === '=') okYakinla(1);
@@ -1908,7 +2099,7 @@ const MASA = (function () {
     try { localStorage.setItem('op_tema', k?'dark':'light'); } catch (e) {}
     $('#yTema').innerHTML = '<span>' + (k ? '☀️' : '🌙') + '</span> Tema';
   }
-  $('#yTema').onclick = () => tema(!document.body.classList.contains('dark'));
+  $('#yTema').onclick = () => tema(!document.body.classList.contains('light'));
 
   /* ═════════ İSTATİSTİK ═════════ */
   function istCiz() {
@@ -1943,6 +2134,7 @@ const MASA = (function () {
   /* ═════════ BAŞLAT ═════════ */
   async function baslat() {
     await yukle();
+    pomoYukle();
     kotaIzin(); kotaYaz();
     /* eski kayıtta yanlış servis adresi kalmışsa düzelt (401 sebebi) */
     if (V.ayar.aiAnahtar) {

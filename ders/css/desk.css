@@ -907,3 +907,66 @@ body.light .koc-ai-bas{ color:var(--ana) }
 .saat-girdi:focus{ outline:none; border-color:var(--ana) }
 .saat-eylem{ display:flex; gap:8px; justify-content:center; margin-top:12px }
 .saat-eylem .u-btn{ padding:8px 22px; font-size:15px }
+
+/* ═══════════ POMODORO HERO (panel) ═══════════ */
+.pomo{
+  background:var(--yuzey); border:1px solid var(--cizgi); border-radius:var(--r3);
+  box-shadow:var(--g2); padding:var(--b4); margin-bottom:var(--b5);
+}
+.pomo-kutu{ display:flex; align-items:center; gap:var(--b5); flex-wrap:wrap; justify-content:center }
+.pomo-ring{ position:relative; width:190px; height:190px; flex-shrink:0 }
+.pomo-ring svg{ width:100%; height:100%; transform:rotate(-90deg) }
+.pr-bg{ fill:none; stroke:var(--yuzey-3); stroke-width:7 }
+.pr-il{ fill:none; stroke:var(--ana); stroke-width:7; transition:stroke-dashoffset .5s var(--e), stroke .4s }
+.pr-il.mola{ stroke:var(--uyari) }
+.pomo-merkez{
+  position:absolute; inset:0; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; text-align:center;
+}
+.pomo-sure{ font-size:44px; font-weight:800; letter-spacing:-1px; font-variant-numeric:tabular-nums }
+.pomo-merkez small{ color:var(--metin-2); font-size:12.5px; font-weight:600; margin-top:2px }
+.pomo-yan{ display:flex; flex-direction:column; gap:12px; min-width:210px }
+.pomo-efsa{ display:flex; gap:6px }
+.pz-btn{
+  padding:7px 13px; border-radius:999px; border:1px solid var(--cizgi-2);
+  font-size:12.5px; font-weight:650; color:var(--metin-2); background:var(--yuzey-2);
+  transition:all .18s var(--e);
+}
+.pz-btn:hover{ color:var(--metin) }
+.pz-btn.aktif{ background:var(--ana); color:#0E1A14; border-color:transparent }
+.pomo-kontrol{ display:flex; gap:8px }
+.pomo-kontrol .u-btn{ padding:9px 24px; font-size:14px; font-weight:650 }
+.pomo-stat{ display:flex; gap:16px; color:var(--metin-2); font-size:12.5px }
+.pomo-stat b{ color:var(--metin) }
+
+/* ═══════════ GERÇEK AHSAP MASA + KİTAP ═══════════ */
+.ok-govde.k3d{
+  background:
+    radial-gradient(1150px 560px at 50% -12%, rgba(255,246,224,.10), transparent 58%),
+    radial-gradient(1000px 620px at 50% 118%, rgba(0,0,0,.55), transparent 66%),
+    radial-gradient(500px 260px at 18% 8%, rgba(255,255,255,.05), transparent 70%),
+    linear-gradient(178deg, #55432E 0%, #463625 30%, #332818 62%, #201812 100%);
+}
+.ok-govde.k3d .kp-sahne{ filter:drop-shadow(0 34px 42px rgba(0,0,0,.55)) }
+.kp-sol{
+  background-color:var(--kagit);
+  background-image:linear-gradient(90deg,
+    rgba(0,0,0,0) 78%, rgba(0,0,0,.05) 88%, rgba(0,0,0,.13) 96%, rgba(0,0,0,.26) 100%);
+}
+.kp-sag{
+  background-color:var(--kagit);
+  background-image:linear-gradient(270deg,
+    rgba(0,0,0,0) 78%, rgba(0,0,0,.05) 88%, rgba(0,0,0,.13) 96%, rgba(0,0,0,.26) 100%);
+}
+.kp-don{
+  z-index:9; pointer-events:none; backface-visibility:hidden;
+  background:linear-gradient(90deg, #FBFAF4 0%, #F5F1E6 55%, #EDE8D9 100%);
+  border-radius:var(--r1); overflow:hidden;
+  box-shadow:0 10px 26px rgba(0,0,0,.30), inset 0 0 0 1px rgba(0,0,0,.04);
+  transition:transform .62s cubic-bezier(.36,.06,.35,1);
+}
+@media(max-width:760px){
+  .pomo-kutu{ flex-direction:column }
+  .pomo-ring{ width:160px; height:160px }
+  .pomo-sure{ font-size:36px }
+}
