@@ -970,3 +970,10 @@ body.light .koc-ai-bas{ color:var(--ana) }
   .pomo-ring{ width:160px; height:160px }
   .pomo-sure{ font-size:36px }
 }
+
+/* ═══════════ OKUYUCUDA SÜRÜKLE-PAN ═══════════ */
+.ok-govde.pan-ol{ cursor:grab }
+.ok-govde.pan-tut{ cursor:grabbing }
+.ok-govde.pan-tut .kp-yuz,
+.ok-govde.pan-tut .sk{ pointer-events:none }
+.ok-govde.pan-tut *{ user-select:none !important }

@@ -1342,6 +1342,8 @@ const MASA = (function () {
         const b = $('#okIlerleme');
         if (b) b.style.width = (en > 0 ? (y/en*100) : 100) + '%';
       };
+      gov.classList.toggle('pan-ol',
+        gov.scrollWidth > gov.clientWidth || gov.scrollHeight > gov.clientHeight);
     }
 
     async function kitap3dCiz(gov) {
@@ -1433,6 +1435,7 @@ const MASA = (function () {
         const b = $('#okIlerleme');
         if (b) b.style.width = (en > 0 ? (y/en*100) : 100) + '%';
       };
+      gov.classList.add('pan-ol');
     }
 
   let kitapDoniyor = false;
@@ -1515,6 +1518,38 @@ const MASA = (function () {
     e.preventDefault();
     okYakinla(e.deltaY < 0 ? 1 : -1);
   }, { passive:false });
+
+  /* sol tık basılı + sürükle = görünümü kaydır (masa gibi pan) */
+  (function panTak() {
+    const gov = $('#okGovde');
+    let pan = null, yol = 0;
+    gov.addEventListener('mousedown', e => {
+      if (e.button !== 0) return;
+      if (gov.scrollWidth <= gov.clientWidth && gov.scrollHeight <= gov.clientHeight) return;
+      pan = { x: e.clientX, y: e.clientY };
+      yol = 0;
+      gov.classList.add('pan-tut');
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove', e => {
+      if (!pan) return;
+      const dx = e.clientX - pan.x, dy = e.clientY - pan.y;
+      yol += Math.abs(dx) + Math.abs(dy);
+      gov.scrollLeft -= dx;
+      gov.scrollTop -= dy;
+      pan = { x: e.clientX, y: e.clientY };
+    });
+    document.addEventListener('mouseup', () => {
+      if (!pan) return;
+      pan = null;
+      const git = () => { gov.classList.remove('pan-tut'); };
+      if (yol > 6) {
+        const sus = ev => { ev.stopPropagation(); ev.preventDefault(); };
+        gov.addEventListener('click', sus, { capture:true, once:true });
+        setTimeout(() => { gov.removeEventListener('click', sus, { capture:true }); git(); }, 0);
+      } else git();
+    });
+  })();
 
   document.addEventListener('fullscreenchange', () => setTimeout(sayfaCiz, 140));
   document.addEventListener('keydown', e => {
