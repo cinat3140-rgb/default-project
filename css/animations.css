@@ -1,0 +1,36 @@
+﻿/* OpenPlay — Animasyonlar (Windows 11 / Fluent) */
+
+@keyframes acKutu{ from{ opacity:0; transform:translateY(10px) scale(.99) } }
+.uygulama{ animation:acKutu .34s var(--hareket-1) both }
+
+.uygulama-izgara > :nth-child(1){ animation-delay:.02s }
+.uygulama-izgara > :nth-child(2){ animation-delay:.05s }
+.uygulama-izgara > :nth-child(3){ animation-delay:.08s }
+.uygulama-izgara > :nth-child(4){ animation-delay:.11s }
+.uygulama-izgara > :nth-child(5){ animation-delay:.14s }
+.uygulama-izgara > :nth-child(6){ animation-delay:.17s }
+.uygulama-izgara > :nth-child(7){ animation-delay:.20s }
+.uygulama-izgara > :nth-child(8){ animation-delay:.23s }
+.uygulama-izgara > :nth-child(n+9){ animation-delay:.26s }
+
+/* ripple */
+.btn{ position:relative; overflow:hidden }
+.btn::after{
+  content:''; position:absolute; border-radius:50%;
+  background:currentColor; opacity:.14;
+  width:0; height:0; transform:translate(-50%,-50%);
+  transition:width .5s, height .5s;
+}
+.btn:active::after{ width:220px; height:220px }
+
+/* shimmer */
+@keyframes kaydir2{ to{ transform:translateX(100%) } }
+.iskelet::after{ animation:kaydir2 1.4s infinite }
+
+/* gorsel fade */
+.gorsel-gizli{ opacity:0; transition:opacity .35s var(--hareket-2) }
+.gorsel-gizli.yuklendi{ opacity:1 }
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{ animation-duration:.01ms !important; transition-duration:.01ms !important }
+}

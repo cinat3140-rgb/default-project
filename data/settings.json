@@ -1,0 +1,19 @@
+﻿{
+  "siteName": "OpenPlay",
+  "siteDescription": "Açık kaynak oyun platformu",
+  "siteTagline": "Açık Kaynak Oyunların Evi",
+  "logo": "images/icons/logo.svg",
+  "banner": "images/banner.svg",
+  "heroTitle": "Açık Kaynak Oyunların Evi",
+  "heroSubtitle": "Binlerce oyun. Sıfır kısıtlama. Tamamen ücretsiz ve yasal.",
+  "footerText": "© 2026 OpenPlay. Açık kaynak oyunlar topluluğu.",
+  "socialLinks": {
+    "github": "https://github.com",
+    "twitter": "https://twitter.com",
+    "discord": "https://discord.gg"
+  },
+  "adminCredentials": {
+    "username": "openplay",
+    "password": "OpenPlay#2026xk"
+  }
+}

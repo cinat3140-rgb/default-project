@@ -1,0 +1,4 @@
+# OpenPlay - Robots.txt
+User-agent: *
+Allow: /
+Sitemap: https://openplay.pages.dev/sitemap.xml

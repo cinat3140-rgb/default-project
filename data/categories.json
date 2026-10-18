@@ -1,0 +1,14 @@
+﻿[
+  { "id": "aksiyon",   "name": "Aksiyon",          "icon": "⚔️", "color": "#E81123", "description": "Hızlı tempolu dövüş ve macera oyunları" },
+  { "id": "macera",    "name": "Macera",           "icon": "🗺️", "color": "#C239B3", "description": "Keşif, hikâye ve keşif dolu oyunlar" },
+  { "id": "strateji",  "name": "Strateji",         "icon": "♟️", "color": "#0078D4", "description": "Zeka ve plan gerektiren oyunlar" },
+  { "id": "simulasyon","name": "Simülasyon",       "icon": "🎛️", "color": "#00838A", "description": "Gerçek hayat ve sistem simülasyonları" },
+  { "id": "yaris",     "name": "Yarış",            "icon": "🏎️", "color": "#E3008C", "description": "Hız ve yarış oyunları" },
+  { "id": "platform",  "name": "Platform",         "icon": "🍄", "color": "#8764B8", "description": "2D ve 3D platform oyunları" },
+  { "id": "bulmaca",   "name": "Bulmaca",          "icon": "🧩", "color": "#498205", "description": "Beyin ve mantık oyunları" },
+  { "id": "kutu",      "name": "Kutu / Sandbox",   "icon": "🧱", "color": "#986F0B", "description": "Sınırsız hayal gücü oyunları" },
+  { "id": "kart",      "name": "Kart",             "icon": "🃏", "color": "#C239B3", "description": "Kart ve masa oyunları" },
+  { "id": "rpg",       "name": "RPG",              "icon": "⚔️", "color": "#8764B8", "description": "Rol yapma ve gelişim oyunları" },
+  { "id": "puzzle",    "name": "Bulmaca / Puzl",   "icon": "🧠", "color": "#00838A", "description": "Zekâ ve mantık gerektiren bulmacalar" },
+  { "id": "doga",      "name": "Doğa / Simülasyon","icon": "🌿", "color": "#107C10", "description": "Doğa ve yaşam simülasyonları" }
+]

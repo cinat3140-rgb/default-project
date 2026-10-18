@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="DersPark — Kitaplarını oku, soru çöz, koçünle çalış.">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="images/logo.svg">
+<link href="https://fonts.googleapis.com/css2?family=Segoe+UI+Variable:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/desk.css?v=639278625117477176">
+<title>DersPark — Ders Çalışma</title>
+</head>
+<body class="dark">
+
+<!-- ═══════ TÜM SİTEYİ KAPLAYAN İŞLEM KATMANI ═══════ -->
+<div class="perde" id="perde" hidden>
+  <div class="perde-kutu">
+    <div class="perde-nabiz"><span></span><span></span><span></span></div>
+    <b id="perdeBas">İşleniyor…</b>
+    <p id="perdeAlt">Lütfen bekle</p>
+    <div class="perde-cubuk"><i id="perdeCubuk"></i></div>
+  </div>
+</div>
+
+<!-- ═══════ KENAR ÇUBUĞU ═══════ -->
+<aside class="yan" id="yan">
+  <div class="yan-ust">
+    <a class="yan-marka" href="../../hub.html">
+      <img src="images/logo.svg" alt="">
+      <b>DersPark</b>
+    </a>
+    <button class="yan-kapat" id="yanKapat" title="Menuyu kapat" aria-label="Menuyu kapat">&#10005;</button>
+  </div>
+
+  <nav class="yan-menu">
+    <button class="y-item aktif" data-s="panel"><span class="y-ikon">🏠</span>Panel</button>
+    <button class="y-item" data-s="kutup"><span class="y-ikon">📚</span>Kitaplık</button>
+    <button class="y-item" data-s="masa"><span class="y-ikon">🖥️</span>Masam</button>
+    <button class="y-item" data-s="coz"><span class="y-ikon">📝</span>Soru Çöz</button>
+    <button class="y-item" data-s="koc"><span class="y-ikon">🤖</span>Koç</button>
+  </nav>
+
+  <div class="yan-alt">
+    <div class="yan-ist">
+      <div class="yi-satir">Bugün<b id="yiBugun">0</b></div>
+      <div class="yi-satir">Doğru<b id="yiDogru" style="color:var(--ok)">0</b></div>
+      <div class="yi-satir">Yanlış<b id="yiYanlis" style="color:var(--hata)">0</b></div>
+      <div class="yi-cubuk"><i id="yiCubuk"></i></div>
+      <div class="yi-not" id="yiNot">Hedef: 20 soru</div>
+    </div>
+    <button class="y-btn" id="yTema"><span>🌙</span>Tema</button>
+    <button class="y-btn" id="yAyar"><span>⚙️</span>Ayar</button>
+  </div>
+</aside>
+
+<!-- ═══════ ÜST ÇUBUK ═══════ -->
+<header class="ust">
+  <button class="u-btn u-menu" id="ustMenu" title="Menüyü aç/kapat" aria-label="Menüyü aç/kapat">&#9776;</button>
+  <div class="ust-sol">
+    <h1 id="ustBas">Panel</h1>
+    <p id="ustAlt">Bugünkü çalışman</p>
+  </div><div class="ust-sag">
+    <div class="ust-sure" id="ustSure">
+      <button class="u-btn" id="sSure">▶</button>
+      <span id="sSureYazi">00:00</span>
+      <button class="u-btn" id="sSureSifirla">↺</button>
+    </div>
+    <button class="u-btn u-seri" id="uSeri" title="Gün serisi">🔥 0</button>
+    <button class="u-btn" id="uKoc" title="Koç">🤖</button>
+  </div>
+</header>
+
+<!-- ═══════ İÇERİK ═══════ -->
+<main class="icerik" id="icerik"></main>
+
+<!-- ═══════ KİTAP OKUYUCU ═══════ -->
+<div class="okuyucu" id="okuyucu" hidden>
+  <div class="ok-ust">
+    <button class="u-btn" id="okKapat">✕</button>
+    <b id="okAd">Kitap</b>
+    <div class="ok-grup">
+      <button class="u-btn" id="okSol">◀</button>
+      <div class="ok-no"><input type="number" id="okNo" min="1" value="1"><span id="okToplam">/1</span></div>
+      <button class="u-btn" id="okSag">▶</button>
+    </div>
+    <div class="ok-grup">
+      <button class="u-btn aktif" id="okCift" title="Çift sayfa">📖</button>
+      <button class="u-btn" id="okTek" title="Tek sayfa">📄</button>
+      <button class="u-btn" id="okUzak" title="Uzaklaştır (Ctrl −)">−</button>
+      <span class="ok-yuzde" id="okYuzde">100%</span>
+      <button class="u-btn" id="okYakin" title="Yakınlaştır (Ctrl +)">+</button>
+      <button class="u-btn" id="okSigar" title="Ekrana sığdır">⛶</button>
+      <button class="u-btn" id="okYuzde100" title="Normal boyut (Ctrl 0)">1:1</button>
+    </div>
+    <div class="ok-sag">
+      <button class="u-btn" id="okTest">📝 Çöz</button>
+      <button class="u-btn" id="okMesaj">💬 Koç</button>
+      <button class="u-btn" id="okTam" title="Tam ekran">⛶</button>
+    </div>
+  </div>
+  <div class="ok-govde" id="okGovde"></div>
+  <div class="ok-alt">
+    <button class="u-btn" id="okIlk">⏮</button>
+    <div class="ok-serit" id="okSerit"></div>
+    <button class="u-btn" id="okSon">⏭</button>
+  </div>
+</div>
+
+<!-- ═══════ KOÇ PANELİ ═══════ -->
+<aside class="koc" id="koc">
+  <div class="koc-ust">
+    <div class="koc-kim">
+      <div class="koc-yuz">🤖</div>
+      <div><b>Koç</b><small id="kocDurum">Hazır</small></div>
+    </div>
+    <button class="u-btn" id="kocAyar" title="AI Ayarı">⚙️</button>
+    <button class="u-btn" id="kocKapat">✕</button>
+  </div>
+
+  <div class="koc-ai" id="kocAi" hidden>
+    <div class="koc-ai-bas">🔑 AI Anahtarı Bağla</div>
+    <p>Koçün gerçekten cevap vermesi için anahtar gerekiyor. Ücretsiz al:</p>
+    <div class="koc-ai-link">
+      <button class="p-btn" data-ai="https://aistudio.google.com/app/apikey">Google Gemini</button>
+      <button class="p-btn" data-ai="https://console.groq.com/keys">Groq</button>
+      <button class="p-btn" data-ai="https://platform.openai.com/api-keys">OpenAI</button>
+    </div>
+    <input class="a-girdi" id="kocKey" type="password" placeholder="Anahtarı buraya yapıştır…">
+    <div class="koc-ai-eylem">
+      <button class="p-btn ana" id="kocKeyKaydet" style="flex:1">Bağla</button>
+      <button class="p-btn" id="kocKeySil">Sil</button>
+    </div>
+    <p class="koc-ai-not">Anahtar sadece bu tarayıcıda saklanır, sunucuya gitmez.</p>
+  </div>
+
+  <div class="koc-ozet" id="kocOzet"></div>
+  <div class="koc-mesaj" id="kocMesaj"></div>
+  <div class="koc-hizli" id="kocHizli"></div>
+  <form class="koc-form" id="kocForm">
+    <input id="kocGirdi" placeholder="Sorunu sor, yardım iste…" autocomplete="off">
+    <button class="u-btn" type="submit">➤</button>
+  </form>
+</aside>
+
+<!-- ═══════ SORU SEÇİMİ ═══════ -->
+<div class="suru" id="suru" hidden>
+  <div class="suru-kutu">
+    <div class="suru-ust">
+      <div><b id="suruAd">Sorular</b><small id="suruSayi">0 soru</small></div>
+      <button class="u-btn" id="suruKapat">✕</button>
+    </div>
+    <div class="suru-arac">
+      <button class="p-btn" id="suruTumu">Tümü</button>
+      <button class="p-btn" id="suruYok">Hiçbiri</button>
+      <button class="p-btn" id="suruIlk10">İlk 10</button>
+      <button class="p-btn" id="suruRastgele">🎲 Rastgele</button>
+      <span class="bos"></span>
+      <span class="suru-sayi" id="suruSecilen">0 seçili</span>
+    </div>
+    <div class="suru-liste" id="suruListe"></div>
+    <div class="suru-alt">
+      <button class="p-btn" id="suruKapat2">Vazgeç</button>
+      <button class="u-btn ana" id="suruBasla" style="width:auto;padding:0 20px">Çözmeye Başla ▶</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ AYAR PANELİ ═══════ -->
+<div class="suru" id="ayarPanel" hidden>
+  <div class="suru-kutu" style="max-width:520px">
+    <div class="suru-ust">
+      <div><b>Ayarlar</b><small>AI, veri ve tema</small></div>
+      <button class="u-btn" id="ayarKapat">✕</button>
+    </div>
+    <div style="padding:18px;overflow-y:auto">
+      <div class="a-grup">
+        <label>AI Servis Adresi</label>
+        <input class="a-girdi" id="aUrl">
+      </div>
+      <div class="a-iki">
+        <div class="a-grup"><label>Model</label><input class="a-girdi" id="aModel"></div>
+        <div class="a-grup"><label>API Anahtarı</label><input class="a-girdi" id="aKey" type="password" placeholder="sk-..."></div>
+      </div>
+      <button class="u-btn ana" id="aKaydet" style="width:100%;margin-bottom:18px">💾 Kaydet</button>
+
+      <div class="a-bas">Veri</div>
+      <div class="a-eylem" id="aYedekBtn">
+        <button class="p-btn" id="aYedek">⬇ Yedek Al</button>
+        <button class="p-btn" id="aYukle">⬆ Yedek Yükle</button>
+        <button class="p-btn tehlike" id="aSil">🗑 Sıfırla</button>
+      </div>
+      <p id="aKota" style="font-size:11.5px;color:var(--metin-3);margin:8px 0 0">Kullanılan: hesaplanıyor…</p>
+      <p style="font-size:11px;color:var(--metin-3);margin:4px 0 0;line-height:1.5">
+        PDF ve fotoğraflar tarayıcında saklanır (IndexedDB) — dosya boyutu sınırı yok.
+        Tarayıcı verisini silersen kaybolur, bu yüzden düzenli <b>Yedek Al</b>.
+      </p>
+      <input type="file" id="aDosya" accept="application/json" hidden>
+
+      <div class="a-bas">Not</div>
+      <textarea class="a-girdi" id="aNot" placeholder="Ders notun…" style="min-height:110px"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ PDF EKLEME ═══════ -->
+<div class="kaydir" id="kaydir" hidden>
+  <div class="kaydir-kutu">
+    <div class="kd-ikon">📄</div>
+    <b>Dosyaları buraya bırak</b>
+    <small>PDF, PNG, JPG · sinirsiz boyut</small>
+    <div class="kd-secenek">
+      <button class="p-btn" id="kdSec">📁 Dosya Seç</button>
+      <button class="p-btn" id="kdIptal">İptal</button>
+    </div>
+  </div>
+</div>
+
+<div class="ocr-bar" id="ocrBar" hidden>
+  <div class="ocr-ikon">🔍</div>
+  <b id="ocrAd">Dosya</b>
+  <div id="ocrDurum">Okunuyor…</div>
+  <div class="ocr-cubuk"><i id="ocrCubuk"></i></div>
+</div>
+
+<div class="bildirim-kap" id="bildirimler"></div>
+<input type="file" id="pdfDosya" accept="application/pdf,image/png,image/jpeg,image/jpg,image/webp,.pdf,.png,.jpg,.jpeg,.webp" multiple hidden>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
+<script src="js/kanallar.js?v=639278625117477176"></script>
+<script src="js/masa.js?v=639278625117477176"></script>
+</body>
+</html>

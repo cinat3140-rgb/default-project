@@ -1,0 +1,108 @@
+﻿/* ==========================================================================
+   OpenPlay — Duyarlı Düzen (Windows 11)
+   ========================================================================== */
+
+/* ---------- GENİŞ ---------- */
+@media (min-width:1700px){
+  .icerik{ padding:88px 44px 72px }
+  .uygulama-izgara{ grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:20px }
+  .uygulama-serit{ grid-auto-columns:minmax(200px,1fr); gap:20px }
+}
+
+/* ---------- MASAÜSTÜ ---------- */
+@media (max-width:1400px){
+  .detay-izgara{ grid-template-columns:1fr 290px; gap:20px }
+  .store-hero{ min-height:380px; padding:34px }
+  .store-hero-ic{ font-size:72px }
+}
+
+/* ---------- LAPTOP ---------- */
+@media (max-width:1100px){
+  .one-cikan{ grid-template-columns:1fr }
+  .one-cikan-gorsel img{ min-height:230px; aspect-ratio:16/9 }
+  .detay-izgara{ grid-template-columns:1fr }
+  .istek-izgara{ grid-template-columns:1fr }
+}
+
+/* ---------- TABLET ---------- */
+@media (max-width:900px){
+  .navray{ transform:translateX(-100%); transition:transform .28s var(--hareket-1) }
+  .navray.kaydir{ transform:none; box-shadow:var(--g5) }
+  .ustcubuk{ left:0; padding:0 16px; gap:10px }
+  .yemek-btn{ display:grid; place-items:center }
+  .arama-cubuk{ flex:1 1 auto; max-width:none }
+  .icerik{ margin-left:0; padding:76px 20px 52px }
+  .site-alt{ margin-left:0; padding:26px 20px 18px }
+  .alt-ic{ grid-template-columns:1fr 1fr; gap:22px }
+  .alt-bolum:first-child{ grid-column:1/-1 }
+  .detay-gorsel img{ aspect-ratio:16/9 }
+  .detay-ust{ padding:22px }
+  .store-hero{ min-height:320px; padding:28px 24px }
+  .store-hero h1{ font-size:30px }
+}
+
+/* ---------- TELEFON ---------- */
+@media (max-width:680px){
+  .icerik{ padding:72px 14px 44px }
+  .site-alt{ padding:22px 14px 16px }
+  .alt-ic{ grid-template-columns:1fr; gap:18px }
+  .alt-son{ flex-direction:column; gap:6px }
+
+  .ustcubuk{ height:52px; padding:0 12px }
+  .cubuk-bas{ font-size:14px }
+  .cubuk-avatar{ display:none }
+
+  .store-hero{ min-height:280px; padding:24px 18px; border-radius:var(--r-lg) }
+  .store-hero h1{ font-size:25px; letter-spacing:-.9px }
+  .store-hero p{ font-size:13.5px; margin-bottom:18px }
+  .store-hero-ic{ font-size:52px }
+  .detay-eylem{ gap:7px }
+  .detay-eylem .btn{ flex:1 }
+
+  .uygulama-izgara{ grid-template-columns:1fr 1fr; gap:12px }
+  .uygulama-serit{ grid-auto-columns:minmax(150px,1fr); gap:12px }
+  .uygulama-genis{ grid-column:span 2 }
+
+  .kategori-izgara{ grid-template-columns:1fr 1fr; gap:11px }
+  .kategori-kart{ padding:16px }
+  .kategori-ikon{ font-size:27px }
+
+  .bolum-bas h2{ font-size:16.5px }
+  .bolum{ margin-bottom:30px }
+
+  .one-cikan-bilgi{ padding:20px }
+  .one-cikan-bilgi h3{ font-size:20px }
+
+  .detay-govde{ padding:18px }
+  .detay-ust{ padding:18px }
+  .detay-ust h1{ font-size:23px }
+  .form-izgara{ grid-template-columns:1fr }
+
+  .tablo-kap{ overflow-x:auto; -webkit-overflow-scrolling:touch }
+  table{ min-width:560px; font-size:12.5px }
+  thead th,tbody td{ padding:9px 11px }
+
+  .bildirim-kap{ left:12px; right:12px; bottom:12px; max-width:none }
+}
+
+/* ---------- ÇOK KÜÇÜK ---------- */
+@media (max-width:400px){
+  .uygulama-izgara{ grid-template-columns:1fr }
+  .kategori-izgara{ grid-template-columns:1fr }
+  .arama-cubuk{ height:32px }
+}
+
+/* ---------- YATAY TELEFON ---------- */
+@media (max-height:520px) and (orientation:landscape){
+  .store-hero{ min-height:220px; padding:20px }
+  .store-hero h1{ font-size:22px }
+  .store-hero-ic{ font-size:40px }
+  .ustcubuk{ height:48px }
+}
+
+/* ---------- YAZDIRMA ---------- */
+@media print{
+  .navray,.ustcubuk,.site-alt,.bildirim-kap,.btn{ display:none !important }
+  .icerik{ margin:0; padding:0 }
+  body{ background:#fff }
+}

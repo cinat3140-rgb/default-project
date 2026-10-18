@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#F3F3F3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#202020" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/svg+xml" href="images/icons/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Segoe+UI+Variable:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<title>Yönetim — OpenPlay</title>
+</head>
+<body>
+
+<nav class="navray" id="navray">
+  <a class="ray-logo" href="index.html">
+    <img src="images/icons/logo.svg" alt="">
+    <span>Yönetim</span>
+  </a>
+
+  <div class="ray-menu">
+    <button class="ray-genislet" id="rayGenislet" title="Menüyü genişlet">☰</button>
+    <a class="ray-link" href="?s=panel"    data-s="panel" data-ad="Panel"><span class="ray-ikon">📊</span><span class="ray-yazi">Panel</span></a>
+    <a class="ray-link" href="?s=oyunlar"  data-s="oyunlar" data-ad="Oyunlar"><span class="ray-ikon">🎮</span><span class="ray-yazi">Oyunlar</span></a>
+    <a class="ray-link" href="?s=yeni"     data-s="yeni" data-ad="Yeni Oyun"><span class="ray-ikon">➕</span><span class="ray-yazi">Yeni Oyun</span></a>
+    <a class="ray-link" href="?s=kategori" data-s="kategori" data-ad="Kategoriler"><span class="ray-ikon">📁</span><span class="ray-yazi">Kategoriler</span></a>
+    <div class="ray-ayrac"></div>
+    <a class="ray-link" href="?s=ayarlar"  data-s="ayarlar" data-ad="Ayarlar"><span class="ray-ikon">⚙️</span><span class="ray-yazi">Ayarlar</span></a>
+    <div class="ray-spacer"></div>
+    <a class="ray-link ray-alt" href="index.html" data-ad="Siteyi Gör"><span class="ray-ikon">🌐</span><span class="ray-yazi">Siteyi Gör</span></a>
+  </div>
+</nav>
+
+<div id="overlay"></div>
+
+<header class="ustcubuk">
+  <button class="yemek-btn" id="menuBtn">☰</button>
+  <div class="cubuk-bas" id="sayfaBaslik">Yönetim Paneli</div>
+  <div class="cubuk-bos"></div>
+  <button class="cubuk-btn" id="temaBtn" title="Tema değiştir">🌙</button>
+  <button class="btn btn-sade btn-kucuk" id="cikisBtn">Çıkış</button>
+</header>
+
+<main class="icerik" id="icerik"></main>
+
+<div class="bildirim-kap" id="bildirimler"></div>
+
+<script src="js/admin.js"></script>
+</body>
+</html>
