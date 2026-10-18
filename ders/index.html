@@ -3,267 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Focus OS - AI Powered Study Universe</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&family=Caveat:wght@700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <title>Digital Resource 3D | Odaklan ve Çöz</title>
+    <!-- Google Fonts: Modern ve temiz bir yazı tipi -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --neon-purple: #bc13fe;
-            --neon-blue: #00d2ff;
-            --bg-deep: #0a0a0c;
-            --panel-glass: rgba(20, 20, 25, 0.7);
-            --text-main: #e0e0e5;
+            --bg-color: #f0f2f5;
+            --accent-color: #6366f1;
+            --text-color: #1f2937;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
         }
 
-        body, html {
-            margin: 0; padding: 0; height: 100vh; overflow: hidden;
-            font-family: 'Inter', sans-serif; background: var(--bg-deep); color: var(--text-main);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
         }
 
-        /* 3D PERSPECTIVE STAGE */
-        .universe {
-            perspective: 2000px;
-            width: 100vw; height: 100vh;
-            display: flex; align-items: center; justify-content: center;
-            background: radial-gradient(circle at center, #1a1a2e 0%, #0a0a0c 100%);
-            transition: 1s ease;
+        body {
+            background: linear-gradient(135deg, #e0e7ff 0%, #f3f4f6 100%);
+            color: var(--text-color);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
         }
 
-        .desk {
+        /* Arka plan dekoratif yuvarlaklar (Odakoo tarzı yumuşaklık için) */
+        .bg-blob {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: var(--accent-color);
+            filter: blur(80px);
+            opacity: 0.15;
+            z-index: -1;
+            border-radius: 50%;
+        }
+        .blob-1 { top: -10%; left: -10%; }
+        .blob-2 { bottom: -10%; right: -10%; }
+
+        /* Ana Konteyner */
+        .container {
+            width: 90%;
+            max-width: 800px;
+            text-align: center;
+            padding: 40px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            box-shadow: var(--shadow);
+            transition: all 0.5s ease;
+        }
+
+        h1 {
+            font-weight: 600;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        p {
+            font-weight: 300;
+            color: #6b7280;
+            margin-bottom: 40px;
+        }
+
+        /* Yükleme Alanı (Dropzone) */
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 20px;
+            padding: 60px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
             position: relative;
-            width: 90%; height: 80%;
-            transform: rotateX(15deg);
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent-color);
+            background: rgba(99, 102, 241, 0.05);
+            transform: translateY(-5px);
+        }
+
+        .upload-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            color: #4b5563;
+        }
+
+        .upload-text span {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        /* 3D Çalışma Alanı (Başlangıçta Gizli) */
+        #workspace {
+            display: none;
+            width: 100%;
+            height: 60vh;
+            position: relative;
+            perspective: 1500px;
+            margin-top: 20px;
+        }
+
+        .document-3d {
+            width: 300px;
+            height: 400px;
+            background: white;
+            margin: 0 auto;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
             transform-style: preserve-3d;
-            transition: 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex; justify-content: center; align-items: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #9ca3af;
+            border: 1px solid #e5e7eb;
         }
 
-        .zen-mode .desk { transform: rotateX(0deg) scale(1.1); }
-
-        /* AI COACH BUBBLE */
-        #ai-coach {
-            position: fixed; bottom: 30px; left: 30px;
-            width: 300px; background: var(--panel-glass);
-            backdrop-filter: blur(15px); border: 1px solid var(--neon-blue);
-            border-radius: 20px; padding: 20px; z-index: 1000;
-            box-shadow: 0 0 20px rgba(0, 210, 255, 0.3);
-            animation: float 4s ease-in-out infinite;
+        .document-3d:active {
+            cursor: grabbing;
         }
 
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-
-        .ai-header { font-family: 'Orbitron', sans-serif; color: var(--neon-blue); font-size: 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
-        .ai-text { font-size: 14px; line-height: 1.5; font-style: italic; }
-
-        /* PDF 3D VIEWER */
-        #pdf-container {
-            width: 70%; height: 100%;
-            background: #111; border-radius: 20px;
-            overflow-y: auto; position: relative;
-            box-shadow: 0 50px 100px rgba(0,0,0,0.8);
-            border: 1px solid rgba(255,255,255,0.1);
-            display: none; padding: 30px;
-            transform: translateZ(50px);
-        }
-        canvas { display: block; margin: 0 auto 30px auto; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); }
-
-        /* GLASS PANELS */
-        .glass-panel {
-            position: absolute; background: var(--panel-glass);
-            backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px; padding: 20px; color: white;
-            transition: 0.5s; z-index: 10;
+        /* Alt Menü */
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
         }
 
-        .left-panel { left: 5%; top: 10%; width: 250px; transform: rotateY(20deg); }
-        .right-panel { right: 5%; top: 10%; width: 250px; transform: rotateY(-20deg); }
-        .zen-mode .glass-panel { opacity: 0; transform: scale(0.8); pointer-events: none; }
-
-        /* ADVANCED TIMER */
-        .timer-box { text-align: center; }
-        .timer-display { font-family: 'Orbitron', sans-serif; font-size: 32px; color: var(--neon-blue); margin: 15px 0; }
-        .timer-modes { display: flex; gap: 5px; justify-content: center; margin-bottom: 15px; }
-        .mode-btn { background: rgba(255,255,255,0.1); border: none; color: white; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 11px; }
-        .mode-btn.active { background: var(--neon-blue); color: black; }
-
-        /* GİRİŞ EKRANI */
-        #overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 9999; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; transition: 1s ease;
+        .btn {
+            padding: 12px 25px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
-        .start-btn {
-            font-family: 'Orbitron', sans-serif; background: none; border: 2px solid var(--neon-blue);
-            color: var(--neon-blue); padding: 20px 40px; font-size: 20px; cursor: pointer;
-            transition: 0.3s; border-radius: 50px; box-shadow: 0 0 15px var(--neon-blue);
-        }
-        .start-btn:hover { background: var(--neon-blue); color: black; }
 
-        /* NOTEBOOK */
-        .note-area {
-            width: 100%; height: 300px; background: #fff; color: #333;
-            border-radius: 10px; padding: 15px; font-family: 'Caveat', cursive;
-            font-size: 20px; border: none; outline: none;
-            background-image: linear-gradient(#e5e5e5 1px, transparent 1px);
-            background-size: 100% 30px;
+        .btn-primary {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #4b5563;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        /* Animasyonlar */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease forwards;
         }
     </style>
 </head>
 <body>
 
-    <!-- GİRİŞ EKRANI -->
-    <div id="overlay">
-        <h1 style="font-family: 'Orbitron'; color: var(--neon-blue); font-size: 50px; margin-bottom: 20px;">FOCUS OS</h1>
-        <p style="margin-bottom: 30px; opacity: 0.6;">Yapay Zeka Destekli 3D Çalışma Evreni</p>
-        <input type="file" id="pdf-file" accept="application/pdf" style="display:none" onchange="initSystem(event)">
-        <button class="start-btn" onclick="document.getElementById('pdf-file').click()">SİSTEMİ BAŞLAT & PDF YÜKLE</button>
-    </div>
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
 
-    <!-- ANA EVREN -->
-    <div class="universe" id="main-universe">
-        
-        <!-- AI KOÇ -->
-        <div id="ai-coach">
-            <div class="ai-header"><span>🤖</span> AI STUDY COACH</div>
-            <div class="ai-text" id="ai-message">Sistem yükleniyor... Hazır olduğunda bana selam ver!</div>
+    <div class="container fade-in">
+        <div id="home-screen">
+            <h1>Dijital Kaynaklarınızı Canlandırın</h1>
+            <p>Dosyanızı yükleyin ve 3 boyutlu etkileşimle gerçek bir kağıda dokunur gibi çalışın.</p>
+
+            <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                <span class="upload-icon">📄</span>
+                <p class="upload-text">Dosyayı buraya sürükleyin veya <span>gözatın</span></p>
+                <input type="file" id="fileInput" accept=".pdf,.jpg,.png,.docx">
+            </div>
         </div>
 
-        <div class="desk">
-            <!-- SOL PANEL (Araçlar) -->
-            <div class="glass-panel left-panel">
-                <h3 style="font-family: 'Orbitron'; font-size: 16px; color: var(--neon-blue);">KONTROL MERKEZİ</h3>
-                <div class="timer-box">
-                    <div class="timer-modes">
-                        <button class="mode-btn active" onclick="setMode(25, this)">Odak</button>
-                        <button class="mode-btn" onclick="setMode(5, this)">Kısa Mola</button>
-                        <button class="mode-btn" onclick="setMode(15, this)">Uzun Mola</button>
-                    </div>
-                    <div class="timer-display" id="timer">25:00</div>
-                    <button class="start-btn" style="font-size:12px; padding:10px 20px;" onclick="toggleTimer()" id="timerBtn">BAŞLAT</button>
-                </div>
-                <hr style="opacity:0.1; margin: 20px 0;">
-                <button class="start-btn" style="font-size:11px; width:100%; padding:10px;" onclick="toggleZen()">ZEN MODU (TAM EKRAN)</button>
+        <div id="workspace">
+            <div class="document-3d" id="doc3d">
+                Doküman Yüklendi
             </div>
-
-            <!-- ANA PDF ALANI (3D Kitap) -->
-            <div id="pdf-container"></div>
-
-            <!-- SAĞ PANEL (Notlar) -->
-            <div class="glass-panel right-panel">
-                <h3 style="font-family: 'Orbitron'; font-size: 16px; color: var(--neon-blue);">HIZLI NOTLAR</h3>
-                <textarea class="note-area" id="global-notes" placeholder="Buraya not al..."></textarea>
-                <div style="margin-top: 15px; font-size: 12px; opacity: 0.5;">Notların otomatik kaydediliyor.</div>
+            <div class="controls">
+                <button class="btn btn-secondary" onclick="resetView()">Sıfırla</button>
+                <button class="btn btn-primary" onclick="location.reload()">Yeni Dosya</button>
             </div>
         </div>
     </div>
 
     <script>
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+        const fileInput = document.getElementById('fileInput');
+        const homeScreen = document.getElementById('home-screen');
+        const workspace = document.getElementById('workspace');
+        const doc3d = document.getElementById('doc3d');
 
-        // AI KOÇ MANTIĞI
-        const aiMessages = {
-            start: "Hoş geldin şampiyon! PDF'ini yükledin, şimdi odaklanma zamanı. Ben buradayım, takıldığında bana bak!",
-            working: "Süper gidiyorsun! Odaklanmanı bozma, sadece sayfaya bak. 🚀",
-            break: "Süre doldu! Şimdi biraz esne, su iç ve zihnini dinlendir. ☕",
-            zen: "Zen Modu aktif. Tüm gürültüler sustu. Sadece sen ve bilgi...",
-            idle: "Hala burada mısın? Hadi, bir sayfa daha bitirip öyle ara ver!"
-        };
-
-        function updateAI(msgKey) {
-            const msgElement = document.getElementById('ai-message');
-            msgElement.style.opacity = 0;
-            setTimeout(() => {
-                msgElement.textContent = aiMessages[msgKey];
-                msgElement.style.opacity = 1;
-            }, 500);
-        }
-
-        // SİSTEM BAŞLATMA
-        async function initSystem(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            document.getElementById('overlay').style.opacity = 0;
-            setTimeout(() => { 
-                document.getElementById('overlay').style.display = 'none'; 
-                document.getElementById('pdf-container').style.display = 'block';
-                updateAI('start');
-            }, 1000);
-
-            const reader = new FileReader();
-            reader.onload = async function() {
-                const typedarray = new Uint8Array(this.result);
-                const pdf = await pdfjsLib.getDocument(typedarray).promise;
-                const container = document.getElementById('pdf-container');
-                container.innerHTML = '';
-
-                for (let i = 1; i <= pdf.numPages; i++) {
-                    const page = await pdf.getPage(i);
-                    const viewport = page.getViewport({ scale: 1.5 });
-                    const canvas = document.createElement('canvas');
-                    const context = canvas.getContext('2d');
-                    canvas.height = viewport.height;
-                    canvas.width = viewport.width;
-                    await page.render({ canvasContext: context, viewport: viewport }).promise;
-                    container.appendChild(canvas);
-                }
-            };
-            reader.readAsArrayBuffer(file);
-        }
-
-        // ZEN MODU
-        function toggleZen() {
-            document.body.classList.toggle('zen-mode');
-            const isZen = document.body.classList.contains('zen-mode');
-            updateAI(isZen ? 'zen' : 'working');
-        }
-
-        // GELİŞMİŞ POMODORO
-        let timeLeft = 25 * 60;
-        let timerId = null;
-        let currentMode = 'focus';
-
-        function setMode(min, btn) {
-            timeLeft = min * 60;
-            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            updateTimerDisplay();
-            if (timerId) toggleTimer(); // Reset timer if running
-        }
-
-        function updateTimerDisplay() {
-            let m = Math.floor(timeLeft / 60), s = timeLeft % 60;
-            document.getElementById('timer').textContent = `${m<10?'0':''}${m}:${s<10?'0':''}${s}`;
-        }
-
-        function toggleTimer() {
-            const btn = document.getElementById('timerBtn');
-            if (timerId) {
-                clearInterval(timerId); timerId = null; btn.textContent = "BAŞLAT";
-            } else {
-                timerId = setInterval(() => {
-                    timeLeft--; updateTimerDisplay();
-                    if (timeLeft <= 0) {
-                        clearInterval(timerId);
-                        updateAI('break');
-                        alert("Süre Doldu!");
-                    }
-                }, 1000);
-                btn.textContent = "DURDUR";
-                updateAI('working');
+        // Dosya seçildiğinde tetiklenir
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                startWorkspace(this.files[0].name);
             }
+        });
+
+        function startWorkspace(fileName) {
+            homeScreen.style.display = 'none';
+            workspace.style.display = 'block';
+            doc3d.innerText = fileName;
+
+            // Başlangıç animasyonu
+            doc3d.style.transform = 'rotateY(-20deg) rotateX(10deg)';
         }
 
-        // NOTLAR (Local Storage)
-        const notes = document.getElementById('global-notes');
-        notes.value = localStorage.getItem('focusOSNotes') || '';
-        notes.addEventListener('input', () => localStorage.setItem('focusOSNotes', notes.value));
+        // Basit 3D Etkileşim (Fare ile döndürme simülasyonu)
+        let isDragging = false;
+        let currentX = 0;
+        let currentY = 0;
 
-        // AI RASTGELE MESAJLAR
-        setInterval(() => {
-            if (!timerId && Math.random() > 0.7) updateAI('idle');
-        }, 30000);
+        doc3d.addEventListener('mousedown', () => isDragging = true);
+        window.addEventListener('mouseup', () => isDragging = false);
 
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+
+            // Fare hareketine göre rotasyon hesaplama
+            const rotationY = (e.clientX / window.innerWidth - 0.5) * 60;
+            const rotationX = (e.clientY / window.innerHeight - 0.5) * -60;
+
+            doc3d.style.transform = `rotateY(${rotationY}deg) rotateX(${rotationX}deg)`;
+        });
+
+        function resetView() {
+            doc3d.style.transform = 'rotateY(0deg) rotateX(0deg)';
+        }
     </script>
 </body>
 </html>
