@@ -171,7 +171,7 @@ const MASA = (function () {
   }
 
   let V = {
-    dosya: [], zayif: {}, not: '',
+    dosya: [], zayif: {}, not: '', yanlislar: [],
     ayar: { aiAnahtar:'', aiUrl:'https://api.openai.com/v1/chat/completions', aiModel:'gpt-4o-mini' },
     ist: { soru:0, dogru:0, yanlis:0, dakika:0, seri:0, sonGun:'', bugun:0 }
   };
@@ -508,7 +508,9 @@ const MASA = (function () {
                            sayfa:pdf.numPages, adet:sorular.length, tarih:Date.now(),
                            x, y, sorular });
             await ikiliYaz(kid, { veri, resim:null, sorular });
-            n++; x += 44; y += 32;
+            n++;
+            x = 60 + (V.dosya.length % 3) * 330;
+            y = 70 + Math.floor(V.dosya.length / 3) * 280;
           } catch (e) { bildir(f.name + ': ' + e.message, 'hata'); hata++; }
         } else if (['png','jpg','jpeg','webp'].includes(uz)) {
           gor.push(f);
@@ -550,7 +552,10 @@ const MASA = (function () {
 
     kaydet(); ciz();
     PERDE.kapat();
-    if (n) bildir(n + ' dosya eklendi', 'basari');
+    if (n) {
+      bildir(n + ' dosya eklendi — kitap masada', 'basari');
+      ekran('masa');
+    }
     else if (!hata) bildir('PDF veya görsel seç', 'uyari');
   }
 
@@ -826,7 +831,7 @@ const MASA = (function () {
 
   /* ═════════ SORU ÇÖZME ═════════ */
   function sayfaCoz() {
-    const dersler = [...new Set(V.dosya.flatMap(d => d.sorular.map(s => s.ders)))];
+    const dersler = [...new Set(V.dosya.flatMap(d => (d.sorular || []).map(s => s.ders)))];
     const z = zayifListe();
     $('#icerik').innerHTML = `<div class="ekran">
       <div class="k-bas"><div><h2>Soru Çöz</h2>
@@ -856,12 +861,12 @@ const MASA = (function () {
 
     baglaDosyalar();
     $$('[data-hizli]').forEach(b => b.onclick = () => {
-      const tum = V.dosya.flatMap(d => d.sorular).sort(() => Math.random() - .5);
+      const tum = V.dosya.flatMap(d => d.sorular || []).sort(() => Math.random() - .5);
       testBasla(tum.slice(0, +b.dataset.hizli));
     });
     const zy = $('[data-zayif]');
     if (zy) zy.onclick = () => {
-      const havuz = V.dosya.flatMap(d => d.sorular)
+      const havuz = V.dosya.flatMap(d => d.sorular || [])
         .filter(s => s.ders === z[0].ders && s.konu === z[0].konu);
       if (havuz.length) testBasla(havuz.sort(() => Math.random() - .5).slice(0,15));
       else bildir('Bu konuda soru yok', 'uyari');
@@ -871,7 +876,7 @@ const MASA = (function () {
   /* ═════════ SORU SEÇİM ═════════ */
   const SS = { dosya:null, secili:new Set() };
   function soruSec(d) {
-    const s = (d && d.sorular.length) ? d.sorular : V.dosya.flatMap(x => x.sorular);
+    const s = (d && d.sorular && d.sorular.length) ? d.sorular : V.dosya.flatMap(x => x.sorular || []);
     if (!s.length) { bildir('Soru yok', 'uyari'); return; }
     SS.dosya = d; SS.secili = new Set(s.map(x => x.id));
     $('#suru').hidden = false;
@@ -912,8 +917,8 @@ const MASA = (function () {
   $('#suruKapat').onclick = $('#suruKapat2').onclick = () => { $('#suru').hidden = true; };
   $('#suru').onclick = e => { if (e.target.id === 'suru') $('#suru').hidden = true; };
   $('#suruBasla').onclick = () => {
-    const kaynak = (SS.dosya && SS.dosya.sorular.length) ? SS.dosya.sorular
-      : V.dosya.flatMap(x => x.sorular);
+    const kaynak = (SS.dosya && SS.dosya.sorular && SS.dosya.sorular.length) ? SS.dosya.sorular
+      : V.dosya.flatMap(x => x.sorular || []);
     const sec = kaynak.filter(x => SS.secili.has(x.id));
     if (!sec.length) { bildir('En az 1 soru seç', 'uyari'); return; }
     $('#suru').hidden = true;
@@ -985,6 +990,16 @@ const MASA = (function () {
     V.ist.dogru += dogru;
     V.ist.yanlis += T.sorular.length - dogru;
     V.ist.bugun = (V.ist.bugun||0) + T.sorular.length;
+    V.yanlislar = V.yanlislar || [];
+    for (const x of detay) {
+      if (!x.ok) {
+        V.yanlislar.unshift({
+          m: x.s.metin, d: x.s.ders, k: x.s.konu || '',
+          c: x.s.cevap || '', s: x.c || '', t: Date.now()
+        });
+      }
+    }
+    V.yanlislar = V.yanlislar.slice(0, 40);
     kaydet(); istCiz();
 
     const puan = Math.round(dogru / T.sorular.length * 100);
@@ -1181,7 +1196,7 @@ const MASA = (function () {
           <div class="ka-ust"><span style="font-size:14px">${d.tur==='gorsel'?'🖼️':'📄'}</span>
             <span class="ka-ad">${esc(d.ad)}</span>
             <span class="ka-no">#${String(d.no).padStart(2,'0')}</span></div>
-          <div class="ka-govde">${d.sorular.slice(0,4).map((s,i) =>
+          <div class="ka-govde">${(d.sorular || []).slice(0,4).map((s,i) =>
             `<div class="ka-sat"><i>${i+1}</i>${esc(s.metin.slice(0,34))}…</div>`).join('')
             || '<div class="ka-sat"><i>1</i>'+esc(d.ad)+'</div>'}</div>
           <div class="ka-alt">
@@ -1820,16 +1835,40 @@ const MASA = (function () {
     if (!g.value.trim()) return;
     kocSor(g.value.trim()); g.value = '';
   };
+  function yanlisAnalizMesaji() {
+    const y = V.yanlislar || [];
+    const z = zayifListe();
+    let m = 'Son yanlışlarımı değerlendirir misin?\n';
+    if (y.length) {
+      m += '\nSon yanlışlarım (en yeniden):\n';
+      y.slice(0, 10).forEach((x, i) => {
+        m += (i + 1) + '. ' + (x.m || '').slice(0, 140) +
+          (x.m && x.m.length > 140 ? '…' : '') +
+          ' [Ders: ' + (x.d || '?') + (x.k ? ' · ' + x.k : '') +
+          ' | Benim cevabım: ' + (x.s || '—') + (x.c ? ' · Doğru: ' + x.c : '') + ']\n';
+      });
+    } else {
+      m += '\nHâlihazırda kayıtlı yanlışım yok, şu an bildiklerime dayanarak genel bir değerlendirme yap.\n';
+    }
+    if (z.length) {
+      m += '\nZayıf konularım: ' + z.slice(0, 5).map(k => k.ders + ' / ' + (k.konu || 'Genel')).join('; ') + '\n';
+    }
+    m += '\nLütfen bana: 1) Hangi konularda zayıf olduğumu, 2) Bu yanlışların ortak temelini, 3) 3 günlük somut bir çalışma planı ver.';
+    return m;
+  }
   function kocHizli() {
     const z = zayifListe();
     const h = [
+      ['❌ Yanlışları Değerlendir', null],
       ['📋 Plan yap','Bugün için çalışma planı yap'],
       ['🎯 Motivasyon','Moralim bozuk'],
       ['📖 Konu anlat', (z[0]? z[0].ders+' '+z[0].konu : 'türev')+' konusunu anlat'],
       ['🎥 Video bul', (z[0]? z[0].konu : 'türev')+' için video öner']
     ];
     $('#kocHizli').innerHTML = h.map(x => `<button class="kh">${x[0]}</button>`).join('');
-    $$('#kocHizli .kh').forEach((b,i) => b.onclick = () => kocSor(h[i][1]));
+    $$('#kocHizli .kh').forEach((b,i) => {
+      b.onclick = () => kocSor(h[i][1] == null ? yanlisAnalizMesaji() : h[i][1]);
+    });
   }
 
   /* ═════════ DOSYA EKLEME ═════════ */
@@ -2134,7 +2173,7 @@ const MASA = (function () {
     try { localStorage.setItem('op_tema', k?'dark':'light'); } catch (e) {}
     $('#yTema').innerHTML = '<span>' + (k ? '☀️' : '🌙') + '</span> Tema';
   }
-  $('#yTema').onclick = () => tema(!document.body.classList.contains('light'));
+  $('#yTema').onclick = () => tema(document.body.classList.contains('light'));
 
   /* ═════════ İSTATİSTİK ═════════ */
   function istCiz() {
