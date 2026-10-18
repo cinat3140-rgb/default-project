@@ -1,7 +1,7 @@
 # OpenPlay + DersPark
 
 OpenPlay: acik kaynak oyunlar platformu.
-DersPark: PDF/gorsel yuklenen, kitap gibi okunup soru cozulen, zamanlayicili ve AI koclu calisma sitesi.
+DersPark: PDF/gorsel yuklenen, 3D spiral kitap (defter) gorunumunde okunan, soru cozulen, saat/zamanlayici/kronometre paneli olan ve AI koclu calisma sitesi.
 
 ## Yapilar
 - `index.html`, `admin.html`, `hub.html` - OpenPlay oyun sitesi

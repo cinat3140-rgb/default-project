@@ -559,7 +559,7 @@ const MASA = (function () {
       </div>
 
       <div class="izgara iz-4" style="margin-bottom:32px">
-        <button class="eylem" data-git="yukle"><b>📄 Dosya Ekle</b><small>PDF veya soru fotoğrafı yükle</small></button>
+        <button class="eylem" data-git="yukle"><b>📤 PDF Ekle</b><small>Kitabını yükle — kitaplığa kaydolur, 3D defterde okunur</small></button>
         <button class="eylem" data-git="coz"><b>📝 Soru Çöz</b><small>Seç, çöz, puanını gör</small></button>
         <button class="eylem" data-git="masa"><b>🖥️ Masam</b><small>Kitapları yan yana gör</small></button>
         <button class="eylem" data-koc><b>🤖 Koç</b><small>Konu anlat, plan yap</small></button>
@@ -637,7 +637,7 @@ const MASA = (function () {
     $('#icerik').innerHTML = `<div class="ekran">
       <div class="k-bas"><div><h2>Kitaplık</h2>
         <p>${V.dosya.length} dosya · toplam ${V.dosya.reduce((t,d)=>t+d.adet,0)} soru</p></div>
-        <button class="p-btn ana" data-git="yukle">📄 Dosya Ekle</button></div>
+        <button class="p-btn ana" data-git="yukle">📤 PDF Ekle</button></div>
       ${V.dosya.length ? `<div class="izgara iz-auto">${V.dosya.map(dosyaKarti).join('')}</div>`
         : bosKutu('📭','Kitaplık boş','PDF veya soru fotoğrafı ekle', 'yukle')}
     </div>`;
@@ -1043,7 +1043,12 @@ const MASA = (function () {
   }
 
   /* ═════════ KİTAP ═════════ */
-  const OKU = { veri:null, z:1, cift:true, no:1, toplam:1, pdf:null, isaret:{} };
+  const OKU = { veri:null, z:1, tip:'kitap3d', cift:true, no:1, toplam:1, pdf:null, isaret:{} };
+  try {
+    const kayitliTip = localStorage.getItem('dp_ok_tip');
+    if (kayitliTip === 'kitap3d' || kayitliTip === 'cift' || kayitliTip === 'tek') OKU.tip = kayitliTip;
+  } catch (e) {}
+  OKU.cift = OKU.tip !== 'tek';
 
   /* kitap yakınlaştırma — %25 – %400 */
   function okYakinla(yon) {
@@ -1061,7 +1066,7 @@ const MASA = (function () {
   /* sayfayı ekrana sığdır */
   function okSigar() {
     const gov = $('#okGovde'); if (!gov) return;
-    const sayfa = gov.querySelector('.sk');
+    const sayfa = gov.querySelector('.sk, .kp-yuz');
     if (!sayfa) return;
     const w = sayfa.querySelector('div');
     if (!w) return;
@@ -1127,12 +1132,12 @@ const MASA = (function () {
   }
     async function sayfaCiz() {
       const gov = $('#okGovde');
-      const ilk = gov.firstElementChild;
       gov.innerHTML = '';
       const ilerleme = document.createElement('div');
       ilerleme.className = 'ok-ilerleme';
       ilerleme.innerHTML = '<i id="okIlerleme"></i>';
       gov.appendChild(ilerleme);
+      if (OKU.tip === 'kitap3d') return kitap3dCiz(gov);
       const cift = OKU.cift;
       let bas = OKU.no;
       if (cift && bas % 2 === 0) bas--;
@@ -1181,10 +1186,100 @@ const MASA = (function () {
       };
     }
 
+    async function kitap3dCiz(gov) {
+      if (!OKU.pdf) {
+        const k = document.createElement('div');
+        k.className = 'kitap';
+        const s = document.createElement('div');
+        s.className = 'sk';
+        s.innerHTML = `<div class="sk-yazi">${esc(OKU.veri ? OKU.veri.metin : '')}</div>`;
+        k.appendChild(s);
+        gov.appendChild(k);
+        return;
+      }
+      const GENISLIK = 620;
+      const z = Math.min(Math.max(OKU.z, .25), 4);
+      let base = OKU.no;
+      if (!(base % 2)) base -= 1;
+      if (base < 1) base = 1;
+      const liste = [base];
+      if (OKU.toplam > base) liste.push(base + 1);
+      const tek = liste.length === 1;
+
+      const sahne = document.createElement('div');
+      sahne.className = 'kp-sahne';
+      const kitap = document.createElement('div');
+      kitap.className = 'kp-kitap';
+      sahne.appendChild(kitap);
+      const golge = document.createElement('div');
+      golge.className = 'kp-golge';
+      kitap.appendChild(golge);
+      gov.appendChild(sahne);
+
+      let ilkYukseklik = 800;
+      const sirt = tek ? null : document.createElement('div');
+      if (sirt) sirt.className = 'kp-sirt';
+
+      for (let i = 0; i < liste.length; i++) {
+        const n = liste[i];
+        const yuz = document.createElement('div');
+        yuz.className = 'kp-yuz ' + (i === 0 ? (tek ? 'kp-sag' : 'kp-sol') : 'kp-sag');
+        yuz.dataset.sayfa = n;
+        if (OKU.isaret[n]) yuz.style.outline = '3px solid var(--uyari)';
+        yuz.style.width = Math.round(GENISLIK * z) + 'px';
+        const goz = document.createElement('div');
+        goz.className = 'kp-goz';
+        yuz.appendChild(goz);
+        const w = document.createElement('div');
+        w.style.position = 'relative';
+        try {
+          const sf = await OKU.pdf.getPage(n);
+          const vp = sf.getViewport({ scale: 2 });
+          if (i === 0) ilkYukseklik = (vp.height / 2) * z;
+          const cv = document.createElement('canvas');
+          cv.width = vp.width; cv.height = vp.height;
+          cv.style.width = '100%'; cv.style.height = 'auto';
+          w.appendChild(cv);
+          yuz.appendChild(w);
+          await sf.render({ canvasContext: cv.getContext('2d'), viewport: vp }).promise;
+        } catch (e) {
+          const hataK = document.createElement('div');
+          hataK.className = 'sk-yazi';
+          hataK.textContent = 'Açılamadı';
+          yuz.appendChild(hataK);
+        }
+        const no = document.createElement('div');
+        no.className = 'sk-no';
+        no.textContent = n;
+        yuz.appendChild(no);
+        yuz.onclick = () => {
+          OKU.isaret[n] = !OKU.isaret[n];
+          yuz.style.outline = OKU.isaret[n] ? '3px solid var(--uyari)' : '';
+        };
+        if (i === 0 && sirt) kitap.appendChild(sirt);
+        kitap.appendChild(yuz);
+      }
+
+      if (sirt) {
+        const g = Math.max(780, ilkYukseklik);
+        const adet = Math.max(6, Math.min(26, Math.floor((g - 38) / 40)));
+        for (let i = 0; i < adet; i++) {
+          const h = document.createElement('div');
+          h.className = 'kp-halka';
+          h.style.top = ((i + .55) / adet * 100) + '%';
+          sirt.appendChild(h);
+        }
+      }
+      gov.onscroll = () => {
+        const y = gov.scrollTop, en = gov.scrollHeight - gov.clientHeight;
+        const b = $('#okIlerleme');
+        if (b) b.style.width = (en > 0 ? (y/en*100) : 100) + '%';
+      };
+    }
+
   function sayfaGit(yon) {
     let b = OKU.no; if (OKU.cift && b%2===0) b--;
     let y = yon > 0 ? b+2 : b-2;
-    if (OKU.cift) { if (y > OKU.toplam) y = OKU.toplam % 2 ? OKU.toplam-1 : OKU.toplam; }
     y = Math.max(1, Math.min(OKU.toplam, y));
     if (y === OKU.no) return;
     okSayfayaGit(y);
@@ -1192,15 +1287,25 @@ const MASA = (function () {
   $('#okSol').onclick = () => sayfaGit(-1);
   $('#okSag').onclick = () => sayfaGit(1);
   $('#okIlk').onclick = () => okSayfayaGit(1);
-  $('#okSon').onclick = () => {
-    let s = OKU.cift ? (OKU.toplam%2 ? OKU.toplam-1 : OKU.toplam) : OKU.toplam;
-    if (s < 1) s = OKU.toplam;
-    okSayfayaGit(s);
+  $('#okSon').onclick = () => okSayfayaGit(OKU.toplam);
+  function okTipUygula() {
+    $('#okKitap').classList.toggle('aktif', OKU.tip === 'kitap3d');
+    $('#okCift').classList.toggle('aktif', OKU.tip === 'cift');
+    $('#okTek').classList.toggle('aktif', OKU.tip === 'tek');
+    try { localStorage.setItem('dp_ok_tip', OKU.tip); } catch (e) {}
+  }
+  $('#okKitap').onclick = function () {
+    OKU.tip = 'kitap3d'; OKU.cift = true;
+    okTipUygula(); sayfaCiz();
   };
-  $('#okCift').onclick = function () { OKU.cift=true; this.classList.add('aktif');
-    $('#okTek').classList.remove('aktif'); sayfaCiz(); };
-  $('#okTek').onclick = function () { OKU.cift=false; this.classList.add('aktif');
-    $('#okCift').classList.remove('aktif'); sayfaCiz(); };
+  $('#okCift').onclick = function () {
+    OKU.tip = 'cift'; OKU.cift = true;
+    okTipUygula(); sayfaCiz();
+  };
+  $('#okTek').onclick = function () {
+    OKU.tip = 'tek'; OKU.cift = false;
+    okTipUygula(); sayfaCiz();
+  };
   $('#okYakin').onclick = () => okYakinla(1);
   $('#okUzak').onclick = () => okYakinla(-1);
   $('#okNo').onchange = function () { okSayfayaGit(parseInt(this.value, 10) || 1); };
@@ -1538,6 +1643,165 @@ const MASA = (function () {
   };
   $('#sSureSifirla').onclick = () => { SURE.sn = 0; $('#sSureYazi').textContent = bicim(0); };
 
+  /* ═════════ SAAT / ZAMANLAYICI / KRONOMETRE ═════════ */
+  const SAAT = {
+    mod: 'saat',
+    zaman: { hedef: 25, kalan: 25 * 60, kosu: false, son: 0 },
+    kron: { sn: 0, kosu: false, tim: null, son: 0 }
+  };
+  const SAAT_GUNLER = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+  const SAAT_AYLAR = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+  const saatS = d => String(d).padStart(2, '0');
+  function bip() {
+    try {
+      const c = new (window.AudioContext || window.webkitAudioContext)();
+      const o = c.createOscillator(), g = c.createGain();
+      o.connect(g); g.connect(c.destination); o.type = 'sine';
+      const t = c.currentTime;
+      [[880, 0, .14], [1100, .2, .14], [880, .4, .28]].forEach(([f, x, d]) => {
+        g.gain.setValueAtTime(.0001, t + x);
+        g.gain.exponentialRampToValueAtTime(.28, t + x + .02);
+        g.gain.exponentialRampToValueAtTime(.0001, t + x + d);
+        o.frequency.setValueAtTime(f, t + x);
+      });
+      o.start(t); o.stop(t + .75);
+      if (navigator.vibrate) navigator.vibrate([180, 90, 180]);
+    } catch (e) {}
+  }
+  function saatFabGuncelle() {
+    const y = $('#saatFabYazi'); if (!y) return;
+    if (SAAT.kron.kosu) y.textContent = bicim(SAAT.kron.sn);
+    else if (SAAT.zaman.kosu) y.textContent = bicim(SAAT.zaman.kalan);
+    else {
+      const d = new Date();
+      y.textContent = saatS(d.getHours()) + ':' + saatS(d.getMinutes());
+    }
+    $('#saatFab').classList.toggle('calisiyor', SAAT.kron.kosu || SAAT.zaman.kosu);
+  }
+  function saatZamanYaz() {
+    if (SAAT.mod === 'saat') {
+      const s = $('#saatCanli');
+      if (s) {
+        const d = new Date();
+        s.textContent = saatS(d.getHours()) + ':' + saatS(d.getMinutes()) + ':' + saatS(d.getSeconds());
+      }
+    } else if (SAAT.mod === 'zaman') {
+      const e = $('#saatBuyuk');
+      if (e) e.textContent = bicim(SAAT.zaman.kalan);
+    } else {
+      const k = $('#kronUst');
+      if (k) k.textContent = bicim(SAAT.kron.sn);
+    }
+  }
+  function saatCiz() {
+    const g = $('#saatGovde'); if (!g) return;
+    $$('.saat-tab').forEach(b => b.classList.toggle('aktif', b.dataset.sm === SAAT.mod));
+    if (SAAT.mod === 'saat') {
+      const d = new Date();
+      const tarih = d.getDate() + ' ' + SAAT_AYLAR[d.getMonth()] + ' ' + d.getFullYear() + ', ' + SAAT_GUNLER[d.getDay()];
+      g.innerHTML = `<div class="saat-buyuk" id="saatCanli">${saatS(d.getHours())}:${saatS(d.getMinutes())}:${saatS(d.getSeconds())}</div>
+        <div class="saat-alt-yazi">${tarih}</div>
+        <div class="saat-alt-yazi" style="margin-top:10px">📚 Bugün toplam çalışma: <b>${V.ist.dakika || 0} dk</b></div>`;
+    } else if (SAAT.mod === 'zaman') {
+      const z = SAAT.zaman;
+      const presets = [10, 25, 30, 45, 60];
+      g.innerHTML = `<div class="saat-buyuk" id="saatBuyuk">${bicim(z.kalan)}</div>
+        <div class="saat-alt-yazi">${z.kosu ? 'Sayaç çalışıyor…' : ('Süre: ' + z.hedef + ' dk')}</div>
+        <div class="saat-pres">${presets.map(p =>
+          `<button class="p-btn${z.hedef === p && !z.kosu ? ' aktif' : ''}" data-spre="${p}">${p} dk</button>`).join('')}
+        </div>
+        <div style="text-align:center"><input class="saat-girdi" id="saatDk" type="number" min="1" max="240"
+          value="${z.kosu ? '' : z.hedef}" placeholder="dk" ${z.kosu ? 'disabled' : ''}></div>
+        <div class="saat-eylem">
+          <button class="u-btn ana" id="saatZBas">${z.kosu ? '⏸ Duraklat' : '▶ Başlat'}</button>
+          <button class="u-btn" id="saatZSifir">↺</button>
+        </div>`;
+      $$('#saatGovde [data-spre]').forEach(b => b.onclick = () => {
+        z.hedef = +b.dataset.spre; z.kalan = z.hedef * 60;
+        clearInterval(z.tim); z.kosu = false; z.son = 0;
+        saatCiz(); saatFabGuncelle();
+      });
+      $('#saatDk').onchange = function () {
+        let m = parseInt(this.value, 10);
+        if (!m || m < 1) return;
+        m = Math.min(240, m);
+        z.hedef = m; z.kalan = m * 60;
+        clearInterval(z.tim); z.kosu = false; z.son = 0;
+        saatCiz(); saatFabGuncelle();
+      };
+      $('#saatZBas').onclick = () => {
+        if (z.kosu) {
+          clearInterval(z.tim); z.kosu = false; z.son = 0;
+        } else {
+          if (z.kalan <= 0) z.kalan = z.hedef * 60;
+          z.kosu = true; z.son = Date.now();
+          z.tim = setInterval(() => {
+            const simdi = Date.now();
+            const fark = Math.round((simdi - z.son) / 1000);
+            if (fark > 0) { z.kalan -= fark; z.son = simdi; }
+            if (z.kalan <= 0) {
+              clearInterval(z.tim); z.kosu = false; z.son = 0;
+              bip();
+              bildir('⏰ Zamanlayıcı bitti!', 'basari');
+              z.kalan = z.hedef * 60;
+            }
+            saatZamanYaz(); saatFabGuncelle();
+          }, 1000);
+        }
+        saatCiz();
+      };
+      $('#saatZSifir').onclick = () => {
+        clearInterval(z.tim); z.kosu = false; z.son = 0;
+        z.kalan = z.hedef * 60;
+        saatCiz(); saatFabGuncelle();
+      };
+    } else {
+      const k = SAAT.kron;
+      g.innerHTML = `<div class="saat-buyuk" id="kronUst">${bicim(k.sn)}</div>
+        <div class="saat-alt-yazi">${k.kosu ? 'Çalışıyor… her tam dakika istatistiklere eklenir' : 'Çalıştığın süreyi ölç — her dk istatistiklere eklenir'}</div>
+        <div class="saat-eylem">
+          <button class="u-btn ana" id="saatKBas">${k.kosu ? '⏸ Duraklat' : (k.sn ? '▶ Devam' : '▶ Başlat')}</button>
+          <button class="u-btn" id="saatKSifir">↺</button>
+        </div>
+        <div class="saat-alt-yazi" style="margin-top:12px">📚 Bugün çalışma: <b>${V.ist.dakika || 0} dk</b></div>`;
+      $('#saatKBas').onclick = () => {
+        if (k.kosu) {
+          clearInterval(k.tim); k.kosu = false; k.son = 0;
+        } else {
+          k.kosu = true; k.son = Date.now();
+          k.tim = setInterval(() => {
+            const simdi = Date.now();
+            const fark = Math.round((simdi - k.son) / 1000);
+            if (fark > 0) {
+              const yukari = Math.floor((k.sn - fark) / 60);
+              k.sn += fark; k.son = simdi;
+              const yeni = Math.floor(k.sn / 60);
+              if (yeni > yukari) {
+                V.ist.dakika = (V.ist.dakika || 0) + (yeni - yukari);
+                kaydet(); istCiz();
+              }
+            }
+            saatZamanYaz(); saatFabGuncelle();
+          }, 1000);
+        }
+        saatCiz();
+      };
+      $('#saatKSifir').onclick = () => {
+        clearInterval(k.tim); k.kosu = false; k.son = 0; k.sn = 0;
+        saatCiz(); saatFabGuncelle();
+      };
+    }
+  }
+  $('#saatFab').onclick = () => {
+    const p = $('#saatPl');
+    p.hidden = !p.hidden;
+    if (!p.hidden) saatCiz();
+  };
+  $('#saatKapat').onclick = () => { $('#saatPl').hidden = true; };
+  $$('.saat-tab').forEach(b => b.onclick = () => { SAAT.mod = b.dataset.sm; saatCiz(); });
+  setInterval(() => { saatFabGuncelle(); saatZamanYaz(); }, 1000);
+  saatFabGuncelle();
+
   /* ═════════ AYARLAR ═════════ */
   function ayarAc() {
     $('#aUrl').value = V.ayar.aiUrl;
@@ -1726,7 +1990,7 @@ const MASA = (function () {
     if (aiHazir()) $('#kocDurum').textContent = 'Bağlı ✓';
 
     istCiz(); kocHizli(); ekran('panel');
-    $('#okCift').classList.add('aktif');
+    okTipUygula();
       setInterval(kocOzet, 20000);
 
       /* ═════════ KLAVYE KISAYOLLARI ═════════ */

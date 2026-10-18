@@ -627,7 +627,7 @@ body.light .koc-ai-bas{ color:var(--ana) }
 .ocr-cubuk i{ display:block; height:100%; width:0; background:var(--ana); transition:width .3s }
 
 .bildirim-kap{
-  position:fixed; bottom:var(--b5); right:var(--b5); z-index:700;
+  position:fixed; top:80px; right:var(--b5); z-index:700;
   display:flex; flex-direction:column; gap:var(--b2); max-width:340px;
 }
 .bildirim{
@@ -803,3 +803,107 @@ body.light .koc-ai-bas{ color:var(--ana) }
   .km.s,.km.k,.km.y,.bildirim,.suru-kutu,.yan{ animation:none !important }
   .yan,.icerik,.ust,.ekran{ transition:none !important }
 }
+
+/* ═══════════ 3D KİTAP (spiral defter) ═══════════ */
+.ok-govde > .kp-sahne{ margin:auto; flex-shrink:0 }
+.kp-sahne{
+  perspective:1600px; perspective-origin:50% 26%;
+  padding:36px 12px 60px;
+}
+.kp-kitap{
+  position:relative; display:flex; align-items:stretch; justify-content:center;
+  transform:rotateX(7deg); transform-style:preserve-3d;
+  animation:kpGir .55s var(--e) both;
+}
+@keyframes kpGir{
+  from{ opacity:0; transform:rotateX(26deg) translateY(20px) scale(.97) } }
+.kp-golge{
+  position:absolute; left:50%; bottom:-30px; width:76%; height:46px;
+  transform:translateX(-50%); filter:blur(7px); pointer-events:none;
+  background:radial-gradient(52% 52% at 50% 50%, rgba(0,0,0,.55), transparent 72%);
+}
+.kp-yuz{
+  position:relative; background:var(--kagit); overflow:hidden; flex-shrink:0;
+  transform-style:preserve-3d;
+}
+.kp-sol{
+  transform-origin:100% 50%; transform:rotateY(13deg);
+  border-radius:var(--r1) 0 0 var(--r1);
+  box-shadow:-3px 3px 0 #EDE8DC, -6px 4px 0 #E2DCCB, -10px 6px 0 #D8D1BC, var(--g3);
+}
+.kp-sag{
+  transform-origin:0 50%; transform:rotateY(-13deg);
+  border-radius:0 var(--r1) var(--r1) 0;
+  box-shadow:3px 3px 0 #EDE8DC, 6px 4px 0 #E2DCCB, 10px 6px 0 #D8D1BC, var(--g3);
+}
+.kp-goz{
+  position:absolute; top:0; bottom:0; width:20px; pointer-events:none; z-index:2;
+  background-image:radial-gradient(circle at 50% 19px, var(--zemin) 5.5px, transparent 6.2px);
+  background-size:100% 38px;
+}
+.kp-sol .kp-goz{ right:0 }
+.kp-sag .kp-goz{ left:0 }
+.kp-sirt{
+  position:relative; z-index:6; width:36px; flex-shrink:0;
+  background:linear-gradient(90deg,
+    transparent, rgba(0,0,0,.14) 20%, rgba(0,0,0,.30) 50%,
+    rgba(0,0,0,.14) 80%, transparent);
+}
+.kp-halka{
+  position:absolute; left:50%; width:22px; height:30px; margin-left:-13px;
+  border:3.2px solid #B4AE9E; border-radius:52%/46%; transform:rotate(-15deg);
+  box-shadow:1px 2px 0 rgba(0,0,0,.38), inset -2px -2px 4px rgba(255,255,255,.45);
+}
+@media(max-width:760px){
+  .kp-sirt{ width:24px }
+  .kp-halka{ width:16px; height:24px; margin-left:-10px }
+}
+
+/* ═══════════ SAAT / ZAMANLAYICI / KRONOMETRE ═══════════ */
+.saat-fab{
+  position:fixed; right:var(--b5); bottom:var(--b5); z-index:720;
+  display:flex; align-items:center; gap:9px; padding:11px 15px;
+  border-radius:999px; background:var(--cam-2); backdrop-filter:blur(40px);
+  border:1px solid var(--cizgi-2); box-shadow:var(--g3);
+  transition:transform .2s var(--e), box-shadow .2s var(--e);
+}
+.saat-fab:hover{ transform:translateY(-2px); box-shadow:var(--g4) }
+.saat-fab b{
+  font-size:13px; font-weight:650; color:var(--metin-2);
+  font-variant-numeric:tabular-nums; min-width:48px; text-align:right;
+}
+.saat-fab.calisiyor{ border-color:var(--ana) }
+.saat-pl{
+  position:fixed; right:var(--b5); bottom:84px; z-index:720;
+  width:min(360px,92vw); background:var(--cam-2); backdrop-filter:blur(40px);
+  border:1px solid var(--cizgi-2); border-radius:var(--r3); box-shadow:var(--g4);
+  overflow:hidden; animation:plGel .28s var(--e) both;
+}
+@keyframes plGel{ from{ opacity:0; transform:translateY(14px) scale(.97) } }
+.saat-tablar{ display:flex; gap:4px; align-items:center; padding:10px 10px 6px }
+.saat-tab{
+  padding:7px 10px; border-radius:var(--r1); font-size:12.5px; font-weight:600;
+  color:var(--metin-2); border:1px solid transparent; white-space:nowrap;
+}
+.saat-tab:hover{ background:var(--yuzey-2) }
+.saat-tab.aktif{ background:var(--yuzey-3); color:var(--metin) }
+.saat-kapat{ margin-left:auto; padding:6px 9px; color:var(--metin-3) }
+.saat-kapat:hover{ color:var(--metin) }
+.saat-govde{ padding:6px 14px 16px }
+.saat-buyuk{
+  font-size:46px; font-weight:800; letter-spacing:-1px; text-align:center;
+  font-variant-numeric:tabular-nums; line-height:1.25;
+}
+.saat-alt-yazi{
+  text-align:center; color:var(--metin-2); font-size:12.5px; margin-top:2px;
+}
+.saat-pres{ display:flex; gap:6px; justify-content:center; margin:14px 0 10px; flex-wrap:wrap }
+.saat-pres .p-btn{ padding:6px 13px; font-size:12.5px }
+.saat-pres .p-btn.aktif{ background:var(--ana); color:#0F1A15; border-color:transparent }
+.saat-girdi{
+  width:88px; text-align:center; padding:7px 8px; margin:0 auto 4px;
+  background:var(--yuzey-2); border:1px solid var(--cizgi-2); border-radius:var(--r1);
+}
+.saat-girdi:focus{ outline:none; border-color:var(--ana) }
+.saat-eylem{ display:flex; gap:8px; justify-content:center; margin-top:12px }
+.saat-eylem .u-btn{ padding:8px 22px; font-size:15px }

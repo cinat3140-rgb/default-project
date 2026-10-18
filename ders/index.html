@@ -7,7 +7,7 @@
 <meta name="robots" content="index, follow">
 <link rel="icon" type="image/svg+xml" href="images/logo.svg">
 <link href="https://fonts.googleapis.com/css2?family=Segoe+UI+Variable:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/desk.css?v=639278625117477176">
+<link rel="stylesheet" href="css/desk.css?v=20261018-1">
 <title>DersPark — Ders Çalışma</title>
 </head>
 <body class="dark">
@@ -79,12 +79,14 @@
     <button class="u-btn" id="okKapat">✕</button>
     <b id="okAd">Kitap</b>
     <div class="ok-grup">
+      <b class="ok-yazi">Sayfa</b>
       <button class="u-btn" id="okSol">◀</button>
       <div class="ok-no"><input type="number" id="okNo" min="1" value="1"><span id="okToplam">/1</span></div>
       <button class="u-btn" id="okSag">▶</button>
     </div>
     <div class="ok-grup">
-      <button class="u-btn aktif" id="okCift" title="Çift sayfa">📖</button>
+      <button class="u-btn" id="okKitap" title="3D defter görünümü">📒</button>
+      <button class="u-btn" id="okCift" title="Çift sayfa">📖</button>
       <button class="u-btn" id="okTek" title="Tek sayfa">📄</button>
       <button class="u-btn" id="okUzak" title="Uzaklaştır (Ctrl −)">−</button>
       <span class="ok-yuzde" id="okYuzde">100%</span>
@@ -207,7 +209,7 @@
   <div class="kaydir-kutu">
     <div class="kd-ikon">📄</div>
     <b>Dosyaları buraya bırak</b>
-    <small>PDF, PNG, JPG · sinirsiz boyut</small>
+    <small>PDF, PNG, JPG · sınırsız boyut</small>
     <div class="kd-secenek">
       <button class="p-btn" id="kdSec">📁 Dosya Seç</button>
       <button class="p-btn" id="kdIptal">İptal</button>
@@ -225,9 +227,23 @@
 <div class="bildirim-kap" id="bildirimler"></div>
 <input type="file" id="pdfDosya" accept="application/pdf,image/png,image/jpeg,image/jpg,image/webp,.pdf,.png,.jpg,.jpeg,.webp" multiple hidden>
 
+<!-- ═══════ SAAT / ZAMANLAYICI / KRONOMETRE ═══════ -->
+<div class="saat-pl" id="saatPl" hidden>
+  <div class="saat-tablar">
+    <button class="saat-tab aktif" data-sm="saat">🕐 Saat</button>
+    <button class="saat-tab" data-sm="zaman">⏳ Zamanlayıcı</button>
+    <button class="saat-tab" data-sm="kron">⏱️ Kronometre</button>
+    <button class="saat-kapat" id="saatKapat" title="Kapat">✕</button>
+  </div>
+  <div class="saat-govde" id="saatGovde"></div>
+</div>
+<button class="saat-fab" id="saatFab" title="Saat · Zamanlayıcı · Kronometre">
+  <span class="saat-fab-ikon">🕐</span><b id="saatFabYazi">--:--</b>
+</button>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
-<script src="js/kanallar.js?v=639278625117477176"></script>
-<script src="js/masa.js?v=639278625117477176"></script>
+<script src="js/kanallar.js?v=20261018-1"></script>
+<script src="js/masa.js?v=20261018-1"></script>
 </body>
 </html>
