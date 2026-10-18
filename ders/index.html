@@ -3,339 +3,288 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro Study 3D - Dijital Defter</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Caveat:wght@700&display=swap" rel="stylesheet">
+    <title>FocusSpace - Dijital Çalışma Alanı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Caveat:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #6c5ce7;
-            --accent: #a29bfe;
-            --bg: #2d3436;
+            --bg-dark: #1a1a1a;
+            --panel-dark: #252525;
+            --accent: #7289da;
+            --text-main: #e0e0e0;
             --paper: #fdfdfd;
-            --panel-bg: rgba(255, 255, 255, 0.1);
         }
 
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Poppins', sans-serif;
-            background: var(--bg);
-            background-image: radial-gradient(circle, #3d4446 1px, transparent 1px);
-            background-size: 30px 30px;
-            color: white;
-            display: flex;
+        body, html {
+            margin: 0; padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
             height: 100vh;
             overflow: hidden;
         }
 
-        /* SOL PANEL */
-        .side-panel {
-            width: 250px;
-            background: var(--panel-bg);
-            backdrop-filter: blur(15px);
-            border-right: 1px solid rgba(255,255,255,0.2);
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            box-shadow: 10px 0 30px rgba(0,0,0,0.3);
-            z-index: 10;
-        }
-
-        .side-panel h2 {
-            font-size: 24px;
-            text-align: center;
-            letter-spacing: 3px;
-            color: var(--accent);
-            border-bottom: 2px solid var(--accent);
-            padding-bottom: 10px;
-        }
-
-        .panel-btn {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-            text-align: left;
-        }
-
-        .panel-btn:hover {
-            background: var(--primary);
-            transform: translateX(10px);
-        }
-
-        /* ANA ALAN */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            perspective: 1500px;
-        }
-
-        /* ÜST BAR */
-        .top-bar {
-            width: 80%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            z-index: 5;
-        }
-
-        .control-group {
-            background: rgba(0,0,0,0.4);
-            padding: 10px 20px;
-            border-radius: 50px;
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            border: 1px solid var(--accent);
-        }
-
-        .control-group input {
-            width: 50px;
-            background: transparent;
-            border: 1px solid white;
-            color: white;
-            text-align: center;
-            border-radius: 5px;
-        }
-
-        /* 3D DEFTER */
-        .notebook-container {
-            position: relative;
-            width: 800px;
-            height: 500px;
-            transform: rotateX(10deg) rotateY(-5deg);
-            transition: 0.5s;
-            transform-style: preserve-3d;
-            margin-top: 50px;
-        }
-
-        .notebook-container:hover {
-            transform: rotateX(0deg) rotateY(0deg);
-        }
-
-        .page {
-            position: absolute;
-            width: 380px;
-            height: 100%;
-            background: var(--paper);
-            color: #333;
-            padding: 40px;
-            box-shadow: 5px 5px 20px rgba(0,0,0,0.5);
-            box-sizing: border-box;
-            font-family: 'Caveat', cursive;
-            font-size: 20px;
-            line-height: 30px;
-            background-image: linear-gradient(#e1e1e1 1px, transparent 1px);
-            background-size: 100% 30px;
-        }
-
-        .left-page {
-            left: 20px;
-            border-radius: 10px 0 0 10px;
-            transform: rotateY(5deg);
-            border-right: 2px solid #ddd;
-        }
-
-        .right-page {
-            right: 20px;
-            border-radius: 0 10px 10px 0;
-            transform: rotateY(-5deg);
-            border-left: 2px solid #ddd;
-        }
-
-        .spiral {
-            position: absolute;
-            left: 50%;
-            top: 0;
-            width: 40px;
-            height: 100%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 2;
-        }
-
-        .ring {
-            width: 50px;
-            height: 12px;
-            background: linear-gradient(to bottom, #bdc3c7, #2c3e50, #bdc3c7);
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-        }
-
-        /* ZAMANLAYICI */
-        .timer-card {
+        /* GİRİŞ EKRANI (FOCUS MODE) */
+        #focus-screen {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: rgba(108, 92, 231, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border: 2px solid var(--accent);
-            width: 150px;
-            transform: rotateZ(-5deg);
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotateZ(-5deg); }
-            50% { transform: translateY(-20px) rotateZ(5deg); }
-        }
-
-        .timer-display {
-            font-size: 32px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .timer-btn {
-            background: white;
-            color: var(--primary);
-            border: none;
-            padding: 5px 15px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        /* PDF EKLEME ALANI */
-        .pdf-upload {
-            position: absolute;
-            top: 100px;
-            right: 50px;
-            width: 200px;
-            height: 120px;
-            border: 2px dashed var(--accent);
-            border-radius: 15px;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, #2c2c2c 0%, #1a1a1a 100%);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: 0.3s;
-            background: rgba(0,0,0,0.2);
+            z-index: 100;
+            transition: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .pdf-upload:hover {
-            background: rgba(162, 155, 254, 0.2);
-            transform: scale(1.05);
+        #focus-screen.hidden {
+            transform: translateY(-100%);
+            opacity: 0;
         }
+
+        .welcome-card {
+            text-align: center;
+            animation: fadeIn 1.5s ease;
+        }
+
+        .upload-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            margin-top: 20px;
+        }
+
+        .upload-btn:hover {
+            transform: scale(1.05);
+            background: #5b73c7;
+        }
+
+        /* ANA ÇALIŞMA ALANI */
+        .app-container {
+            display: flex;
+            height: 100vh;
+            opacity: 0;
+            transition: 1s ease;
+        }
+
+        .app-container.active {
+            opacity: 1;
+        }
+
+        /* SOL PANEL */
+        .side-panel {
+            width: 280px;
+            background: var(--panel-dark);
+            border-right: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            gap: 20px;
+        }
+
+        .todo-section {
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            flex-grow: 1;
+        }
+
+        .todo-list {
+            list-style: none;
+            padding: 0;
+            font-size: 14px;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            opacity: 0.8;
+        }
+
+        /* SAĞ ANA ALAN */
+        .main-stage {
+            flex: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #1e1e1e;
+        }
+
+        /* KİTAP GÖRÜNÜMÜ (Sadece PDF yüklendiğinde gelir) */
+        .book-interface {
+            display: none; /* Başlangıçta gizli */
+            position: relative;
+            width: 850px;
+            height: 550px;
+            perspective: 1500px;
+        }
+
+        .page {
+            position: absolute;
+            width: 400px;
+            height: 100%;
+            background: var(--paper);
+            color: #333;
+            padding: 40px;
+            box-sizing: border-box;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            font-family: 'Caveat', cursive;
+            font-size: 22px;
+            line-height: 32px;
+            background-image: linear-gradient(#e5e5e5 1px, transparent 1px);
+            background-size: 100% 32px;
+        }
+
+        .left-page { left: 25px; border-radius: 10px 0 0 10px; transform: rotateY(5deg); }
+        .right-page { right: 25px; border-radius: 0 10px 10px 0; transform: rotateY(-5deg); }
+
+        .spiral {
+            position: absolute;
+            left: 50%; top: 0; width: 30px; height: 100%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .ring {
+            width: 45px; height: 12px;
+            background: linear-gradient(to bottom, #bdc3c7, #7f8c8d, #bdc3c7);
+            border-radius: 10px;
+        }
+
+        /* ARAÇLAR (Zamanlayıcı & Müzik) */
+        .widgets {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .widget-card {
+            background: var(--panel-dark);
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid #444;
+            text-align: center;
+            min-width: 150px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+        }
+
+        .timer-display {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--accent);
+        }
+
+        .btn-small {
+            background: var(--accent);
+            border: none; color: white;
+            padding: 5px 15px; border-radius: 5px;
+            cursor: pointer; font-weight: bold;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
     </style>
 </head>
 <body>
 
-    <div class="side-panel">
-        <h2>PANEL</h2>
-        <button class="panel-btn">📚 Ders Notlarım</button>
-        <button class="panel-btn">📅 Planlayıcı</button>
-        <button class="panel-btn">✅ Görevler</button>
-        <button class="panel-btn">⚙️ Ayarlar</button>
-        <div style="margin-top: auto; font-size: 12px; text-align: center; opacity: 0.5;">
-            Pro Study v1.0 <br> by AI & You
+    <!-- 1. GİRİŞ EKRANI -->
+    <div id="focus-screen">
+        <div class="welcome-card">
+            <h1 style="font-size: 48px; margin-bottom: 10px;">FocusSpace</h1>
+            <p style="opacity: 0.6; font-size: 18px;">Zihnini boşalt, çalışmaya odaklan.</p>
+            <button class="upload-btn" onclick="startStudying()">📄 Kitap / PDF Yükle ve Başla</button>
         </div>
     </div>
 
-    <div class="main-content">
-        <div class="top-bar">
-            <div class="control-group">
-                <span>🔍 Zoom:</span>
-                <input type="text" value="100%">
-            </div>
-            <div class="control-group">
-                <span>Sayfa:</span>
-                <button class="timer-btn">&lt;</button>
-                <input type="text" value="20">
-                <button class="timer-btn">&gt;</button>
-            </div>
-        </div>
-
-        <div class="pdf-upload" onclick="alert('PDF seçme ekranı açılıyor...')">
-            <span>📄 PDF EKLE</span>
-            <small style="font-size: 10px; opacity: 0.7;">Dosyayı buraya sürükle</small>
-        </div>
-
-        <div class="notebook-container">
-            <div class="spiral">
-                <!-- Spiral halkaları -->
-                <div class="ring"></div><div class="ring"></div><div class="ring"></div>
-                <div class="ring"></div><div class="ring"></div><div class="ring"></div>
-                <div class="ring"></div><div class="ring"></div><div class="ring"></div>
-                <div class="ring"></div><div class="ring"></div><div class="ring"></div>
-            </div>
-            <div class="page left-page">
-                <h3 style="text-align: center; margin-top: 0;">📌 Günün Notları</h3>
-                <p>Bugün öğrenilecekler:</p>
-                <ul>
-                    <li>HTML/CSS 3D Efektleri</li>
-                    <li>Yapay Zeka ile Tasarım</li>
-                    <li>JavaScript Zamanlayıcılar</li>
+    <!-- 2. ANA UYGULAMA -->
+    <div class="app-container" id="app">
+        <div class="side-panel">
+            <h2>Çalışma Alanı</h2>
+            
+            <div class="todo-section">
+                <h4 style="margin-top:0">📌 Hedeflerim</h4>
+                <ul class="todo-list">
+                    <li class="todo-item"><input type="checkbox"> PDF'i bitir</li>
+                    <li class="todo-item"><input type="checkbox"> Özet çıkar</li>
+                    <li class="todo-item"><input type="checkbox"> Soru çöz</li>
                 </ul>
-                <p style="margin-top: 50px; color: #888;">Not: Buraya istediğin notu yazabilirsin, her şey senin kontrolünde!</p>
+                <input type="text" placeholder="+ Yeni hedef ekle..." style="width:90%; background:transparent; border:1px solid #444; color:white; padding:5px; border-radius:5px;">
             </div>
-            <div class="page right-page">
-                <h3 style="text-align: center; margin-top: 0;">💡 Fikirler</h3>
-                <p>Proje geliştirme aşamaları:</p>
-                <ol>
-                    <li>Paint ile taslak çiz (Yapıldı ✅)</li>
-                    <li>AI ile kodla (Yapılıyor 🚀)</li>
-                    <li>Dünyaya yayınla (Sırada 🌍)</li>
-                </ol>
-                <div style="margin-top: 40px; border: 1px solid #ccc; padding: 10px; border-radius: 5px;">
-                    <strong>Hatırlatıcı:</strong> Çok çalışma, arada mola ver! ☕
+
+            <div class="music-section" style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px;">
+                <h4 style="margin-top:0">🎵 Lo-Fi Odaklanma</h4>
+                <iframe width="100%" height="80" src="https://www.youtube.com/embed/jfKfPfyLpws" frameborder="0" allow="autoplay" style="border-radius: 10px;"></iframe>
+            </div>
+        </div>
+
+        <div class="main-stage">
+            <!-- Kitap Arayüzü (Yükleme sonrası açılır) -->
+            <div class="book-interface" id="book">
+                <div class="spiral">
+                    <div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="ring"></div>
+                    <div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="ring"></div>
+                    <div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="ring"></div>
+                </div>
+                <div class="page left-page">
+                    <h3 style="text-align:center">📌 Ders Notları</h3>
+                    <p>Yüklediğiniz PDF içerikleri burada işlenecek...</p>
+                    <div style="margin-top:20px; opacity:0.6">Buraya notlarınızı alabilir veya PDF'den kopyaladığınız kısımları yapıştırabilirsiniz.</div>
+                </div>
+                <div class="page right-page">
+                    <h3 style="text-align:center">💡 Önemli Hatırlatmalar</h3>
+                    <p>- Konu başlıklarını belirle.</p>
+                    <p>- Önemli tarihleri işaretle.</p>
+                    <p>- Formülleri tekrar et.</p>
+                </div>
+            </div>
+
+            <div class="widgets">
+                <div class="widget-card">
+                    <div style="font-size: 12px; opacity: 0.7;">Pomodoro</div>
+                    <div class="timer-display" id="timer">25:00</div>
+                    <button class="btn-small" onclick="toggleTimer()" id="timerBtn">BAŞLAT</button>
+                </div>
+                <div class="widget-card">
+                    <div style="font-size: 12px; opacity: 0.7;">Durum</div>
+                    <div style="font-size: 18px; font-weight: bold; margin: 10px 0; color: #4caf50;">Odaklanmış ⚡</div>
+                    <button class="btn-small" style="background:#444" onclick="location.reload()">Çıkış</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="timer-card">
-        <div style="font-size: 14px; margin-bottom: 5px;">Focus Timer</div>
-        <div class="timer-display" id="timer">25:00</div>
-        <button class="timer-btn" onclick="toggleTimer()" id="timerBtn">BAŞLAT</button>
-    </div>
-
     <script>
-        // ZAMANLAYICI MANTIĞI
-        let timeLeft = 25 * 60;
-        let timerId = null;
-        const timerDisplay = document.getElementById('timer');
-        const timerBtn = document.getElementById('timerBtn');
-
-        function updateTimer() {
-            let minutes = Math.floor(timeLeft / 60);
-            let seconds = timeLeft % 60;
-            timerDisplay.textContent = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        // GİRİŞ VE GEÇİŞ MANTIĞI
+        function startStudying() {
+            // 1. Giriş ekranını kaldır
+            document.getElementById('focus-screen').classList.add('hidden');
+            
+            // 2. Uygulamayı aktif et
+            const app = document.getElementById('app');
+            app.classList.add('active');
+            
+            // 3. Kitabı görünür yap (PDF yüklendi varsayımıyla)
+            setTimeout(() => {
+                document.getElementById('book').style.display = 'block';
+            }, 800);
         }
 
-        function toggleTimer() {
-            if (timerId) {
-                clearInterval(timerId);
-                timerId = null;
-                timerBtn.textContent = "DEVAM ET";
-            } else {
-                timerId = setInterval(() => {
-                    timeLeft--;
-                    updateTimer();
-                    if (timeLeft <= 0) {
-                        clearInterval(timerId);
-                        alert("Süre doldu! Mola zamanı. 🎉");
-                    }
-                }, 1000);
-                timerBtn.textContent = "DURDUR";
-            }
-        }
-    </script>
-</body>
-</html>
+        // POMODORO ZAMANLAYICI
+        let timeLeft = 25 * 60;*
