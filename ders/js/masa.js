@@ -805,7 +805,6 @@ const MASA = (function () {
           <span class="et" style="background:${c}">${esc(d.ders)}</span>
           <span class="et" style="background:var(--ok)">${d.adet} soru</span>
           <button class="mini-btn duz" data-ac="${d.id}">Aç</button>
-          <button class="mini-btn" data-coz="${d.id}">Çöz</button>
           <button class="mini-btn tehlike" data-sil="${d.id}" title="Sil">✕</button>
         </div></div>`;
     }
@@ -831,8 +830,6 @@ const MASA = (function () {
       setTimeout(() => ekran('masa'), 0);
       setTimeout(() => masaVurgula(d.id), 150);
     });
-      $$('[data-coz]').forEach(e => e.onclick = () =>
-        soruSec(V.dosya.find(x => x.id === e.dataset.coz)));
       $$('[data-sil]').forEach(e => e.onclick = () => {
         const d = V.dosya.find(x => x.id === e.dataset.sil);
         if (!d) return;
@@ -882,6 +879,8 @@ const MASA = (function () {
     </div>`;
 
     baglaDosyalar();
+    $$('[data-coz]').forEach(e => e.onclick = () =>
+      soruSec(V.dosya.find(x => x.id === e.dataset.coz)));
     $$('[data-hizli]').forEach(b => b.onclick = () => {
       const tum = V.dosya.flatMap(d => d.sorular || []).sort(() => Math.random() - .5);
       testBasla(tum.slice(0, +b.dataset.hizli));
@@ -1314,15 +1313,10 @@ const MASA = (function () {
           <div class="ka-alt">
             <span class="et" style="background:${c}">${esc(d.ders)}</span>
             <span class="et" style="background:var(--ok)">${d.adet} soru</span>
-            <button class="mini-btn duz" data-coz="${d.id}" style="margin-left:auto;padding:4px 11px;font-size:11px">Çöz</button>
           </div></div></div>`;
     }).join('') + masaSaat3HTML(sx, sy);
     $$('#masaIc [data-ac]').forEach(e => e.onclick = ev => {
-      if (ev.target.closest('[data-coz]')) return;
       kitapAc(V.dosya.find(x => x.id === e.dataset.ac));
-    });
-    $$('#masaIc [data-coz]').forEach(e => e.onclick = ev => {
-      ev.stopPropagation(); soruSec(V.dosya.find(x => x.id === e.dataset.coz));
     });
     masaSaat3Bagla();
   }
