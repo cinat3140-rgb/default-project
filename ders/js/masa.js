@@ -1297,12 +1297,12 @@ const MASA = (function () {
 
   function masaBosHTML() {
     return `<div class="masa-bos" style="--x:430px;--y:120px">
-      <div class="mb-ikon">📭</div>
-      <b>Masan boş</b>
-      <p>Kitaplıktaki PDF'i seç ya da yepyeniden ekle:</p>
+      <div class="mb-ikon">📚</div>
+      <b>Kitaplıktan PDF seç, öyle gel!</b>
+      <p>Masanda kitap yok. Kitaplığa git, oradaki PDF'in üstüne bas — kitap masaya oturur, seni buraya getirir.</p>
       <div class="mb-ekle">
-        <button class="p-btn ana" id="mBosKitap">📚 Kitaplıktan seç</button>
-        <button class="p-btn" id="mBosEkle">📤 PDF Ekle</button>
+        <button class="p-btn ana" id="mBosKitap">📚 Kitaplıdan PDF Seç</button>
+        <button class="p-btn" id="mBosEkle">📤 Hiç yoksa PDF Ekle</button>
       </div>
     </div>`;
   }
