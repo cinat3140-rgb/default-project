@@ -1230,11 +1230,11 @@ const MASA = (function () {
           <button class="mini-btn" id="s3ZaBas" title="Başlat/Duraklat">▶</button>
           <button class="mini-btn" id="s3ZaSifir" title="Sıfırla">↺</button>
         </div>
-        <div class="s3-pres">
-          <button class="mini-btn" data-sz="10">10dk</button>
-          <button class="mini-btn" data-sz="25">25dk</button>
-          <button class="mini-btn" data-sz="45">45dk</button>
-          <button class="mini-btn" data-sz="50">50dk</button>
+        <div class="s3-dk-s">
+          <input class="s3-girdi" id="s3Dk" type="number" min="1" max="240"
+            value="${SAAT.zaman.kosu ? '' : SAAT.zaman.hedef}"
+            placeholder="dk" ${SAAT.zaman.kosu ? 'disabled' : ''}>
+          <span>dk kendin seç</span>
         </div>
       </div>
     </div>`;
@@ -1263,12 +1263,15 @@ const MASA = (function () {
     $('#s3ZaSifir').onclick = () => {
       const z = SAAT.zaman; clearInterval(z.tim); z.kosu = false; z.son = 0; z.kalan = z.hedef * 60; saatCiz(); masaSaat3Ciz();
     };
-    $$('#masaIc [data-sz]').forEach(b => b.onclick = () => {
+    $('#s3Dk').onchange = function () {
+      let m = parseInt(this.value, 10);
+      if (!m || m < 1) return;
+      m = Math.min(240, m);
       const z = SAAT.zaman;
       clearInterval(z.tim); z.kosu = false; z.son = 0;
-      z.hedef = +b.dataset.sz; z.kalan = z.hedef * 60;
+      z.hedef = m; z.kalan = m * 60;
       saatCiz(); masaSaat3Ciz();
-    });
+    };
     $('.sa3-kadran').onclick = () => $('#saatFab').click();
     if (masa3Tim) clearInterval(masa3Tim);
     masaSaat3Ciz();
@@ -2106,23 +2109,14 @@ const MASA = (function () {
         <div class="saat-alt-yazi" style="margin-top:10px">📚 Bugün toplam çalışma: <b>${V.ist.dakika || 0} dk</b></div>`;
     } else if (SAAT.mod === 'zaman') {
       const z = SAAT.zaman;
-      const presets = [10, 25, 30, 45, 60];
       g.innerHTML = `<div class="saat-buyuk" id="saatBuyuk">${bicim(z.kalan)}</div>
-        <div class="saat-alt-yazi">${z.kosu ? 'Sayaç çalışıyor…' : ('Süre: ' + z.hedef + ' dk')}</div>
-        <div class="saat-pres">${presets.map(p =>
-          `<button class="p-btn${z.hedef === p && !z.kosu ? ' aktif' : ''}" data-spre="${p}">${p} dk</button>`).join('')}
-        </div>
+        <div class="saat-alt-yazi">${z.kosu ? 'Sayaç çalışıyor…' : ('Süre: ' + z.hedef + ' dk — kendin belirle')}</div>
         <div style="text-align:center"><input class="saat-girdi" id="saatDk" type="number" min="1" max="240"
           value="${z.kosu ? '' : z.hedef}" placeholder="dk" ${z.kosu ? 'disabled' : ''}></div>
         <div class="saat-eylem">
           <button class="u-btn ana" id="saatZBas">${z.kosu ? '⏸ Duraklat' : '▶ Başlat'}</button>
           <button class="u-btn" id="saatZSifir">↺</button>
         </div>`;
-      $$('#saatGovde [data-spre]').forEach(b => b.onclick = () => {
-        z.hedef = +b.dataset.spre; z.kalan = z.hedef * 60;
-        clearInterval(z.tim); z.kosu = false; z.son = 0;
-        saatCiz(); saatFabGuncelle();
-      });
       $('#saatDk').onchange = function () {
         let m = parseInt(this.value, 10);
         if (!m || m < 1) return;
