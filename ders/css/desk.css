@@ -1121,13 +1121,14 @@ body.light .koc-ai-bas{ color:var(--ana) }
 .kalem-cubuk {
   position: fixed; left: 50%; bottom: 68px;
   transform: translateX(-50%);
+  z-index: 420;
   display: flex; align-items: center; gap: 7px;
   background: rgba(16, 12, 10, .88);
   border: 1px solid rgba(255,255,255,.13);
   border-radius: 99px; padding: 9px 13px;
   box-shadow: 0 20px 44px rgba(0,0,0,.6);
   backdrop-filter: blur(9px);
-  z-index: 220; flex-wrap: wrap; max-width: 92vw;
+  flex-wrap: wrap; max-width: 92vw;
 }
 .kalemt { padding: 6px 11px; font-size: 14px; border-radius: 10px; background: rgba(255,255,255,.1); color: #F2E7CE; border: 1px solid rgba(255,255,255,.12); }
 .kalemt:hover { background: rgba(255,255,255,.22); }
@@ -1174,3 +1175,14 @@ body.light .koc-ai-bas{ color:var(--ana) }
 .masa-bos b { font-size: 17px; color: #F5EAD2; }
 .masa-bos p { font-size: 12.5px; color: #CBB889; margin: 6px 0 14px; }
 .masa-bos .mb-ekle { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+
+/* Adım adım anahtar rehberi */
+.koc-ai-adim {
+  background: rgba(46,196,141,.09);
+  border: 1px solid rgba(46,196,141,.35);
+  border-radius: 10px; padding: 9px 11px;
+  font-size: 11.5px; line-height: 1.85;
+  color: var(--metin-2); margin-bottom: 10px;
+}
+.koc-ai-adim b { color: var(--metin); }
+.koc-ai-adim .p-btn { font-size: 10.5px; padding: 3px 9px; margin: 0 3px; background: var(--ana); color: #fff; border: 0; }

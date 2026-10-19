@@ -2013,7 +2013,12 @@ const MASA = (function () {
       });
       const g = await r.text().catch(() => '');
       if (!r.ok) return { hata: aiHataCevir(r, g) };
-      return { tamam: true };
+      let yazi = '';
+      try {
+        const j = JSON.parse(g);
+        yazi = (j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content || '').trim().slice(0, 60);
+      } catch (e) {}
+      return { tamam: true, yazi: yazi || 'yanıt geldi ✓' };
     } catch (e) {
       return { hata: 'Ağ hatası — ' + e.message };
     }
@@ -2143,6 +2148,28 @@ const MASA = (function () {
       bildir('AI bağlandı: ' + p.ad, 'basari');
     };
 
+  $('#kocKeyTest').onclick = async function () {
+    const btn = this;
+    let v = aiAnahtarTemizle($('#kocKey').value);
+    if (!v) v = aiAnahtarTemizle(V.ayar.aiAnahtar);
+    if (!v) { bildir('Önce anahtar yaz ya da Bağla', 'uyari'); return; }
+    const p = aiSaglayici(v);
+    if (!p.url) { bildir(p.neden, 'hata'); return; }
+    btn.disabled = true; btn.textContent = 'Deniyorum…';
+    const sonuc = await aiTest(v, p);
+    btn.disabled = false; btn.textContent = '⚡ Test Et';
+    if (sonuc.hata) {
+      bildir('Test başarısız: ' + sonuc.hata, 'hata');
+      kocMesaj('**Test başarısız:** ' + esc(sonuc.hata) + '\n\nBu anahtar bu sitede çalışmaz. Yerine Google AI Studio (ÜCRETSİZ, AIza ile başlar) anahtarı kullan.', 'y');
+    } else {
+      bildir('✅ Test başarılı (' + p.ad + '): ' + sonuc.yazi, 'basari');
+      V.ayar.aiAnahtar = v; V.ayar.aiUrl = p.url; V.ayar.aiModel = p.model; V.ayar.aiSaglayici = p.ad;
+      kaydet();
+      $('#kocAi').hidden = true;
+      $('#kocDurum').textContent = 'AI çalışıyor ✓';
+      kocMesaj('✅ Test başarılı — **' + p.ad + '** yanıt verdi. Hadi konuşmaya başla!', 'k');
+    }
+  };
   $('#kocKeySil').onclick = function () {
     V.ayar.aiAnahtar = '';
     kaydet();

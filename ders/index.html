@@ -7,7 +7,7 @@
 <meta name="robots" content="index, follow">
 <link rel="icon" type="image/svg+xml" href="images/logo.svg">
 <link href="https://fonts.googleapis.com/css2?family=Segoe+UI+Variable:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/desk.css?v=20261018-12">
+<link rel="stylesheet" href="css/desk.css?v=20261018-13">
 <title>DersPark — Ders Çalışma</title>
 </head>
 <body class="dark">
@@ -137,15 +137,21 @@
 
   <div class="koc-ai" id="kocAi" hidden>
     <div class="koc-ai-bas">🔑 AI Anahtarı Bağla</div>
-    <p>Koçün gerçekten cevap vermesi için anahtar gerekiyor. Ücretsiz al:</p>
+    <p>Koçün gerçekten cevap vermesi için anahtar gerekiyor. Ücretsiz ve en hızlı yol:</p>
+    <div class="koc-ai-adim">
+      <b>1.</b> <button class="p-btn" data-ai="https://aistudio.google.com/app/apikey">Google AI Studio'yu aç</button>
+      <b>2.</b> "Create API key" → anahtarı kopyala (AIza ile başlar)<br>
+      <b>3.</b> Aşağıya yapıştır → <b>Bağla</b> → <b>⚡ Test Et</b>
+    </div>
     <div class="koc-ai-link">
       <button class="p-btn" data-ai="https://aistudio.google.com/app/apikey">Google Gemini</button>
       <button class="p-btn" data-ai="https://console.groq.com/keys">Groq</button>
-      <button class="p-btn" data-ai="https://platform.openai.com/api-keys">OpenAI</button>
+      <button class="p-btn" data-ai="https://openrouter.ai/keys">OpenRouter</button>
     </div>
-    <input class="a-girdi" id="kocKey" type="password" placeholder="Anahtarı buraya yapıştır…">
+    <input class="a-girdi" id="kocKey" type="password" placeholder="Anahtarı buraya yapıştır… (AIza… / gsk_… / sk-or-v1-…)">
     <div class="koc-ai-eylem">
       <button class="p-btn ana" id="kocKeyKaydet" style="flex:1">Bağla</button>
+      <button class="p-btn" id="kocKeyTest" title="Anahtar çalışıyor mu anında dene">⚡ Test Et</button>
       <button class="p-btn" id="kocKeySil">Sil</button>
     </div>
     <p class="koc-ai-not">Anahtar sadece bu tarayıcıda saklanır, sunucuya gitmez.</p>
@@ -259,7 +265,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
-<script src="js/kanallar.js?v=20261018-12"></script>
-<script src="js/masa.js?v=20261018-12"></script>
+<script src="js/kanallar.js?v=20261018-13"></script>
+<script src="js/masa.js?v=20261018-13"></script>
 </body>
 </html>
