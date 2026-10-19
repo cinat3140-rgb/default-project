@@ -1109,3 +1109,38 @@ body.light .koc-ai-bas{ color:var(--ana) }
 }
 .ka-kutu { height: 182px; display: flex; flex-direction: column; }
 .ka-govde { flex: 1; min-height: 0; overflow: hidden; }
+
+/* ═════ KALEM ARACI (okuyucu üzerine çizim) ═════ */
+#okKapat {
+  background: var(--hata);
+  color: #fff;
+  margin-left: auto;
+  box-shadow: 0 4px 12px rgba(190, 40, 40, .45);
+}
+#okKapat span { font-size: 15px; }
+.kalem-cubuk {
+  position: fixed; left: 50%; bottom: 68px;
+  transform: translateX(-50%);
+  display: flex; align-items: center; gap: 7px;
+  background: rgba(16, 12, 10, .88);
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 99px; padding: 9px 13px;
+  box-shadow: 0 20px 44px rgba(0,0,0,.6);
+  backdrop-filter: blur(9px);
+  z-index: 220; flex-wrap: wrap; max-width: 92vw;
+}
+.kalemt { padding: 6px 11px; font-size: 14px; border-radius: 10px; background: rgba(255,255,255,.1); color: #F2E7CE; border: 1px solid rgba(255,255,255,.12); }
+.kalemt:hover { background: rgba(255,255,255,.22); }
+.kalemt.aktif { background: var(--ana); color: #fff; border-color: transparent; }
+.kalem-ayrac { width: 1px; height: 22px; background: rgba(255,255,255,.16); }
+.kalem-boya {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.55);
+  cursor: pointer; display: inline-block;
+  transition: .15s;
+}
+.kalem-boya:hover { transform: scale(1.18); }
+.kalem-boya.aktif { border-color: #fff; box-shadow: 0 0 0 3.5px rgba(255,255,255,.28); }
+.pen-katman { position: absolute; left: 0; top: 0; z-index: 40; display: none; }
+.pen-katman.acik { display: block; touch-action: none; }
+#okKalem.anlik { background: var(--ana); color: #fff; border-color: transparent; }

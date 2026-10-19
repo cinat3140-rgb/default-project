@@ -1368,6 +1368,8 @@ const MASA = (function () {
     $('#okuyucu').hidden = false;
     $('#okAd').textContent = d.ad;
     Object.assign(OKU, { veri:d, no:1, z:1, isaret:{} });
+    if (OKU.pen) { OKU.pen.acik = false; OKU.pen.cizimler = {}; OKU.pen.cnv = null; }
+    penYukle();
     $('#okYuzde').textContent = '100%';
     $('#okSol').disabled = false; $('#okSag').disabled = false;
 
@@ -1647,11 +1649,10 @@ const MASA = (function () {
     let pan = null, yol = 0;
     gov.addEventListener('mousedown', e => {
       if (e.button !== 0) return;
-      if (gov.scrollWidth <= gov.clientWidth && gov.scrollHeight <= gov.clientHeight) return;
+      if (OKU.pen && OKU.pen.acik) return;
       pan = { x: e.clientX, y: e.clientY };
       yol = 0;
       gov.classList.add('pan-tut');
-      e.preventDefault();
     });
     document.addEventListener('mousemove', e => {
       if (!pan) return;
@@ -1664,13 +1665,37 @@ const MASA = (function () {
     document.addEventListener('mouseup', () => {
       if (!pan) return;
       pan = null;
-      const git = () => { gov.classList.remove('pan-tut'); };
+      gov.classList.remove('pan-tut');
       if (yol > 6) {
         const sus = ev => { ev.stopPropagation(); ev.preventDefault(); };
         gov.addEventListener('click', sus, { capture:true, once:true });
-        setTimeout(() => { gov.removeEventListener('click', sus, { capture:true }); git(); }, 0);
-      } else git();
+        setTimeout(() => gov.removeEventListener('click', sus, { capture:true }), 0);
+      }
     });
+    /* sayfaya tıkla: sol yarı = geri, sağ yarı = ileri (sürüklemeye sayılmaz) */
+    gov.addEventListener('click', e => {
+      if (OKU.pen && OKU.pen.acik) return;
+      const sel = window.getSelection && window.getSelection();
+      if (sel && sel.toString()) return;
+      const r = gov.getBoundingClientRect();
+      kitapCevir(e.clientX < r.left + r.width / 2 ? -1 : 1);
+    });
+    /* dokunmatik: sola/sağa kaydır = sayfa çevir */
+    let dok = null;
+    gov.addEventListener('touchstart', e => {
+      if (OKU.pen && OKU.pen.acik) { dok = null; return; }
+      if (e.touches.length === 1) dok = { x: e.touches[0].clientX, y: e.touches[0].clientY, t: Date.now() };
+    }, { passive: true });
+    gov.addEventListener('touchend', e => {
+      if (!dok) return;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - dok.x, dy = Math.abs(t.clientY - dok.y);
+      const sure = Date.now() - dok.t;
+      dok = null;
+      if (sure > 650 || dy > 70) return;
+      if (dx < -55) { kitapCevir(1); e.preventDefault(); }
+      else if (dx > 55) { kitapCevir(-1); e.preventDefault(); }
+    }, { passive: false });
   })();
 
   document.addEventListener('fullscreenchange', () => setTimeout(sayfaCiz, 140));
@@ -1696,8 +1721,196 @@ const MASA = (function () {
     $('#okuyucu').hidden = true;
     if (document.fullscreenElement) document.exitFullscreen().catch(()=>{});
     OKU.pdf = null;
+    if (OKU.pen && OKU.pen.acik) { OKU.pen.acik = false; penMod(); }
   }
   $('#okKapat').onclick = kitapKapat;
+
+  /* ═════════ KALEM (sayfa üstü çizim) ═════════ */
+  OKU.pen = { acik: false, arac: 'kalem', boya: '#E53935', kalin: 4, cnv: null, ctx: null,
+              cizimler: {}, ust: null, ciziyor: false, cisim: null };
+  function penAnahtar() {
+    const d = OKU.veri;
+    return d && d.tur === 'pdf' ? 'dp_pen_' + (d.id || d.ad) : null;
+  }
+  function penYukle() {
+    const a = penAnahtar();
+    if (!a) { OKU.pen.cizimler = {}; return; }
+    try {
+      const j = JSON.parse(localStorage.getItem(a) || '{}');
+      OKU.pen.cizimler = j && typeof j === 'object' ? j : {};
+    } catch (e) { OKU.pen.cizimler = {}; }
+  }
+  function penKaydet() {
+    const a = penAnahtar();
+    if (!a) return;
+    try {
+      const k = Object.keys(OKU.pen.cizimler);
+      k.forEach(x => { if (OKU.pen.cizimler[x] && OKU.pen.cizimler[x].length > 350) OKU.pen.cizimler[x] = OKU.pen.cizimler[x].slice(-350); });
+      localStorage.setItem(a, JSON.stringify(k.length && OKU.pen.cizimler ? OKU.pen.cizimler : {}));
+    } catch (e) {}
+  }
+  function penSayfa() { return Math.max(1, OKU.no) + (OKU.tip === 'cift' ? '_' + (OKU.no + 1) : ''); }
+  function penCizimler() {
+    const s = penSayfa();
+    if (!OKU.pen.cizimler[s]) OKU.pen.cizimler[s] = [];
+    return OKU.pen.cizimler[s];
+  }
+  function penKatman() {
+    const gov = $('#okGovde');
+    if (!gov) return;
+    let cnv = $('#penCnv');
+    if (!cnv && OKU.pen.acik) {
+      cnv = document.createElement('canvas');
+      cnv.id = 'penCnv';
+      cnv.className = 'pen-katman';
+      gov.appendChild(cnv);
+    }
+    OKU.pen.cnv = cnv;
+    if (cnv) OKU.pen.ctx = cnv.getContext('2d');
+    if (cnv) penBoyutla();
+  }
+  new MutationObserver(() => {
+    if (OKU.pen && OKU.pen.acik) setTimeout(penKatman, 50);
+  }).observe($('#okGovde'), { childList: true });
+  function penBoyutla() {
+    const gov = $('#okGovde'), cnv = OKU.pen.cnv;
+    if (!gov || !cnv) return;
+    const w = Math.max(gov.scrollWidth, gov.clientWidth);
+    const h = Math.max(gov.scrollHeight, gov.clientHeight);
+    if (cnv.width !== Math.round(w) || cnv.height !== Math.round(h)) {
+      cnv.width = Math.round(w);
+      cnv.height = Math.round(h);
+    }
+    cnv.style.width = w + 'px';
+    cnv.style.height = h + 'px';
+    penYenile();
+  }
+  function penYenile() {
+    const ctx = OKU.pen.ctx, cnv = OKU.pen.cnv;
+    if (!ctx || !cnv) return;
+    ctx.clearRect(0, 0, cnv.width, cnv.height);
+    const siralar = penCizimler();
+    siralar.forEach(c => penCizgi(ctx, c));
+  }
+  function penCizgi(ctx, c) {
+    if (!c.pts || !c.pts.length) return;
+    ctx.strokeStyle = c.b;
+    ctx.lineWidth = c.k;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.globalCompositeOperation = c.b === 'SILGI' ? 'destination-out' : 'source-over';
+    ctx.beginPath();
+    c.pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]));
+    if (c.pts.length === 1) ctx.lineTo(c.pts[0][0] + .01, c.pts[0][1] + .01);
+    ctx.stroke();
+    ctx.globalCompositeOperation = 'source-over';
+  }
+  function penNokta(e) {
+    const gov = $('#okGovde'), cnv = OKU.pen.cnv;
+    if (!gov || !cnv) return [0, 0];
+    const cx = 'ontouchstart' in window && e.touches ? e.touches[0].clientX : e.clientX;
+    const cy = e.touches && e.touches.length ? e.touches[0].clientY : e.clientY;
+    const r = cnv.getBoundingClientRect();
+    return [cx - r.left + gov.scrollLeft, cy - r.top + gov.scrollTop];
+  }
+  function penSilYakala(pts) {
+    const siralar = penCizimler();
+    for (let i = siralar.length - 1; i >= 0; i--) {
+      const c = siralar[i];
+      if (c.pts.some(p => p[0] >= pts.x - 18 && p[0] <= pts.x + 18 && p[1] >= pts.y - 18 && p[1] <= pts.y + 18)) {
+        siralar.splice(i, 1);
+        penYenile();
+      }
+    }
+  }
+  function penBasla(e) {
+    if (!OKU.pen.acik) return;
+    if (e.target.id !== 'penCnv') return;
+    e.preventDefault();
+    const n = penNokta(e);
+    if (OKU.pen.arac === 'silgi') {
+      OKU.pen.silgyo = true;
+      penSilYakala({ x: n[0], y: n[1] });
+      return;
+    }
+    OKU.pen.ciziyor = true;
+    OKU.pen.cisim = { b: OKU.pen.boya, k: OKU.pen.kalin, pts: [n] };
+  }
+  function penHareket(e) {
+    if (e.target.id !== 'penCnv') return;
+    if (!OKU.pen.ciziyor && !OKU.pen.silgyo) return;
+    e.preventDefault();
+    const n = penNokta(e);
+    if (OKU.pen.silgyo) { penSilYakala({ x: n[0], y: n[1] }); return; }
+    const c = OKU.pen.cisim;
+    const son = c.pts[c.pts.length - 1];
+    const dx = n[0] - son[0], dy = n[1] - son[1];
+    if (dx * dx + dy * dy < 4) return;
+    c.pts.push(n);
+    penCizgi(OKU.pen.ctx, { b: c.b, k: c.k, pts: c.pts.slice(-2) });
+  }
+  function penBit(e) {
+    if (OKU.pen.silgyo) { OKU.pen.silgyo = false; penKaydet(); return; }
+    if (!OKU.pen.ciziyor) return;
+    OKU.pen.ciziyor = false;
+    if (OKU.pen.cisim && OKU.pen.cisim.pts.length) {
+      penCizimler().push(OKU.pen.cisim);
+      if (penCizimler().length > 350) penCizimler().shift();
+    }
+    OKU.pen.cisim = null;
+    penYenile();
+    penKaydet();
+  }
+  function penMod() {
+    $('#kalemCubuk').hidden = !OKU.pen.acik;
+    $('#okKalem').classList.toggle('anlik', OKU.pen.acik);
+    penKatman();
+    const cnv = OKU.pen.cnv;
+    if (cnv) {
+      if (OKU.pen.acik) {
+        cnv.style.pointerEvents = 'auto';
+        cnv.style.cursor = OKU.pen.arac === 'silgi' ? 'crosshair' : 'pointer';
+      } else {
+        cnv.remove();
+        OKU.pen.cnv = null; OKU.pen.ctx = null;
+      }
+    }
+  }
+  $('#okKalem').onclick = () => { penYukle(); OKU.pen.acik = !OKU.pen.acik; penMod(); };
+  $('#pkKalem').onclick = () => { OKU.pen.arac = 'kalem'; penTablo(); };
+  $('#pkSilgi').onclick = () => { OKU.pen.arac = 'silgi'; penTablo(); };
+  $('#pkGeri').onclick = () => {
+    const siralar = penCizimler();
+    siralar.pop();
+    penYenile(); penKaydet();
+  };
+  $('#pkTemiz').onclick = () => {
+    OKU.pen.cizimler[penSayfa()] = [];
+    penYenile(); penKaydet();
+    bildir('Bu sayfadaki çizimler temizlendi', 'basari');
+  };
+  $('#pkKapat').onclick = () => { OKU.pen.acik = false; penMod(); };
+  $$('#kalemCubuk .kalem-boya').forEach(b => b.onclick = () => {
+    OKU.pen.boya = b.dataset.renk;
+    OKU.pen.arac = 'kalem';
+    penTablo();
+  });
+  $$('#kalemCubuk [data-kalin]').forEach(b => b.onclick = () => { OKU.pen.kalin = +b.dataset.kalin; penTablo(); });
+  function penTablo() {
+    $('#pkKalem').classList.toggle('aktif', OKU.pen.arac === 'kalem');
+    $('#pkSilgi').classList.toggle('aktif', OKU.pen.arac === 'silgi');
+    $$('#kalemCubuk .kalem-boya').forEach(b => b.classList.toggle('aktif', b.dataset.renk === OKU.pen.boya));
+    $$('#kalemCubuk [data-kalin]').forEach(b => b.classList.toggle('aktif', +b.dataset.kalin === OKU.pen.kalin));
+    const cnv = OKU.pen.cnv;
+    if (cnv) cnv.style.cursor = OKU.pen.arac === 'silgi' ? 'crosshair' : 'pointer';
+  }
+  $('#okGovde').addEventListener('mousedown', penBasla);
+  $('#okGovde').addEventListener('mousemove', penHareket);
+  document.addEventListener('mouseup', () => penBit());
+  $('#okGovde').addEventListener('touchstart', penBasla, { passive: false });
+  $('#okGovde').addEventListener('touchmove', penHareket, { passive: false });
+  document.addEventListener('touchend', () => penBit());
+  penYukle();
   $('#okTest').onclick = () => { if (OKU.veri) soruSec(OKU.veri); };
   $('#okMesaj').onclick = () => {
     if (!OKU.veri) return;

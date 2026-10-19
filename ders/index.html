@@ -7,7 +7,7 @@
 <meta name="robots" content="index, follow">
 <link rel="icon" type="image/svg+xml" href="images/logo.svg">
 <link href="https://fonts.googleapis.com/css2?family=Segoe+UI+Variable:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/desk.css?v=20261018-9">
+<link rel="stylesheet" href="css/desk.css?v=20261018-10">
 <title>DersPark — Ders Çalışma</title>
 </head>
 <body class="dark">
@@ -95,12 +95,32 @@
       <button class="u-btn" id="okYuzde100" title="Normal boyut (Ctrl 0)">1:1</button>
     </div>
     <div class="ok-sag">
+      <button class="u-btn" id="okKalem" title="Kalem — üstüne yaz, sil, geri al">🖊 Kalem</button>
       <button class="u-btn" id="okTest">📝 Çöz</button>
       <button class="u-btn" id="okMesaj">💬 Koç</button>
       <button class="u-btn" id="okTam" title="Tam ekran">⛶</button>
     </div>
   </div>
   <div class="ok-govde" id="okGovde"></div>
+  <div class="kalem-cubuk" id="kalemCubuk" hidden>
+    <button class="p-btn kalemt aktif" id="pkKalem" title="Kalem">✏️</button>
+    <button class="p-btn kalemt" id="pkSilgi" title="Silgi — çizimi üstüne gelince siler">🧽</button>
+    <button class="p-btn kalemt" id="pkGeri" title="Geri al (son çizgi)">↩️</button>
+    <button class="p-btn kalemt" id="pkTemiz" title="Tüm çizimleri temizle">🗑️</button>
+    <span class="kalem-ayrac"></span>
+    <span class="kalem-boya aktif" data-renk="#E53935" style="background:#E53935" title="Kırmızı"></span>
+    <span class="kalem-boya" data-renk="#2962FF" style="background:#2962FF" title="Mavi"></span>
+    <span class="kalem-boya" data-renk="#00A651" style="background:#00A651" title="Yeşil"></span>
+    <span class="kalem-boya" data-renk="#FFC400" style="background:#FFC400" title="Sarı"></span>
+    <span class="kalem-boya" data-renk="#111111" style="background:#111111" title="Siyah"></span>
+    <span class="kalem-boya" data-renk="#FFFFFF" style="background:#FFFFFF" title="Beyaz"></span>
+    <span class="kalem-ayrac"></span>
+    <button class="p-btn kalemt ink" data-kalin="2" title="İnce uç">•</button>
+    <button class="p-btn kalemt ink" data-kalin="4" title="Orta uç">••</button>
+    <button class="p-btn kalemt ink" data-kalin="7" title="Kalın uç">•••</button>
+    <span class="kalem-ayrac"></span>
+    <button class="p-btn kalemt" id="pkKapat">✕</button>
+  </div>
   <div class="ok-alt">
     <button class="u-btn" id="okIlk">⏮</button>
     <div class="ok-serit" id="okSerit"></div>
@@ -243,7 +263,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
-<script src="js/kanallar.js?v=20261018-9"></script>
-<script src="js/masa.js?v=20261018-9"></script>
+<script src="js/kanallar.js?v=20261018-10"></script>
+<script src="js/masa.js?v=20261018-10"></script>
 </body>
 </html>
