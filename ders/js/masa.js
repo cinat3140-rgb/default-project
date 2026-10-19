@@ -2600,7 +2600,6 @@ const MASA = (function () {
     if (aiHazir()) $('#kocDurum').textContent = 'Bağlı ✓';
 
     istCiz(); kocHizli(); ekran('panel');
-    okTipUygula();
       setInterval(kocOzet, 20000);
 
       /* ═════════ KLAVYE KISAYOLLARI ═════════ */
