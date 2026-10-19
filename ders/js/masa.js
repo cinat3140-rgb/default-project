@@ -807,8 +807,12 @@ const MASA = (function () {
   }
 
   function baglaDosyalar() {
-    $$('[data-ac]').forEach(e => e.onclick = () =>
-      kitapAc(V.dosya.find(x => x.id === e.dataset.ac)));
+    $$('[data-ac]').forEach(e => e.onclick = () => {
+      const d = V.dosya.find(x => x.id === e.dataset.ac);
+      if (!d) return;
+      ekran('masa');
+      setTimeout(() => masaVurgula(d.id), 120);
+    });
       $$('[data-coz]').forEach(e => e.onclick = () =>
         soruSec(V.dosya.find(x => x.id === e.dataset.coz)));
       $$('[data-sil]').forEach(e => e.onclick = () => {
@@ -1184,6 +1188,16 @@ const MASA = (function () {
 
     masaCiz();
     setTimeout(masaSifirla, 30);
+  }
+
+  function masaVurgula(id) {
+    const el = document.querySelector(`#masaIc [data-ac="${id}"]`);
+    if (!el) return;
+    el.scrollIntoView({ behavior:'smooth', block:'center', inline:'center' });
+    el.classList.remove('ka-vurgu');
+    void el.offsetWidth;
+    el.classList.add('ka-vurgu');
+    setTimeout(() => el.classList.remove('ka-vurgu'), 2800);
   }
 
   function masaCiz() {

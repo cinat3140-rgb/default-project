@@ -977,3 +977,16 @@ body.light .koc-ai-bas{ color:var(--ana) }
 .ok-govde.pan-tut .kp-yuz,
 .ok-govde.pan-tut .sk{ pointer-events:none }
 .ok-govde.pan-tut *{ user-select:none !important }
+
+/* ═════ MASA KARTI VURGUSU (kitaplık Aç → masaya atlayış) ═════ */
+.ka-vurgu {
+  animation: kaVurgu 1.15s ease-in-out 2;
+  border-radius: 14px;
+}
+@keyframes kaVurgu {
+  0%, 100% { box-shadow: 0 18px 44px rgba(0,0,0,.35); }
+  50% {
+    box-shadow: 0 0 0 7px var(--ok),
+                0 18px 44px rgba(0,0,0,.35);
+  }
+}
