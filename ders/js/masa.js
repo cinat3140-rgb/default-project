@@ -1326,7 +1326,7 @@ const MASA = (function () {
             <span class="et" style="background:${c}">${esc(d.ders)}</span>
             <span class="et" style="background:var(--ok)">${d.adet} soru</span>
           </div></div></div>`;
-    }).join('') : '') + masaSaat3HTML(sx, sy);
+    }).join('') : masaBosHTML()) + masaSaat3HTML(sx, sy);
     $$('#masaIc [data-ac]').forEach(e => e.onclick = ev => {
       kitapAc(V.dosya.find(x => x.id === e.dataset.ac));
     });
