@@ -1763,6 +1763,8 @@ const MASA = (function () {
       cnv.className = 'pen-katman';
       gov.appendChild(cnv);
     }
+    if (cnv) cnv.classList.toggle('acik', OKU.pen.acik);
+    if (cnv && !OKU.pen.acik) cnv.classList.add('yok');
     OKU.pen.cnv = cnv;
     if (cnv) OKU.pen.ctx = cnv.getContext('2d');
     if (cnv) penBoyutla();
@@ -1867,9 +1869,11 @@ const MASA = (function () {
     const cnv = OKU.pen.cnv;
     if (cnv) {
       if (OKU.pen.acik) {
+        cnv.classList.add('acik'); cnv.classList.remove('yok');
         cnv.style.pointerEvents = 'auto';
         cnv.style.cursor = OKU.pen.arac === 'silgi' ? 'crosshair' : 'pointer';
       } else {
+        cnv.classList.remove('acik'); cnv.classList.add('yok');
         cnv.remove();
         OKU.pen.cnv = null; OKU.pen.ctx = null;
       }
@@ -1910,7 +1914,6 @@ const MASA = (function () {
   $('#okGovde').addEventListener('touchmove', penHareket, { passive: false });
   document.addEventListener('touchend', () => penBit());
   penYukle();
-  $('#okTest').onclick = () => { if (OKU.veri) soruSec(OKU.veri); };
   $('#okMesaj').onclick = () => {
     if (!OKU.veri) return;
     kocAc();

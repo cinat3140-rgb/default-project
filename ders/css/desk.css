@@ -1142,7 +1142,8 @@ body.light .koc-ai-bas{ color:var(--ana) }
 .kalem-boya:hover { transform: scale(1.18); }
 .kalem-boya.aktif { border-color: #fff; box-shadow: 0 0 0 3.5px rgba(255,255,255,.28); }
 .pen-katman { position: absolute; left: 0; top: 0; z-index: 40; display: none; }
-.pen-katman.acik { display: block; touch-action: none; }
+.pen-katman.acik { display: block; touch-action: none; pointer-events: auto; }
+.pen-katman.yok { display: none !important; pointer-events: none !important; }
 #okKalem.aktif { background: var(--ana); color: #fff; border-color: transparent; }
 /* kalem modunda: kitap sayfaları sürüklenmez, çizim birinci derece */
 .pen-katman { z-index: 340; }
