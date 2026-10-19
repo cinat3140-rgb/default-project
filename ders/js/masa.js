@@ -1295,12 +1295,24 @@ const MASA = (function () {
     masa3Tim = setInterval(masaSaat3Ciz, 1000);
   }
 
+  function masaBosHTML() {
+    return `<div class="masa-bos" style="--x:430px;--y:120px">
+      <div class="mb-ikon">📭</div>
+      <b>Masan boş</b>
+      <p>Kitaplıktaki PDF'i seç ya da yepyeniden ekle:</p>
+      <div class="mb-ekle">
+        <button class="p-btn ana" id="mBosKitap">📚 Kitaplıktan seç</button>
+        <button class="p-btn" id="mBosEkle">📤 PDF Ekle</button>
+      </div>
+    </div>`;
+  }
+
   function masaCiz() {
     const ic = $('#masaIc');
     if (!ic) return;
     const sx = 60 + (V.dosya.length % 3) * 330;
     const sy = 70 + Math.floor(V.dosya.length / 3) * 232;
-    ic.innerHTML = V.dosya.map(d => {
+    ic.innerHTML = (V.dosya.length ? V.dosya.map(d => {
       const c = rengi(d.ders);
       return `<div class="ka" style="--x:${d.x}px;--y:${d.y}px;--w:280px">
         <div class="ka-kutu" data-ac="${d.id}" style="cursor:pointer">
@@ -1314,20 +1326,20 @@ const MASA = (function () {
             <span class="et" style="background:${c}">${esc(d.ders)}</span>
             <span class="et" style="background:var(--ok)">${d.adet} soru</span>
           </div></div></div>`;
-    }).join('') + masaSaat3HTML(sx, sy);
+    }).join('') : '') + masaSaat3HTML(sx, sy);
     $$('#masaIc [data-ac]').forEach(e => e.onclick = ev => {
       kitapAc(V.dosya.find(x => x.id === e.dataset.ac));
     });
+    const mBosEkle = $('#mBosEkle');
+    if (mBosEkle) mBosEkle.onclick = () => kaydirAc();
+    const mBosKitap = $('#mBosKitap');
+    if (mBosKitap) mBosKitap.onclick = () => ekran('kutup');
     masaSaat3Bagla();
   }
 
   /* ═════════ KİTAP ═════════ */
   const OKU = { veri:null, z:1, tip:'kitap3d', cift:true, no:1, toplam:1, pdf:null, isaret:{} };
-  try {
-    const kayitliTip = localStorage.getItem('dp_ok_tip');
-    if (kayitliTip === 'kitap3d' || kayitliTip === 'cift' || kayitliTip === 'tek') OKU.tip = kayitliTip;
-  } catch (e) {}
-  OKU.cift = OKU.tip !== 'tek';
+  try { localStorage.removeItem('dp_ok_tip'); } catch (e) {}
 
   /* kitap yakınlaştırma — %25 – %400 */
   function okYakinla(yon) {
@@ -1411,64 +1423,52 @@ const MASA = (function () {
       k.appendChild(d);
     }
   }
-    async function sayfaCiz() {
-      const gov = $('#okGovde');
-      gov.classList.toggle('k3d', OKU.tip === 'kitap3d');
-      gov.innerHTML = '';
-      const ilerleme = document.createElement('div');
-      ilerleme.className = 'ok-ilerleme';
-      ilerleme.innerHTML = '<i id="okIlerleme"></i>';
-      gov.appendChild(ilerleme);
-      if (OKU.tip === 'kitap3d') return kitap3dCiz(gov);
-      const cift = OKU.cift;
-      let bas = OKU.no;
-      if (cift && bas % 2 === 0) bas--;
-      const k = document.createElement('div');
-      k.className = 'kitap' + (cift ? ' cift' : '');
-      gov.appendChild(k);
-      const liste = cift ? [bas, bas+1] : [bas];
-      /* ölçek: %25 – %400, tuval çözünürlüğü sınırlı (bellek) */
-      const CSS_GENISLIK = 620;
-      const cizim = Math.min(Math.max(OKU.z, .25), 4);
-      for (const n of liste) {
-        if (n > OKU.toplam) continue;
-        if (cift && n === bas+1) {
-          const s = document.createElement('div'); s.className = 'sirt'; k.appendChild(s);
-        }
-        const kap = document.createElement('div');
-        kap.className = 'sk';
-        if (OKU.isaret[n]) kap.style.outline = '3px solid var(--uyari)';
-        kap.dataset.sayfa = n;
-        k.appendChild(kap);
-        try {
-          const sf = await OKU.pdf.getPage(n);
-          /* tuval daima taban çözünürlükte çizilir, genişlik CSS ile ayarlanır */
-          const vp = sf.getViewport({ scale: 2 });
-          const cv = document.createElement('canvas');
-          cv.width = vp.width; cv.height = vp.height;
-          const w = document.createElement('div');
-          w.style.width = Math.round(CSS_GENISLIK * OKU.z) + 'px';
-          cv.style.width = '100%'; cv.style.height = 'auto';
-          w.appendChild(cv); kap.appendChild(w);
-          await sf.render({ canvasContext: cv.getContext('2d'), viewport: vp }).promise;
-        } catch (e) { kap.innerHTML = '<div class="sk-yazi">Açılamadı</div>'; }
-        const no = document.createElement('div'); no.className = 'sk-no'; no.textContent = n;
-        kap.appendChild(no);
-        kap.onclick = () => {
-          OKU.isaret[n] = !OKU.isaret[n];
-          kap.style.outline = OKU.isaret[n] ? '3px solid var(--uyari)' : '';
-          seritCiz();
-        };
-      }
-      /* kaydırma çubuğu ile hangi sayfada olduğunu göster */
-      gov.onscroll = () => {
-        const y = gov.scrollTop, en = gov.scrollHeight - gov.clientHeight;
-        const b = $('#okIlerleme');
-        if (b) b.style.width = (en > 0 ? (y/en*100) : 100) + '%';
-      };
-      gov.classList.toggle('pan-ol',
-        gov.scrollWidth > gov.clientWidth || gov.scrollHeight > gov.clientHeight);
-    }
+  async function sayfaCiz() {
+    const gov = $('#okGovde');
+    gov.classList.add('k3d');
+    gov.innerHTML = '';
+    const ilerleme = document.createElement('div');
+    ilerleme.className = 'ok-ilerleme';
+    ilerleme.innerHTML = '<i id="okIlerleme"></i>';
+    gov.appendChild(ilerleme);
+    OKU.cift = true;
+    await kitap3dCiz(gov);
+    gov.onscroll = () => {
+      const y = gov.scrollTop, en = gov.scrollHeight - gov.clientHeight;
+      const b = $('#okIlerleme');
+      if (b) b.style.width = (en > 0 ? (y/en*100) : 100) + '%';
+    };
+    gov.classList.toggle('pan-ol',
+      gov.scrollWidth > gov.clientWidth || gov.scrollHeight > gov.clientHeight);
+  }
+
+  /* sayfa tuvali cache — taze gör */
+  OKU.tuval = new Map();
+  function tuvalAl(n) {
+    if (OKU.tuval.has(n)) return OKU.tuval.get(n);
+    return null;
+  }
+  function tuvalDus() {
+    while (OKU.tuval.size > 14) OKU.tuval.delete(OKU.tuval.keys().next().value);
+  }
+  async function sayfaTuval(n) {
+    if (!OKU.pdf) return null;
+    if (OKU.tuval.has(n)) return OKU.tuval.get(n);
+    const sf = await OKU.pdf.getPage(n);
+    const vp = sf.getViewport({ scale: 2 });
+    const cv = document.createElement('canvas');
+    cv.width = vp.width; cv.height = vp.height;
+    await sf.render({ canvasContext: cv.getContext('2d'), viewport: vp }).promise;
+    OKU.tuval.set(n, cv);
+    tuvalDus();
+    return cv;
+  }
+  function tuvalOncu(liste) {
+    liste.forEach(n => {
+      if (OKU.tuval.has(n) || n < 1 || n > OKU.toplam) return;
+      sayfaTuval(n).catch(() => {});
+    });
+  }
 
     async function kitap3dCiz(gov) {
       if (!OKU.pdf) {
@@ -1517,15 +1517,29 @@ const MASA = (function () {
         const w = document.createElement('div');
         w.style.position = 'relative';
         try {
-          const sf = await OKU.pdf.getPage(n);
-          const vp = sf.getViewport({ scale: 2 });
-          if (i === 0) ilkYukseklik = (vp.height / 2) * z;
-          const cv = document.createElement('canvas');
-          cv.width = vp.width; cv.height = vp.height;
-          cv.style.width = '100%'; cv.style.height = 'auto';
-          w.appendChild(cv);
-          yuz.appendChild(w);
-          await sf.render({ canvasContext: cv.getContext('2d'), viewport: vp }).promise;
+          const kln = tuvalAl(n);
+          if (kln) {
+            /* cache hit — anında */
+            if (i === 0) ilkYukseklik = (kln.height / 2) * z;
+            const cv = document.createElement('canvas');
+            cv.width = kln.width; cv.height = kln.height;
+            cv.getContext('2d').drawImage(kln, 0, 0);
+            cv.style.width = '100%'; cv.style.height = 'auto';
+            w.appendChild(cv);
+            yuz.appendChild(w);
+          } else {
+            const sf = await OKU.pdf.getPage(n);
+            const vp = sf.getViewport({ scale: 2 });
+            if (i === 0) ilkYukseklik = (vp.height / 2) * z;
+            const cv = document.createElement('canvas');
+            cv.width = vp.width; cv.height = vp.height;
+            cv.style.width = '100%'; cv.style.height = 'auto';
+            w.appendChild(cv);
+            yuz.appendChild(w);
+            await sf.render({ canvasContext: cv.getContext('2d'), viewport: vp }).promise;
+            OKU.tuval.set(n, cv);
+            tuvalDus();
+          }
         } catch (e) {
           const hataK = document.createElement('div');
           hataK.className = 'sk-yazi';
@@ -1560,15 +1574,16 @@ const MASA = (function () {
         if (b) b.style.width = (en > 0 ? (y/en*100) : 100) + '%';
       };
       gov.classList.add('pan-ol');
+      tuvalOncu([base + 2, base + 3, base - 2, base - 1]);
     }
 
   let kitapDoniyor = false;
   function kitapCevir(yon) {
-    if (OKU.tip !== 'kitap3d' || !OKU.pdf || kitapDoniyor) { sayfaGit(yon); return; }
+    if (!OKU.pdf || kitapDoniyor) return;
     const kitap = $('#okGovde .kp-kitap');
-    if (!kitap) { sayfaGit(yon); return; }
+    if (!kitap) return;
     const kaynak = kitap.querySelector(yon > 0 ? '.kp-sag' : '.kp-sol');
-    if (!kaynak || sayfadaSon(yon)) { sayfaGit(yon); return; }
+    if (!kaynak || sayfadaSon(yon)) { return; }
     kitapDoniyor = true;
     const kr = kaynak.getBoundingClientRect();
     const kn = kitap.getBoundingClientRect();
@@ -1581,22 +1596,22 @@ const MASA = (function () {
     void pf.offsetWidth;
     pf.style.transform = yon > 0 ? 'rotateY(-168deg)' : 'rotateY(168deg)';
     pf.style.opacity = '.97';
-    kitap.style.transition = 'transform .38s var(--e)';
+    kitap.style.transition = 'transform .3s var(--e)';
     kitap.style.transform = 'rotateX(13deg)';
     setTimeout(() => {
       kitap.style.transform = '';
       pf.remove();
       kitapDoniyor = false;
       sayfaGit(yon);
-    }, 400);
+    }, 320);
   }
   function sayfadaSon(yon) {
-    const b = OKU.no; const sal = OKU.cift && b % 2 === 0 ? b - 1 : b;
+    const b = OKU.no; const sal = b % 2 === 0 ? b - 1 : b;
     if (yon > 0) return sal + 2 > OKU.toplam;
     return sal <= 1;
   }
   function sayfaGit(yon) {
-    let b = OKU.no; if (OKU.cift && b%2===0) b--;
+    let b = OKU.no; if (b%2===0) b--;
     let y = yon > 0 ? b+2 : b-2;
     y = Math.max(1, Math.min(OKU.toplam, y));
     if (y === OKU.no) return;
@@ -1606,24 +1621,6 @@ const MASA = (function () {
   $('#okSag').onclick = () => kitapCevir(1);
   $('#okIlk').onclick = () => okSayfayaGit(1);
   $('#okSon').onclick = () => okSayfayaGit(OKU.toplam);
-  function okTipUygula() {
-    $('#okKitap').classList.toggle('aktif', OKU.tip === 'kitap3d');
-    $('#okCift').classList.toggle('aktif', OKU.tip === 'cift');
-    $('#okTek').classList.toggle('aktif', OKU.tip === 'tek');
-    try { localStorage.setItem('dp_ok_tip', OKU.tip); } catch (e) {}
-  }
-  $('#okKitap').onclick = function () {
-    OKU.tip = 'kitap3d'; OKU.cift = true;
-    okTipUygula(); sayfaCiz();
-  };
-  $('#okCift').onclick = function () {
-    OKU.tip = 'cift'; OKU.cift = true;
-    okTipUygula(); sayfaCiz();
-  };
-  $('#okTek').onclick = function () {
-    OKU.tip = 'tek'; OKU.cift = false;
-    okTipUygula(); sayfaCiz();
-  };
   $('#okYakin').onclick = () => okYakinla(1);
   $('#okUzak').onclick = () => okYakinla(-1);
   $('#okNo').onchange = function () { okSayfayaGit(parseInt(this.value, 10) || 1); };
@@ -1721,6 +1718,7 @@ const MASA = (function () {
     $('#okuyucu').hidden = true;
     if (document.fullscreenElement) document.exitFullscreen().catch(()=>{});
     OKU.pdf = null;
+    if (OKU.tuval) OKU.tuval.clear();
     if (OKU.pen && OKU.pen.acik) { OKU.pen.acik = false; penMod(); }
   }
   $('#okKapat').onclick = kitapKapat;
@@ -1749,7 +1747,7 @@ const MASA = (function () {
       localStorage.setItem(a, JSON.stringify(k.length && OKU.pen.cizimler ? OKU.pen.cizimler : {}));
     } catch (e) {}
   }
-  function penSayfa() { return Math.max(1, OKU.no) + (OKU.tip === 'cift' ? '_' + (OKU.no + 1) : ''); }
+  function penSayfa() { return Math.max(1, OKU.no) + '_' + (OKU.no + 1); }
   function penCizimler() {
     const s = penSayfa();
     if (!OKU.pen.cizimler[s]) OKU.pen.cizimler[s] = [];
@@ -1863,7 +1861,8 @@ const MASA = (function () {
   }
   function penMod() {
     $('#kalemCubuk').hidden = !OKU.pen.acik;
-    $('#okKalem').classList.toggle('anlik', OKU.pen.acik);
+    $('#okKalem').classList.toggle('aktif', OKU.pen.acik);
+    $('#okuyucu').classList.toggle('kalem-mod', OKU.pen.acik);
     penKatman();
     const cnv = OKU.pen.cnv;
     if (cnv) {

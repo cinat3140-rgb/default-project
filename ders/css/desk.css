@@ -1143,4 +1143,33 @@ body.light .koc-ai-bas{ color:var(--ana) }
 .kalem-boya.aktif { border-color: #fff; box-shadow: 0 0 0 3.5px rgba(255,255,255,.28); }
 .pen-katman { position: absolute; left: 0; top: 0; z-index: 40; display: none; }
 .pen-katman.acik { display: block; touch-action: none; }
-#okKalem.anlik { background: var(--ana); color: #fff; border-color: transparent; }
+#okKalem.aktif { background: var(--ana); color: #fff; border-color: transparent; }
+/* kalem modunda: kitap sayfaları sürüklenmez, çizim birinci derece */
+.pen-katman { z-index: 340; }
+.okuyucu.kalem-mod .kp-yuz,
+.okuyucu.kalem-mod .kp-sirt,
+.okuyucu.kalem-mod .kp-kitap,
+.okuyucu.kalem-mod .sk { pointer-events: none !important; }
+.okuyucu.kalem-mod .pen-katman { touch-action: none; }
+/* okuyucuya gerçek masa: ahşap doku + kenar sınırları */
+.ok-govde.k3d {
+  background:
+    radial-gradient(1200px 460px at 50% 8%, rgba(255,255,255,.06), transparent 60%),
+    repeating-linear-gradient(96deg, rgba(0,0,0,.05) 0 3px, transparent 3px 7px),
+    linear-gradient(163deg, #6B4726 0%, #4E3018 46%, #36200F 100%);
+  box-shadow: inset 0 0 130px rgba(0,0,0,.55), inset 0 14px 30px rgba(0,0,0,.35);
+}
+/* boş masa durumu */
+.masa-bos {
+  position: absolute; left: var(--x, 660px); top: var(--y, 130px);
+  width: 400px;
+  background: rgba(18, 13, 9, .72);
+  border: 1.5px dashed rgba(255,255,255,.28);
+  border-radius: 18px; padding: 26px 22px;
+  text-align: center;
+  backdrop-filter: blur(5px);
+}
+.masa-bos .mb-ikon { font-size: 44px; margin-bottom: 6px; }
+.masa-bos b { font-size: 17px; color: #F5EAD2; }
+.masa-bos p { font-size: 12.5px; color: #CBB889; margin: 6px 0 14px; }
+.masa-bos .mb-ekle { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
