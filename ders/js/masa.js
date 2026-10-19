@@ -1200,9 +1200,86 @@ const MASA = (function () {
     setTimeout(() => el.classList.remove('ka-vurgu'), 2800);
   }
 
+  function masaSaat3HTML(sx, sy) {
+    const c = [...Array(12)].map((_, i) => `<i style="transform:rotate(${i*30}deg)"></i>`).join('');
+    return `<div class="sa3" style="--x:${sx}px;--y:${sy}px">
+      <div class="sa3-uc">
+        <div class="sa3-kas">
+          <div class="sa3-kadran">
+            <div class="sa3-cz">${c}</div>
+            <div class="sa3-ibree s3-saat" id="s3Sa"></div>
+            <div class="sa3-ibree s3-dk" id="s3Dk"></div>
+            <div class="sa3-ibree s3-sn" id="s3Sn"></div>
+            <div class="sa3-ort"></div>
+          </div>
+          <div class="sa3-dijital" id="s3Diji">--:--:--</div>
+          <div class="sa3-tarih" id="s3Tarih"></div>
+        </div>
+        <div class="sa3-taban"></div>
+      </div>
+      <div class="sa3-mini">
+        <div class="s3-satir">
+          <span class="et s3-rozet">⏱ Kronometre</span>
+          <b id="s3Kron">00:00</b>
+          <button class="mini-btn" id="s3KaBas" title="Başlat/Duraklat">▶</button>
+          <button class="mini-btn" id="s3KaSifir" title="Sıfırla">↺</button>
+        </div>
+        <div class="s3-satir">
+          <span class="et s3-rozet s3-sari">⏳ Zamanlayıcı</span>
+          <b id="s3Zam">25:00</b>
+          <button class="mini-btn" id="s3ZaBas" title="Başlat/Duraklat">▶</button>
+          <button class="mini-btn" id="s3ZaSifir" title="Sıfırla">↺</button>
+        </div>
+        <div class="s3-pres">
+          <button class="mini-btn" data-sz="10">10dk</button>
+          <button class="mini-btn" data-sz="25">25dk</button>
+          <button class="mini-btn" data-sz="45">45dk</button>
+          <button class="mini-btn" data-sz="50">50dk</button>
+        </div>
+      </div>
+    </div>`;
+  }
+  function masaSaat3Ciz() {
+    const d = new Date();
+    const sn = d.getSeconds(), dk = d.getMinutes(), sr = (d.getHours() % 12) * 30 + dk * .5;
+    const el = $('#s3Sn'); if (!el) return;
+    el.style.transform = `translateY(-100%) rotate(${sn*6}deg)`;
+    $('#s3Dk').style.transform = `translateY(-100%) rotate(${dk*6}deg)`;
+    $('#s3Sa').style.transform = `translateY(-100%) rotate(${sr}deg)`;
+    $('#s3Diji').textContent = saatS(d.getHours()) + ':' + saatS(d.getMinutes()) + ':' + saatS(d.getSeconds());
+    $('#s3Tarih').textContent = d.getDate() + ' ' + SAAT_AYLAR[d.getMonth()] + ' ' + d.getFullYear();
+    $('#s3Kron').textContent = bicim(SAAT.kron.sn);
+    $('#s3Zam').textContent = bicim(SAAT.zaman.kalan);
+    $('#s3KaBas').textContent = SAAT.kron.kosu ? '⏸' : '▶';
+    $('#s3ZaBas').textContent = SAAT.zaman.kosu ? '⏸' : '▶';
+  }
+  let masa3Tim = null;
+  function masaSaat3Bagla() {
+    $('#s3KaBas').onclick = () => kronToggle();
+    $('#s3ZaBas').onclick = () => zamanToggle();
+    $('#s3KaSifir').onclick = () => {
+      const k = SAAT.kron; clearInterval(k.tim); k.kosu = false; k.son = 0; k.sn = 0; saatCiz(); masaSaat3Ciz();
+    };
+    $('#s3ZaSifir').onclick = () => {
+      const z = SAAT.zaman; clearInterval(z.tim); z.kosu = false; z.son = 0; z.kalan = z.hedef * 60; saatCiz(); masaSaat3Ciz();
+    };
+    $$('#masaIc [data-sz]').forEach(b => b.onclick = () => {
+      const z = SAAT.zaman;
+      clearInterval(z.tim); z.kosu = false; z.son = 0;
+      z.hedef = +b.dataset.sz; z.kalan = z.hedef * 60;
+      saatCiz(); masaSaat3Ciz();
+    });
+    $('.sa3-kadran').onclick = () => $('#saatFab').click();
+    if (masa3Tim) clearInterval(masa3Tim);
+    masaSaat3Ciz();
+    masa3Tim = setInterval(masaSaat3Ciz, 1000);
+  }
+
   function masaCiz() {
     const ic = $('#masaIc');
     if (!ic) return;
+    const sx = 60 + (V.dosya.length % 3) * 330;
+    const sy = 70 + Math.floor(V.dosya.length / 3) * 280;
     ic.innerHTML = V.dosya.map(d => {
       const c = rengi(d.ders);
       return `<div class="ka" style="--x:${d.x}px;--y:${d.y}px;--w:280px">
@@ -1218,7 +1295,7 @@ const MASA = (function () {
             <span class="et" style="background:var(--ok)">${d.adet} soru</span>
             <button class="mini-btn duz" data-coz="${d.id}" style="margin-left:auto;padding:4px 11px;font-size:11px">Çöz</button>
           </div></div></div>`;
-    }).join('');
+    }).join('') + masaSaat3HTML(sx, sy);
     $$('#masaIc [data-ac]').forEach(e => e.onclick = ev => {
       if (ev.target.closest('[data-coz]')) return;
       kitapAc(V.dosya.find(x => x.id === e.dataset.ac));
@@ -1226,6 +1303,7 @@ const MASA = (function () {
     $$('#masaIc [data-coz]').forEach(e => e.onclick = ev => {
       ev.stopPropagation(); soruSec(V.dosya.find(x => x.id === e.dataset.coz));
     });
+    masaSaat3Bagla();
   }
 
   /* ═════════ KİTAP ═════════ */
@@ -1972,6 +2050,51 @@ const MASA = (function () {
       if (k) k.textContent = bicim(SAAT.kron.sn);
     }
   }
+  function kronToggle() {
+    const k = SAAT.kron;
+    if (k.kosu) {
+      clearInterval(k.tim); k.kosu = false; k.son = 0;
+    } else {
+      k.kosu = true; k.son = Date.now();
+      k.tim = setInterval(() => {
+        const simdi = Date.now();
+        const fark = Math.round((simdi - k.son) / 1000);
+        if (fark > 0) {
+          const yukari = Math.floor((k.sn - fark) / 60);
+          k.sn += fark; k.son = simdi;
+          const yeni = Math.floor(k.sn / 60);
+          if (yeni > yukari) {
+            V.ist.dakika = (V.ist.dakika || 0) + (yeni - yukari);
+            kaydet(); istCiz();
+          }
+        }
+        saatZamanYaz(); saatFabGuncelle();
+      }, 1000);
+    }
+    saatCiz();
+  }
+  function zamanToggle() {
+    const z = SAAT.zaman;
+    if (z.kosu) {
+      clearInterval(z.tim); z.kosu = false; z.son = 0;
+    } else {
+      if (z.kalan <= 0) z.kalan = z.hedef * 60;
+      z.kosu = true; z.son = Date.now();
+      z.tim = setInterval(() => {
+        const simdi = Date.now();
+        const fark = Math.round((simdi - z.son) / 1000);
+        if (fark > 0) { z.kalan -= fark; z.son = simdi; }
+        if (z.kalan <= 0) {
+          clearInterval(z.tim); z.kosu = false; z.son = 0;
+          bip();
+          bildir('⏰ Zamanlayıcı bitti!', 'basari');
+          z.kalan = z.hedef * 60;
+        }
+        saatZamanYaz(); saatFabGuncelle();
+      }, 1000);
+    }
+    saatCiz();
+  }
   function saatCiz() {
     const g = $('#saatGovde'); if (!g) return;
     $$('.saat-tab').forEach(b => b.classList.toggle('aktif', b.dataset.sm === SAAT.mod));
@@ -2008,27 +2131,7 @@ const MASA = (function () {
         clearInterval(z.tim); z.kosu = false; z.son = 0;
         saatCiz(); saatFabGuncelle();
       };
-      $('#saatZBas').onclick = () => {
-        if (z.kosu) {
-          clearInterval(z.tim); z.kosu = false; z.son = 0;
-        } else {
-          if (z.kalan <= 0) z.kalan = z.hedef * 60;
-          z.kosu = true; z.son = Date.now();
-          z.tim = setInterval(() => {
-            const simdi = Date.now();
-            const fark = Math.round((simdi - z.son) / 1000);
-            if (fark > 0) { z.kalan -= fark; z.son = simdi; }
-            if (z.kalan <= 0) {
-              clearInterval(z.tim); z.kosu = false; z.son = 0;
-              bip();
-              bildir('⏰ Zamanlayıcı bitti!', 'basari');
-              z.kalan = z.hedef * 60;
-            }
-            saatZamanYaz(); saatFabGuncelle();
-          }, 1000);
-        }
-        saatCiz();
-      };
+      $('#saatZBas').onclick = () => zamanToggle();
       $('#saatZSifir').onclick = () => {
         clearInterval(z.tim); z.kosu = false; z.son = 0;
         z.kalan = z.hedef * 60;
@@ -2043,28 +2146,7 @@ const MASA = (function () {
           <button class="u-btn" id="saatKSifir">↺</button>
         </div>
         <div class="saat-alt-yazi" style="margin-top:12px">📚 Bugün çalışma: <b>${V.ist.dakika || 0} dk</b></div>`;
-      $('#saatKBas').onclick = () => {
-        if (k.kosu) {
-          clearInterval(k.tim); k.kosu = false; k.son = 0;
-        } else {
-          k.kosu = true; k.son = Date.now();
-          k.tim = setInterval(() => {
-            const simdi = Date.now();
-            const fark = Math.round((simdi - k.son) / 1000);
-            if (fark > 0) {
-              const yukari = Math.floor((k.sn - fark) / 60);
-              k.sn += fark; k.son = simdi;
-              const yeni = Math.floor(k.sn / 60);
-              if (yeni > yukari) {
-                V.ist.dakika = (V.ist.dakika || 0) + (yeni - yukari);
-                kaydet(); istCiz();
-              }
-            }
-            saatZamanYaz(); saatFabGuncelle();
-          }, 1000);
-        }
-        saatCiz();
-      };
+      $('#saatKBas').onclick = () => kronToggle();
       $('#saatKSifir').onclick = () => {
         clearInterval(k.tim); k.kosu = false; k.son = 0; k.sn = 0;
         saatCiz(); saatFabGuncelle();

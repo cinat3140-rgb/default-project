@@ -990,3 +990,90 @@ body.light .koc-ai-bas{ color:var(--ana) }
                 0 18px 44px rgba(0,0,0,.35);
   }
 }
+
+/* ═════ 3D MASA SAATi (kadran + kronometre + zamanlayici) ═════ */
+.sa3 {
+  position: absolute; left: var(--x); top: var(--y);
+  width: 272px; z-index: 2;
+  user-select: none;
+}
+.sa3-uc { perspective: 900px; }
+.sa3-kas {
+  transform: rotateX(9deg) rotateY(-14deg);
+  transform-style: preserve-3d;
+  background: linear-gradient(158deg, #42301E 0%, #2C1F12 70%, #1E150C 100%);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 18px; padding: 16px 14px 13px;
+  box-shadow: 24px 30px 44px rgba(0,0,0,.5),
+              inset 0 1px 0 rgba(255,255,255,.12);
+}
+.sa3-kadran {
+  position: relative; width: 152px; height: 152px;
+  margin: 0 auto; border-radius: 50%;
+  background: radial-gradient(circle at 36% 30%, #FFFAEA, #EBE0F3 62%, #C9BAD2);
+  border: 8px solid #C9A96E;
+  cursor: pointer;
+  box-shadow: inset 0 5px 12px rgba(0,0,0,.28), 0 8px 16px rgba(0,0,0,.4);
+  transition: box-shadow .2s;
+}
+.sa3-kadran:hover { box-shadow: inset 0 5px 12px rgba(0,0,0,.28), 0 0 0 4px rgba(46,196,141,.4); }
+.sa3-cz i {
+  position: absolute; left: 50%; top: 4px;
+  width: 2px; height: 9px; margin-left: -1px;
+  background: #3A3A48; border-radius: 2px;
+  transform-origin: 1px 72px;
+}
+.sa3-cz i:nth-child(odd) { background: #8A8A98; height: 6px; }
+.sa3-ibree {
+  position: absolute; left: 50%; top: 50%;
+  border-radius: 99px; transform-origin: 50% 100%;
+  transform: translateY(-100%);
+  box-shadow: 0 2px 5px rgba(0,0,0,.25);
+}
+.s3-saat { width: 5px; height: 38px; background: #23232D; }
+.s3-dk   { width: 3.5px; height: 58px; background: #3A3A48; }
+.s3-sn   { width: 2px; height: 66px; background: #C1352B; }
+.sa3-ort {
+  position: absolute; left: 50%; top: 50%;
+  width: 10px; height: 10px; margin: -5px 0 0 -5px;
+  background: #C1352B; border-radius: 50%;
+  box-shadow: 0 0 0 2.5px #23232D, 0 2px 5px rgba(0,0,0,.4);
+  pointer-events: none;
+}
+.sa3-dijital {
+  text-align: center; margin-top: 12px;
+  font: 800 25px/1.15 var(--f, 'Segoe UI', sans-serif);
+  letter-spacing: 2.5px; color: #F3E7C8;
+  text-shadow: 0 2px 5px rgba(0,0,0,.5);
+}
+.sa3-tarih {
+  text-align: center; font-size: 10.5px; color: #D3BE8C;
+  letter-spacing: .6px; margin-top: 1px;
+}
+.sa3-taban {
+  height: 9px; width: 72%; margin: -1px auto 0;
+  background: linear-gradient(180deg, #7A5A32, #45301A);
+  border-radius: 3px 3px 5px 5px;
+  transform: rotateY(-14deg);
+  box-shadow: 0 16px 22px rgba(0,0,0,.55);
+}
+.sa3-mini {
+  margin-top: 4px;
+  background: rgba(20,14,8,.68);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 13px; padding: 10px 10px 8px;
+  backdrop-filter: blur(5px);
+}
+.s3-satir { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+.s3-rozet { font-size: 10.5px; background: var(--ok); color: #04231A; padding: 3px 8px; }
+.s3-sari  { background: #E0A73C; color: #2B1D02; }
+.s3-satir b {
+  flex: 1; text-align: right;
+  font-size: 14px; font-variant-numeric: tabular-nums;
+  color: #F1E9D6; font-weight: 800; letter-spacing: 1px;
+}
+.s3-satir .mini-btn { background: rgba(255,255,255,.13); color: #F3E7C8; border: 1px solid rgba(255,255,255,.14); }
+.s3-satir .mini-btn:hover { background: rgba(255,255,255,.26); }
+.s3-pres { display: flex; gap: 5px; margin-top: 2px; }
+.s3-pres .mini-btn { flex: 1; font-size: 10px; background: rgba(255,255,255,.08); color: #D8C89E; border: 1px solid rgba(255,255,255,.1); }
+.s3-pres .mini-btn:hover { background: var(--ok); color: #04231A; }
