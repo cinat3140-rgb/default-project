@@ -501,6 +501,22 @@ const MASA = (function () {
               tc.items.forEach(it => { t += it.str; if (it.hasEOL) t += '\n'; });
               metin += t + '\n';
             }
+            if (metin.replace(/\s/g, '').length < 320) {
+              PERDE.ac('Yazısız PDF — OCR taranıyor…', f.name + ' · görselden yazı okunuyor');
+              let ocr = '';
+              const sonSayfa = Math.min(pdf.numPages, 5);
+              for (let i = 1; i <= sonSayfa; i++) {
+                PERDE.ac('Yazısız PDF — OCR taranıyor…', f.name + ' · sayfa ' + i + '/' + sonSayfa);
+                const s2 = await pdf.getPage(i);
+                const vp2 = s2.getViewport({ scale: 1.6 });
+                const cnv = document.createElement('canvas');
+                cnv.width = vp2.width; cnv.height = vp2.height;
+                await s2.render({ canvasContext: cnv.getContext('2d'), viewport: vp2 }).promise;
+                const blb = await new Promise(r => cnv.toBlob(r, 'image/png'));
+                ocr += await ocrMetin(blb, () => {}) + '\n';
+              }
+              if (ocr.replace(/\s/g, '').length >= 320) metin = ocr;
+            }
             const ders = dersTahmin(metin) || ad.split(/[-_\s(]/)[0] || 'Genel';
             const kid = 'k' + Date.now().toString(36) + Math.random().toString(36).slice(2,5);
             const sorular = soruCikar(metin, ders, kid);
@@ -509,8 +525,9 @@ const MASA = (function () {
                            x, y, sorular });
             await ikiliYaz(kid, { veri, resim:null, sorular });
             n++;
+            if (!sorular.length) bildir(f.name + ': soru çıkarılamadı (yazı okunamadı) — kitap yine de masada', 'uyari');
             x = 60 + (V.dosya.length % 3) * 330;
-            y = 70 + Math.floor(V.dosya.length / 3) * 280;
+            y = 70 + Math.floor(V.dosya.length / 3) * 232;
           } catch (e) { bildir(f.name + ': ' + e.message, 'hata'); hata++; }
         } else if (['png','jpg','jpeg','webp'].includes(uz)) {
           gor.push(f);
@@ -810,8 +827,9 @@ const MASA = (function () {
     $$('[data-ac]').forEach(e => e.onclick = () => {
       const d = V.dosya.find(x => x.id === e.dataset.ac);
       if (!d) return;
-      ekran('masa');
-      setTimeout(() => masaVurgula(d.id), 120);
+      kitapAc(d);
+      setTimeout(() => ekran('masa'), 0);
+      setTimeout(() => masaVurgula(d.id), 150);
     });
       $$('[data-coz]').forEach(e => e.onclick = () =>
         soruSec(V.dosya.find(x => x.id === e.dataset.coz)));
@@ -1282,7 +1300,7 @@ const MASA = (function () {
     const ic = $('#masaIc');
     if (!ic) return;
     const sx = 60 + (V.dosya.length % 3) * 330;
-    const sy = 70 + Math.floor(V.dosya.length / 3) * 280;
+    const sy = 70 + Math.floor(V.dosya.length / 3) * 232;
     ic.innerHTML = V.dosya.map(d => {
       const c = rengi(d.ders);
       return `<div class="ka" style="--x:${d.x}px;--y:${d.y}px;--w:280px">

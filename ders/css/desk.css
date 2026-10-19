@@ -1095,3 +1095,17 @@ body.light .koc-ai-bas{ color:var(--ana) }
 .s3-girdi:focus { border-color: var(--ok); }
 .s3-girdi::-webkit-inner-spin-button { opacity: .5; }
 .s3-dk-s span { font-size: 10.5px; color: #CBB889; letter-spacing: .4px; }
+
+/* ═════ EŞİT ARALIK (koç çipleri + masa kartı ızgarası) ═════ */
+.koc-hizli .kh {
+  flex: 1 1 0;
+  min-width: 0;
+  text-align: center;
+}
+.kh {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ka-kutu { height: 182px; display: flex; flex-direction: column; }
+.ka-govde { flex: 1; min-height: 0; overflow: hidden; }
