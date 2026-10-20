@@ -494,21 +494,23 @@ const MASA = (function () {
             const ad = f.name.replace(/\.[^.]+$/, '');
             const pdf = await pdfjsLib.getDocument({ data: veri.slice(0) }).promise;
             let metin = '';
-            for (let i = 1; i <= Math.min(pdf.numPages, 40); i++) {
+            for (let i = 1; i <= Math.min(pdf.numPages, 25); i++) {
               const s = await pdf.getPage(i);
               const tc = await s.getTextContent();
               let t = '';
               tc.items.forEach(it => { t += it.str; if (it.hasEOL) t += '\n'; });
               metin += t + '\n';
+              PERDE.ac('PDF okunuyor…', f.name + ' · sayfa ' + i + '/' + pdf.numPages);
+              if (metin.replace(/\s/g, '').length > 4200) break;
             }
             if (metin.replace(/\s/g, '').length < 320) {
               PERDE.ac('Yazısız PDF — OCR taranıyor…', f.name + ' · görselden yazı okunuyor');
               let ocr = '';
-              const sonSayfa = Math.min(pdf.numPages, 5);
+              const sonSayfa = Math.min(pdf.numPages, 2);
               for (let i = 1; i <= sonSayfa; i++) {
                 PERDE.ac('Yazısız PDF — OCR taranıyor…', f.name + ' · sayfa ' + i + '/' + sonSayfa);
                 const s2 = await pdf.getPage(i);
-                const vp2 = s2.getViewport({ scale: 1.6 });
+                const vp2 = s2.getViewport({ scale: 1.3 });
                 const cnv = document.createElement('canvas');
                 cnv.width = vp2.width; cnv.height = vp2.height;
                 await s2.render({ canvasContext: cnv.getContext('2d'), viewport: vp2 }).promise;
@@ -516,6 +518,7 @@ const MASA = (function () {
                 ocr += await ocrMetin(blb, () => {}) + '\n';
               }
               if (ocr.replace(/\s/g, '').length >= 320) metin = ocr;
+              else metin = metin || (ad + ' (yazı okunamadı)');
             }
             const ders = dersTahmin(metin) || ad.split(/[-_\s(]/)[0] || 'Genel';
             const kid = 'k' + Date.now().toString(36) + Math.random().toString(36).slice(2,5);
