@@ -1983,9 +1983,12 @@ const MASA = (function () {
     /* anahtar yoksa: ücretsiz anahtarsız Koç (Pollinations) */
     const anahtar = aiAnahtarTemizle(V.ayar.aiAnahtar);
     if (!anahtar) {
-      const girdi = mesajlar.map(m => (m.content || '')).join('\n\n').slice(0, 2600);
+      const sys = mesajlar.filter(m => m.role === 'system').map(m => m.content).join(' ');
+      const kisi = mesajlar.filter(m => m.role !== 'system').map(m => m.content).join('\n');
       const denemeler = [
-        () => fetch('https://text.pollinations.ai/' + encodeURIComponent(girdi)),
+        () => fetch('https://text.pollinations.ai/' + encodeURIComponent(kisi.slice(0, 2000)) +
+          '?system=' + encodeURIComponent('Türkçe cevap ver. ' + sys.slice(0, 1400)) +
+          '&model=openai&seed=' + Math.floor(Math.random() * 9999) + '&max_tokens=' + (sec.mt || 500)),
         () => fetch('https://text.pollinations.ai/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -1997,12 +2000,12 @@ const MASA = (function () {
           body: JSON.stringify({ messages: mesajlar, model: 'openai' })
         })
       ];
-      for (const denemelerF of denemeler) {
+      for (const dene of denemeler) {
         try {
-          const r = await denemelerF();
+          const r = await dene();
           const m = await r.text().catch(() => '');
           if (r.ok && m && m.trim().length > 4) {
-            return m.replace(/^=[\[\]"'`]+/g, '').replace(/[\n\s]+$/, '').slice(0, 4000);
+            return m.replace(/^=[[\s"'\`]+/g, '').replace(/[\n\s]+$/, '').slice(0, 2000);
           }
         } catch (e) { /* sıradaki deneme */ }
       }
@@ -2088,16 +2091,29 @@ const MASA = (function () {
   async function kocSor(metin) {
     kocMesaj(metin, 's'); kocDusun();
     const z = zayifListe();
-    const baglam = `Bugün ${V.ist.bugun||0} soru (toplam ${V.ist.soru}, ${V.ist.dakika} dk). ` +
-      (z.length ? `Zayıf: ${z.slice(0,3).map(k=>k.ders+' — '+k.konu).join('; ')}.` : '') +
-      (OKU.veri ? ` Açık kitap: "${OKU.veri.ad}".` : '');
+    const baglam = `Bugün ${V.ist.bugun||0} soru çözdü (toplam ${V.ist.soru}, ${V.ist.dakika} dk çalışma). ` +
+      (z.length ? `Zayıf konuları: ${z.slice(0,3).map(k=>k.ders+' — '+k.konu).join('; ')}.` : '') +
+      (OKU.veri ? ` Şu an açık kitabı: "${OKU.veri.ad}".` : '');
+    /* gerçek sohbet hafızası: son 8 mesajı rolleriyle gönder */
+    const kmEl = $$('#kocMesaj .km').slice(-8).filter(x => !x.classList.contains('d'));
+    const gecmis = kmEl.map(el => {
+      const ogrenci = el.classList.contains('s');
+      return { role: ogrenci ? 'user' : 'assistant', content: el.textContent.slice(0, 600) };
+    });
+    if (gecmis.length && gecmis[gecmis.length - 1].role === 'user') {
+      /* son mesaj = şu anki soru */
+      gecmis[gecmis.length - 1].content = metin;
+    }
+      const SISTEM = 'Sen DersPark sitesinde lise öğrencisine koçluk eden kısıncı koçunsun. Türkçe konuş. ' +
+        'KURAL: Öğrencinin SON sorusuna ve yalnızca O konuya odaklan; genel tavsiye verme; kendi başına uzun yasa, plan ya da giriş metni yazma. ' +
+        'En fazla 150 kelime. Sofralı ve doğrudan konuş. Somut örnek ve maddeler kullan. ' +
+        'Konu matematiksel eğitim ya da ders konusuysa sade ve doğru anlat; emin değilsen söyle. Video önerisi uygunsan sonda [YT:konu adı] ekle.';
       try {
         PERDE.ac('Koç düşünüyor…', 'Yapay zekâ cevabı hazırlıyor');
         const cevap = await aiCagir([
-          { role:'system', content:'Sen öğrenciye koçluk yapan öretmensin. Motivasyon ver, plan öner, ' +
-            'kavramı sade anlat. Türkçe, 200-350 kelime. Video önerirken sona [YT:arama] ekle.' },
-          { role:'user', content: baglam + '\n\nÖğrenci: ' + metin }
-        ], { mt:1600 });
+          { role:'system', content: SISTEM + '\n\n[Öğrenci künyesi] ' + baglam },
+          ...gecmis
+        ], { mt:500 });
         PERDE.kapat();
         kocCevap(cevap);
       } catch (e) { PERDE.kapat(); kocCevap('❌ ' + e.message, 'y'); }
