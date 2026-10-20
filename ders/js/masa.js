@@ -1980,6 +1980,22 @@ const MASA = (function () {
   }
   async function aiGonder(mesajlar, sec) {
     sec = sec || {};
+    /* anahtar yoksa: ücretsiz anahtarsız Koç (Pollinations) */
+    const anahtar = aiAnahtarTemizle(V.ayar.aiAnahtar);
+    if (!anahtar) {
+      try {
+        const r = await fetch('https://text.pollinations.ai/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: mesajlar, model: 'openai' })
+        });
+        const m = await r.text().catch(() => '');
+        if (!r.ok || !m) throw new Error('Koç servisi şu an yoğun (' + r.status + '). Birazdan tekrar dene.');
+        return m.replace(/^[=[]["']/g, '').slice(0, 4000);
+      } catch (e) {
+        throw new Error('Koç servisi şu an yazışamıyor: ' + e.message + '\nİnternetten bağlantını kontrol et, sonra tekrar dene.');
+      }
+    }
     const t = { model: V.ayar.aiModel || 'gpt-4o-mini', messages: mesajlar,
       temperature: sec.t !== undefined ? sec.t : .4, max_tokens: sec.mt || 1600 };
     let r;
@@ -1987,7 +2003,7 @@ const MASA = (function () {
       r = await fetch(V.ayar.aiUrl, {
         method:'POST',
         headers:{ 'Content-Type':'application/json',
-                  'Authorization':'Bearer ' + aiAnahtarTemizle(V.ayar.aiAnahtar) },
+                  'Authorization':'Bearer ' + anahtar },
         body: JSON.stringify(t)
       });
     } catch (e) {
@@ -2063,11 +2079,6 @@ const MASA = (function () {
     const baglam = `Bugün ${V.ist.bugun||0} soru (toplam ${V.ist.soru}, ${V.ist.dakika} dk). ` +
       (z.length ? `Zayıf: ${z.slice(0,3).map(k=>k.ders+' — '+k.konu).join('; ')}.` : '') +
       (OKU.veri ? ` Açık kitap: "${OKU.veri.ad}".` : '');
-    if (!aiHazir()) {
-      kocCevap('🤖 **AI anahtarı bağlı değil.**\n\nAyar → AI Anahtarı\'na yapıştır.\n\n' +
-        'Ücretsiz: aistudio.google.com/app/apikey\n\nBağlayınca sorularına **gerçekten cevap veririm.**', 'y');
-      return;
-    }
       try {
         PERDE.ac('Koç düşünüyor…', 'Yapay zekâ cevabı hazırlıyor');
         const cevap = await aiCagir([
@@ -2082,16 +2093,14 @@ const MASA = (function () {
 
   async function degerlendir(soru, cevap, ok) {
     kocDusun();
-    if (aiHazir()) {
-      try {
-        kocCevap(await aiCagir([
-          { role:'system', content:'Öğretmen gibi açıkla. Türkçe, 150-250 kelime. Sona [YT:arama] ekle.' },
-          { role:'user', content:`Ders: ${soru.ders}${soru.konu?' | Konu: '+soru.konu:''}\n`+
-            `Soru: ${soru.metin}\nCevap: ${cevap}\nSonuç: ${ok?'doğru':'yanlış'}\n\nAçıkla ve video öner.` }
-        ], { mt:800 }), ok ? 'k' : 'y');
-        return;
-      } catch (e) {}
-    }
+    try {
+      kocCevap(await aiCagir([
+        { role:'system', content:'Öğretmen gibi açıkla. Türkçe, 150-250 kelime. Sona [YT:arama] ekle.' },
+        { role:'user', content:`Ders: ${soru.ders}${soru.konu?' | Konu: '+soru.konu:''}\n`+
+          `Soru: ${soru.metin}\nCevap: ${cevap}\nSonuç: ${ok?'doğru':'yanlış'}\n\nAçıkla ve video öner.` }
+      ], { mt:800 }), ok ? 'k' : 'y');
+      return;
+    } catch (e) {}
     const dM = soru.secenekler.find(x => x.harf === String(soru.cevap||'').toUpperCase());
     kocCevap((ok ? '✅ **Doğru!** Anlamışsın.\n\n' : '❌ **Yanlış.**\n') +
       (dM ? `\n**Doğru:** ${dM.harf}) ${dM.metin}\n` : '') +
@@ -2101,13 +2110,9 @@ const MASA = (function () {
     $('#koc').classList.add('acik');
     $('#uKoc').classList.add('aktif');
     kocOzet();
-    $('#kocAi').hidden = aiHazir();
+    $('#kocAi').hidden = true;
     if (!$('#kocMesaj').children.length) {
-      if (aiHazir()) {
-        kocMesaj('Merhaba! Ben **koçun**. 📚\n\nÇalış, sorun olursa yaz. Konu anlatırım, plan yaparım, video bulurum.', 'k');
-      } else {
-        kocMesaj('Merhaba! Ben **koçun**. 📚\n\nÇalış, sorun olursa yaz. Sorularına cevap vermem için **AI anahtarını** bağlamam lazım.', 'k');
-      }
+      kocMesaj('Merhaba! Ben **koçun**. 📚\n\nHemen çalışabiliriz: yaz da konuşalım. Plan yaparım, konu anlatırım, video bulurum.', 'k');
       const z = zayifListe();
       if (z.length) kocMesaj(`**${esc(z[0].konu||'temel konular')}** konusuna bak — ${z[0].hata} yanlışın var.`, 'k');
     }
