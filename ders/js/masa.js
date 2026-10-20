@@ -171,7 +171,7 @@ const MASA = (function () {
   }
 
   let V = {
-    dosya: [], zayif: {}, not: '', yanlislar: [],
+    dosya: [], zayif: {}, not: '', yanlislar: [], ad: '',
     ayar: { aiAnahtar:'', aiUrl:'https://api.openai.com/v1/chat/completions', aiModel:'gpt-4o-mini' },
     ist: { soru:0, dogru:0, yanlis:0, dakika:0, seri:0, sonGun:'', bugun:0 }
   };
@@ -730,6 +730,10 @@ const MASA = (function () {
     const ders = z.length ? [...new Set(z.slice(0,2).map(k => k.ders))] : ['Matematik'];
 
     $('#icerik').innerHTML = `<div class="ekran">
+      <div class="ad-cetvel">
+        <span class="ad-isim">👤 ${V.ad ? esc(V.ad) : 'İsimsiz öğrenci'}</span>
+        <button class="mini-btn" id="adDegistir">${V.ad ? 'Adı Değiştir' : 'İsmini Ekle'}</button>
+      </div>
       <div class="pomo" id="pomoKut">${pomoHero()}</div>
 
       <div class="ist">
@@ -785,6 +789,8 @@ const MASA = (function () {
       </div>
     </div>`;
     pomoBagla();
+    const aD = $('#adDegistir');
+    if (aD) aD.onclick = () => isimPerdeAc();
   }
 
   function bosKutu(ikon, bas, alt, ekran) {
@@ -2135,7 +2141,8 @@ const MASA = (function () {
       const SISTEM = 'Sen DersPark sitesinde lise öğrencisine koçluk eden kısıncı koçunsun. Türkçe konuş. ' +
         'KURAL: Öğrencinin SON sorusuna ve yalnızca O konuya odaklan; genel tavsiye verme; kendi başına uzun yasa, plan ya da giriş metni yazma. ' +
         'En fazla 150 kelime. Sofralı ve doğrudan konuş. Somut örnek ve maddeler kullan. ' +
-        'Konu matematiksel eğitim ya da ders konusuysa sade ve doğru anlat; emin değilsen söyle. Video önerisi uygunsan sonda [YT:konu adı] ekle.';
+        'Konu matematiksel eğitim ya da ders konusuysa sade ve doğru anlat; emin değilsen söyle. Video önerisi uygunsan sonda [YT:konu adı] ekle.' +
+        (V.ad ? ` Öğrencinin adı "${V.ad}" — ona ilk cümlede ve ustalıkla bu isimle hitap et, çok tekrarını yapma.` : '');
       try {
         PERDE.ac('Koç düşünüyor…', 'Yapay zekâ cevabı hazırlıyor');
         const cevap = await aiCagir([
@@ -2151,7 +2158,8 @@ const MASA = (function () {
     kocDusun();
     try {
       kocCevap(await aiCagir([
-        { role:'system', content:'Öğretmen gibi açıkla. Türkçe, 150-250 kelime. Sona [YT:arama] ekle.' },
+        { role:'system', content:'Öğretmen gibi açıkla. Türkçe, 150-250 kelime. Sona [YT:arama] ekle.' +
+          (V.ad ? ` Öğrencinin adı "${V.ad}".` : '') },
         { role:'user', content:`Ders: ${soru.ders}${soru.konu?' | Konu: '+soru.konu:''}\n`+
           `Soru: ${soru.metin}\nCevap: ${cevap}\nSonuç: ${ok?'doğru':'yanlış'}\n\nAçıkla ve video öner.` }
       ], { mt:800 }), ok ? 'k' : 'y');
@@ -2580,6 +2588,27 @@ const MASA = (function () {
   }
   $('#yTema').onclick = () => tema(document.body.classList.contains('light'));
 
+  /* ═════════ İSİM ═════════ */
+  function isimPerdeAc() {
+    const p = $('#isimPerde'); if (!p) return;
+    p.hidden = false;
+    const g = $('#isimGirdi');
+    g.value = V.ad || '';
+    setTimeout(() => g.focus(), 60);
+  }
+  function isimKapat() { const p = $('#isimPerde'); if (p) p.hidden = true; }
+  $('#isimKayit').onclick = () => {
+    const g = $('#isimGirdi');
+    if (!g.value.trim()) { g.focus(); return; }
+    V.ad = g.value.trim().slice(0, 24);
+    kaydet(); isimKapat(); sayfaPanel(); istCiz();
+    bildir('Merhaba ' + V.ad + '! Koç sana isminle hitap edecek.', 'basari');
+  };
+  $('#isimGirdi').onkeydown = e => {
+    if (e.key === 'Enter') { e.preventDefault(); $('#isimKayit').click(); }
+  };
+  $('#isimGec').onclick = () => isimKapat();
+
   /* ═════════ İSTATİSTİK ═════════ */
   function istCiz() {
     const b = V.ist.bugun || 0;
@@ -2661,7 +2690,8 @@ const MASA = (function () {
     if (aiHazir()) $('#kocDurum').textContent = 'Bağlı ✓';
 
     istCiz(); kocHizli(); ekran('panel');
-      setInterval(kocOzet, 20000);
+    if (!V.ad) isimPerdeAc();
+    setInterval(kocOzet, 20000);
 
       /* ═════════ KLAVYE KISAYOLLARI ═════════ */
       document.addEventListener('keydown', e => {
