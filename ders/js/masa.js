@@ -1983,18 +1983,30 @@ const MASA = (function () {
     /* anahtar yoksa: ücretsiz anahtarsız Koç (Pollinations) */
     const anahtar = aiAnahtarTemizle(V.ayar.aiAnahtar);
     if (!anahtar) {
-      try {
-        const r = await fetch('https://text.pollinations.ai/', {
+      const girdi = mesajlar.map(m => (m.content || '')).join('\n\n').slice(0, 2600);
+      const denemeler = [
+        () => fetch('https://text.pollinations.ai/' + encodeURIComponent(girdi)),
+        () => fetch('https://text.pollinations.ai/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ messages: mesajlar, model: 'openai' })
-        });
-        const m = await r.text().catch(() => '');
-        if (!r.ok || !m) throw new Error('Koç servisi şu an yoğun (' + r.status + '). Birazdan tekrar dene.');
-        return m.replace(/^[=[]["']/g, '').slice(0, 4000);
-      } catch (e) {
-        throw new Error('Koç servisi şu an yazışamıyor: ' + e.message + '\nİnternetten bağlantını kontrol et, sonra tekrar dene.');
+        }),
+        () => fetch('https://text.pollinations.ai/openai', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: mesajlar, model: 'openai' })
+        })
+      ];
+      for (const denemelerF of denemeler) {
+        try {
+          const r = await denemelerF();
+          const m = await r.text().catch(() => '');
+          if (r.ok && m && m.trim().length > 4) {
+            return m.replace(/^=[\[\]"'`]+/g, '').replace(/[\n\s]+$/, '').slice(0, 4000);
+          }
+        } catch (e) { /* sıradaki deneme */ }
       }
+      throw new Error('Koç servisi şu an yoğun ya da bağlantı yok. 15-30 sn sonra tekrar dene.');
     }
     const t = { model: V.ayar.aiModel || 'gpt-4o-mini', messages: mesajlar,
       temperature: sec.t !== undefined ? sec.t : .4, max_tokens: sec.mt || 1600 };
