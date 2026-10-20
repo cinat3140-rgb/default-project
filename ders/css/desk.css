@@ -339,6 +339,7 @@ body.men.gizli .ust{ padding-left:var(--b4) }
 /* Kartlardaki Aç butonu geniş ve belirgin */
 .dosya-alt .mini-btn.duz{ flex:1; margin-left:0; padding:10px 18px; font-size:13.5px; font-weight:700; background:var(--ana); color:#fff }
 .dosya-alt .mini-btn.tehlike{ padding:10px 14px; margin-left:0 }
+.dosya-alt .mini-btn, .ka-alt .mini-btn{ margin-left:0 }
 .ka-alt .mini-btn.duz{ flex:1; margin-left:0; padding:10px 18px; font-size:13.5px; font-weight:700; background:var(--ana); color:#fff }
 .ka-alt .mini-btn.tehlike{ padding:10px 14px; margin-left:0 }
 

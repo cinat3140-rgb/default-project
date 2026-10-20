@@ -803,6 +803,7 @@ const MASA = (function () {
       </div>
       <div class="dosya-alt">
         <button class="mini-btn duz" data-ac="${d.id}">Aç</button>
+        <button class="mini-btn" data-yen="${d.id}" title="Adı değiştir">✏️</button>
         <button class="mini-btn tehlike" data-sil="${d.id}" title="Sil">✕</button>
       </div></div>`;
     }
@@ -828,6 +829,14 @@ const MASA = (function () {
       setTimeout(() => ekran('masa'), 0);
       setTimeout(() => masaVurgula(d.id), 150);
     });
+      $$('[data-yen]').forEach(e => e.onclick = () => {
+        const d = V.dosya.find(x => x.id === e.dataset.yen);
+        if (!d) return;
+        const yeni = prompt('Dosyanın yeni adı:', d.ad);
+        if (!yeni || !yeni.trim() || yeni.trim() === d.ad) return;
+        d.ad = yeni.trim();
+        kaydet(); ciz(); bildir('Ad güncellendi: ' + d.ad, 'basari');
+      });
       $$('[data-sil]').forEach(e => e.onclick = () => {
         const d = V.dosya.find(x => x.id === e.dataset.sil);
         if (!d) return;
@@ -1317,12 +1326,22 @@ const MASA = (function () {
             <span class="ka-ad">${esc(d.ad)}</span></div>
           <div class="ka-alt">
             <button class="mini-btn duz" data-ac="${d.id}">Aç</button>
+            <button class="mini-btn" data-yen="${d.id}" title="Adı değiştir">✏️</button>
             <button class="mini-btn tehlike" data-sil="${d.id}" title="Sil">✕</button>
           </div></div></div>`;
     }).join('') : masaBosHTML()) + masaSaat3HTML(sx, sy);
     $$('#masaIc [data-ac]').forEach(e => e.onclick = ev => {
       ev.stopPropagation();
       kitapAc(V.dosya.find(x => x.id === e.dataset.ac));
+    });
+    $$('#masaIc [data-yen]').forEach(e => e.onclick = ev => {
+      ev.stopPropagation();
+      const dd = V.dosya.find(x => x.id === e.dataset.yen);
+      if (!dd) return;
+      const yeni = prompt('Dosyanın yeni adı:', dd.ad);
+      if (!yeni || !yeni.trim() || yeni.trim() === dd.ad) return;
+      dd.ad = yeni.trim();
+      kaydet(); masaCiz(); bildir('Ad güncellendi: ' + dd.ad, 'basari');
     });
     $$('#masaIc [data-sil]').forEach(e => e.onclick = ev => {
       ev.stopPropagation();
