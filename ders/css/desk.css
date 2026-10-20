@@ -365,6 +365,14 @@ body.men.gizli .ust{ padding-left:var(--b4) }
 .ad-cetvel .ad-isim{ font-weight:700; font-size:14px }
 .ad-cetvel .mini-btn{ margin-left:0 }
 
+/* ═══════ HESAP SAYFASI ═══════ */
+.hesap-form{ display:flex; flex-direction:column; gap:12px; margin-top:6px }
+.hesap-form label{ font-size:12.5px; color:var(--metin-3); font-weight:600 }
+.hesap-form input{ padding:12px 14px; border-radius:12px; background:var(--yuzey-2);
+  border:1px solid var(--cizgi); font-size:14px; outline:0 }
+.hesap-form input:focus{ border-color:var(--ana) }
+.hesap-bilgi{ display:flex; gap:14px; flex-wrap:wrap; font-size:12.5px; color:var(--metin-3) }
+
 .bos{
   text-align:center; padding:var(--b8) var(--b5);
   border:1px dashed var(--cizgi-2); border-radius:var(--r3);

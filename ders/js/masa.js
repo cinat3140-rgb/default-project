@@ -732,7 +732,7 @@ const MASA = (function () {
     $('#icerik').innerHTML = `<div class="ekran">
       <div class="ad-cetvel">
         <span class="ad-isim">👤 ${V.ad ? esc(V.ad) : 'İsimsiz öğrenci'}</span>
-        <button class="mini-btn" id="adDegistir">${V.ad ? 'Adı Değiştir' : 'İsmini Ekle'}</button>
+        <button class="mini-btn" id="adDegistir" title="İsmi değiştir">✏️</button>
       </div>
       <div class="pomo" id="pomoKut">${pomoHero()}</div>
 
@@ -791,6 +791,34 @@ const MASA = (function () {
     pomoBagla();
     const aD = $('#adDegistir');
     if (aD) aD.onclick = () => isimPerdeAc();
+  }
+
+  function sayfaHesap() {
+    $('#icerik').innerHTML = `<div class="ekran">
+      <div class="kart" style="max-width:520px">
+        <div class="k-bas"><div><h2>👤 Hesap</h2>
+          <p>İsmini buradan istediğin zaman değiştir</p></div></div>
+        <div class="hesap-form">
+          <label for="hesAd">İsmin (Koç ve site sana bu isimle hitap eder)</label>
+          <input id="hesAd" maxlength="24" placeholder="ör. Ayşe, Melih, Kanka…" value="${V.ad ? esc(V.ad) : ''}" autocomplete="off">
+          <div class="hesap-bilgi">
+            <span>📜 Bugün ${V.ist.bugun||0} soru · toplam ${V.ist.soru}</span>
+            <span>🔥 ${V.ist.seri||0} gün seri</span>
+          </div>
+          <button class="p-btn ana" id="hesKaydet" style="width:100%">💾 Kaydet</button>
+          <p class="koc-ai-not">İsim kaydın sadece senin tarayıcında saklanır.</p>
+        </div>
+      </div>
+    </div>`;
+    $('#hesKaydet').onclick = () => {
+      const g = $('#hesAd');
+      if (!g.value.trim()) { g.focus(); return; }
+      V.ad = g.value.trim().slice(0, 24);
+      kaydet(); istCiz();
+      bildir('İsmin artık: ' + V.ad, 'basari');
+      sayfaPanel();
+    };
+    $('#hesAd').onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); $('#hesKaydet').click(); } };
   }
 
   function bosKutu(ikon, bas, alt, ekran) {
@@ -2623,7 +2651,7 @@ const MASA = (function () {
   /* ═════════ EKRANLAR ═════════ */
   const AD = { panel:['Panel','Bugünkü çalışman'], kutup:['Kitaplık','Dosyaların ve soruların'],
                masa:['Masam','Kitaplarını yan yana gör'], coz:['Soru Çöz','Seç, çöz, puanını gör'],
-               koc:['Koç','Yardım ve konu anlatımı'] };
+               koc:['Koç','Yardım ve konu anlatımı'], hesap:['Hesap','Adın ve tanıtımın'] };
   function ekran(s) {
     $$('.y-item').forEach(b => b.classList.toggle('aktif', b.dataset.s === s));
     const t = AD[s] || AD.panel;
@@ -2634,6 +2662,7 @@ const MASA = (function () {
     else if (s === 'masa') sayfaMasa();
     else if (s === 'coz') sayfaCoz();
     else if (s === 'koc') kocAc();
+    else if (s === 'hesap') sayfaHesap();
     baglaDosyalar();
     window.scrollTo(0,0);
   }
@@ -2690,7 +2719,13 @@ const MASA = (function () {
     if (aiHazir()) $('#kocDurum').textContent = 'Bağlı ✓';
 
     istCiz(); kocHizli(); ekran('panel');
-    if (!V.ad) isimPerdeAc();
+    /* isim kaydı varsa veya kullanıcı bir kez 'Şimdi değil' dediyse tekrar sorma */
+    let sordumVon = false;
+    try { sordumVon = localStorage.getItem('dp_isim_sordum') === '1'; } catch (e) {}
+    if (!V.ad && !sordumVon) {
+      try { localStorage.setItem('dp_isim_sordum', '1'); } catch (e) {}
+      isimPerdeAc();
+    }
     setInterval(kocOzet, 20000);
 
       /* ═════════ KLAVYE KISAYOLLARI ═════════ */
