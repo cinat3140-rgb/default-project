@@ -2,83 +2,84 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="OpenPlay — Açık kaynak oyunları keşfedin ve indirin. Ücretsiz ve yasal.">
-<meta name="robots" content="index, follow">
-<meta name="theme-color" content="#F3F3F3" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#202020" media="(prefers-color-scheme: dark)">
-<link rel="icon" type="image/svg+xml" href="images/icons/favicon.svg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Segoe+UI+Variable:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css">
-<title>OpenPlay</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Merkez — Sitem Kümesi</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent }
+:root{ --bg:#0b0f1a; --yuz:#161d2c; --yuz2:#1d2740; --cg:#2a3650; --met:#e8edf7;
+  --met3:#8a94ab; --neon:#22d3ee;--neon2:#a78bfa; --yesil:#34d399; --sari:#fbbf24; --pembe:#f472b6 }
+body{ background:
+  radial-gradient(1100px 600px at 75% -10%, #1c2a4d 0%, transparent 60%),
+  radial-gradient(900px 600px at 8% 110%, #2a1c46 0%, transparent 55%),
+  var(--bg); color:var(--met);
+  font-family:'Segoe UI', system-ui, sans-serif; min-height:100vh;
+  display:flex; flex-direction:column; align-items:center; padding:26px 14px 44px }
+.bas{ text-align:center; margin-bottom:24px }
+.bas .uk{ font-size:52px; display:block; filter:drop-shadow(0 0 18px rgba(34,211,238,.5)) }
+.bas b{ font-size:26px; display:block; margin-top:4px }
+.bas small{ color:var(--met3); font-size:13px }
+.kutu{ width:min(720px,100%) }
+.grid{ display:grid; grid-template-columns:1fr; gap:14px }
+@media(min-width:640px){ .grid{ grid-template-columns:1fr 1fr } }
+.kart{ display:flex; flex-direction:column; gap:8px; text-decoration:none; color:var(--met);
+  cursor:pointer; border:1px solid var(--cg); border-radius:18px; padding:22px 20px;
+  background:linear-gradient(160deg,var(--yuz2),var(--yuz)); transition:.18s }
+.kart:hover{ transform:translateY(-4px); border-color:var(--renk,var(--neon));
+  box-shadow:0 14px 40px rgba(0,0,0,.35) }
+.kart .ik{ font-size:40px }
+.kart b{ font-size:17px }
+.kart small{ color:var(--met3); font-size:12px; line-height:1.5 }
+.kart .git{ align-self:flex-start; font-size:11px; font-weight:800; letter-spacing:1px;
+  color:var(--renk,var(--neon)); padding:4px 12px; border-radius:99px;
+  background:rgba(255,255,255,.06); border:1px solid var(--renk,var(--neon)); margin-top:4px }
+.altsatir{ margin-top:22px; text-align:center; color:var(--met3); font-size:12px; line-height:1.7 }
+</style>
 </head>
 <body>
 
-<nav class="navray" id="navray">
-  <a class="ray-logo" href="#/">
-    <img src="images/icons/logo.svg" alt="">
-    <span>OpenPlay</span>
-  </a>
+<div class="bas">
+  <span class="uk">🛰️</span>
+  <b>Merkez</b>
+  <small>Yaptığımız tüm siteler tek yerde — geç, kullan</small>
+</div>
 
-  <div class="ray-menu">
-    <button class="ray-genislet" id="rayGenislet" title="Menüyü genişlet">☰</button>
-    <a class="ray-link" href="#/"        data-y="#/" data-ad="Ana Sayfa"><span class="ray-ikon">🏠</span><span class="ray-yazi">Ana Sayfa</span></a>
-    <a class="ray-link" href="#/oyunlar"  data-y="#/oyunlar" data-ad="Oyunlar"><span class="ray-ikon">🎮</span><span class="ray-yazi">Oyunlar</span></a>
-    <a class="ray-link" href="#/kategori" data-y="#/kategori" data-ad="Kategoriler"><span class="ray-ikon">📁</span><span class="ray-yazi">Kategoriler</span></a>
-    <a class="ray-link" href="#/ara"      data-y="#/ara" data-ad="Arama"><span class="ray-ikon">🔍</span><span class="ray-yazi">Arama</span></a>
-    <div class="ray-ayrac"></div>
-    <a class="ray-link" href="#/hakkinda" data-y="#/hakkinda" data-ad="Hakkında"><span class="ray-ikon">ℹ️</span><span class="ray-yazi">Hakkında</span></a>
-    <a class="ray-link" href="#/iletisim" data-y="#/iletisim" data-ad="İletişim"><span class="ray-ikon">✉️</span><span class="ray-yazi">İletişim</span></a>
-    <div class="ray-spacer"></div>
-    <a class="ray-link ray-alt" href="admin.html" data-ad="Yönetim"><span class="ray-ikon">⚙️</span><span class="ray-yazi">Yönetim</span></a>
+<div class="kutu">
+  <div class="grid">
+
+    <a class="kart" style="--renk:var(--neon)" href="play/" target="_blank" rel="noopener">
+      <span class="ik">🎮</span>
+      <b>OpenPlay</b>
+      <small>Açık kaynak oyunları keşfet ve indir — ana oyun sitesi.</small>
+      <span class="git">SİTEYE GİR →</span>
+    </a>
+
+    <a class="kart" style="--renk:var(--neon)" href="ders/" target="_blank" rel="noopener">
+      <span class="ik">📚</span>
+      <b>DersPark</b>
+      <small>Ders çalışma merkezi: PDF'ini yükle, 3D kitabımda oku, kalemle yaz, soru çöz, Koç'a sor.</small>
+      <span class="git">SİTEYE GİR →</span>
+    </a>
+
+    <a class="kart" style="--renk:var(--pembe)" href="neyapsam/" target="_blank" rel="noopener">
+      <span class="ik">😐</span>
+      <b>Ne Yapsam?</b>
+      <small>Can sıkıntısı çözücü: butona bas, sana yapacak iş bulsun. Tek tuş, kategoriler, öneri yağmuru.</small>
+      <span class="git">SİTEYE GİR →</span>
+    </a>
+
+    <a class="kart" style="--renk:var(--sari)" href="bachane/" target="_blank" rel="noopener">
+      <span class="ik">🙃</span>
+      <b>Bahane Makinesi</b>
+      <small>Zor durumlar için inandırıcı bahaneler — kategori seç, üret, kopyala, kurtul.</small>
+      <span class="git">SİTEYE GİR →</span>
+    </a>
+
   </div>
-</nav>
+  <p class="altsatir">
+    Yeni site tamamlanınca burada çıkar.<br>
+    Merkez kuralı: çerez yok, hesap yok, tanıtım yok.
+  </p>
+</div>
 
-<div id="overlay"></div>
-
-<header class="ustcubuk">
-  <button class="yemek-btn" id="menuBtn">☰</button>
-  <div class="cubuk-bas" id="sayfaBaslik">Ana Sayfa</div>
-  <div class="cubuk-bos"></div>
-  <div class="arama-cubuk">
-    <span style="color:var(--metin-3)">🔍</span>
-    <input type="search" id="ustArama" placeholder="Oyun ara…" autocomplete="off">
-  </div>
-  <button class="cubuk-btn" id="temaBtn" title="Tema değiştir">🌙</button>
-  <div class="cubuk-avatar">OP</div>
-</header>
-
-<main class="icerik" id="icerik"></main>
-
-<footer class="site-alt">
-  <div class="alt-ic">
-    <div class="alt-bolum">
-      <h4>OpenPlay</h4>
-      <p>Açık kaynak lisanslı oyunları tek yerde keşfedin. Tüm oyunlar ücretsiz ve yasaldır.</p>
-    </div>
-    <div class="alt-bolum">
-      <h4>Keşfet</h4>
-      <a href="#/oyunlar">Tüm Oyunlar</a>
-      <a href="#/kategori">Kategoriler</a>
-      <a href="#/ara">Arama</a>
-    </div>
-    <div class="alt-bolum">
-      <h4>Kurumsal</h4>
-      <a href="#/hakkinda">Hakkında</a>
-      <a href="#/iletisim">İletişim</a>
-      <a href="admin.html">Yönetim</a>
-    </div>
-  </div>
-  <div class="alt-son">
-    <span>© <span id="yil"></span> OpenPlay</span>
-    <span>Açık kaynak oyunlar topluluğu</span>
-  </div>
-</footer>
-
-<div class="bildirim-kap" id="bildirimler"></div>
-
-<script src="js/site.js"></script>
 </body>
 </html>

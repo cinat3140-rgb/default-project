@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="OpenPlay — Açık kaynak oyunları keşfedin ve indirin. Ücretsiz ve yasal.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#F3F3F3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#202020" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/svg+xml" href="images/icons/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Segoe+UI+Variable:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<title>OpenPlay</title>
+</head>
+<body>
+
+<nav class="navray" id="navray">
+  <a class="ray-logo" href="#/">
+    <img src="images/icons/logo.svg" alt="">
+    <span>OpenPlay</span>
+  </a>
+
+  <div class="ray-menu">
+    <button class="ray-genislet" id="rayGenislet" title="Menüyü genişlet">☰</button>
+    <a class="ray-link" href="#/"        data-y="#/" data-ad="Ana Sayfa"><span class="ray-ikon">🏠</span><span class="ray-yazi">Ana Sayfa</span></a>
+    <a class="ray-link" href="#/oyunlar"  data-y="#/oyunlar" data-ad="Oyunlar"><span class="ray-ikon">🎮</span><span class="ray-yazi">Oyunlar</span></a>
+    <a class="ray-link" href="#/kategori" data-y="#/kategori" data-ad="Kategoriler"><span class="ray-ikon">📁</span><span class="ray-yazi">Kategoriler</span></a>
+    <a class="ray-link" href="#/ara"      data-y="#/ara" data-ad="Arama"><span class="ray-ikon">🔍</span><span class="ray-yazi">Arama</span></a>
+    <div class="ray-ayrac"></div>
+    <a class="ray-link" href="#/hakkinda" data-y="#/hakkinda" data-ad="Hakkında"><span class="ray-ikon">ℹ️</span><span class="ray-yazi">Hakkında</span></a>
+    <a class="ray-link" href="#/iletisim" data-y="#/iletisim" data-ad="İletişim"><span class="ray-ikon">✉️</span><span class="ray-yazi">İletişim</span></a>
+    <div class="ray-spacer"></div>
+    <a class="ray-link ray-alt" href="admin.html" data-ad="Yönetim"><span class="ray-ikon">⚙️</span><span class="ray-yazi">Yönetim</span></a>
+  </div>
+</nav>
+
+<div id="overlay"></div>
+
+<header class="ustcubuk">
+  <button class="yemek-btn" id="menuBtn">☰</button>
+  <div class="cubuk-bas" id="sayfaBaslik">Ana Sayfa</div>
+  <div class="cubuk-bos"></div>
+  <div class="arama-cubuk">
+    <span style="color:var(--metin-3)">🔍</span>
+    <input type="search" id="ustArama" placeholder="Oyun ara…" autocomplete="off">
+  </div>
+  <button class="cubuk-btn" id="temaBtn" title="Tema değiştir">🌙</button>
+  <div class="cubuk-avatar">OP</div>
+</header>
+
+<main class="icerik" id="icerik"></main>
+
+<footer class="site-alt">
+  <div class="alt-ic">
+    <div class="alt-bolum">
+      <h4>OpenPlay</h4>
+      <p>Açık kaynak lisanslı oyunları tek yerde keşfedin. Tüm oyunlar ücretsiz ve yasaldır.</p>
+    </div>
+    <div class="alt-bolum">
+      <h4>Keşfet</h4>
+      <a href="#/oyunlar">Tüm Oyunlar</a>
+      <a href="#/kategori">Kategoriler</a>
+      <a href="#/ara">Arama</a>
+    </div>
+    <div class="alt-bolum">
+      <h4>Kurumsal</h4>
+      <a href="#/hakkinda">Hakkında</a>
+      <a href="#/iletisim">İletişim</a>
+      <a href="admin.html">Yönetim</a>
+    </div>
+  </div>
+  <div class="alt-son">
+    <span>© <span id="yil"></span> OpenPlay</span>
+    <span>Açık kaynak oyunlar topluluğu</span>
+  </div>
+</footer>
+
+<div class="bildirim-kap" id="bildirimler"></div>
+
+<script src="js/site.js"></script>
+</body>
+</html>
