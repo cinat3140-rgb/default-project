@@ -570,7 +570,7 @@ const MASA = (function () {
       }
 
 
-    kaydet(); ciz();
+    kaydet(); sayfaMasa();
     PERDE.kapat();
     if (n) {
       bildir(n + ' dosya eklendi — kitap masada', 'basari');
@@ -835,7 +835,7 @@ const MASA = (function () {
         const yeni = prompt('Dosyanın yeni adı:', d.ad);
         if (!yeni || !yeni.trim() || yeni.trim() === d.ad) return;
         d.ad = yeni.trim();
-        kaydet(); ciz(); bildir('Ad güncellendi: ' + d.ad, 'basari');
+        kaydet(); ekran('kutup'); bildir('Ad güncellendi: ' + d.ad, 'basari');
       });
       $$('[data-sil]').forEach(e => e.onclick = () => {
         const d = V.dosya.find(x => x.id === e.dataset.sil);
@@ -844,7 +844,7 @@ const MASA = (function () {
         V.dosya = V.dosya.filter(x => x.id !== e.dataset.sil);
         V.dosya.forEach((x, i) => x.no = i + 1);
         ikiliSil(e.dataset.sil);
-        kaydet(); ciz(); ekran('kutup');
+        kaydet(); ekran('kutup');
         bildir('Silindi', 'basari');
       });
 
