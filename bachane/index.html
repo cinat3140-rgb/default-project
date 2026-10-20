@@ -18,32 +18,21 @@ body{ background:
 .bas .uk{ font-size:46px; display:block; filter:drop-shadow(0 0 16px rgba(251,191,36,.5)) }
 .bas b{ font-size:22px; display:block; margin-top:6px }
 .bas small{ color:var(--met3); font-size:12.5px }
-
 .kutu{ width:min(560px,100%); background:var(--yuz); border:1px solid var(--cg);
   border-radius:20px; padding:22px; text-align:center }
-
-.filtre{ display:flex; gap:7px; justify-content:center; flex-wrap:wrap; margin-bottom:18px }
-.filtre button{ cursor:pointer; border:1px solid var(--cg); background:var(--yuz2);
-  color:var(--met); border-radius:99px; padding:7px 15px; font-size:12.5px; font-weight:700 }
-.filtre button.aktif{ background:var(--esas); color:#2a1c00; border-color:transparent }
-
 .card{ min-height:170px; display:flex; flex-direction:column; align-items:center;
   justify-content:center; gap:10px; border-radius:16px; padding:20px 16px;
   background:var(--yuz2); border:1px solid var(--cg); margin-bottom:18px }
 .card .ik{ font-size:48px }
 .card h2{ font-size:19px; line-height:1.4 }
 .card p{ color:var(--met3); font-size:13.5px; line-height:1.55; max-width:430px }
-.card .til{ font-size:11px; font-weight:700; color:var(--esas);
-  letter-spacing:1px; padding:4px 12px; border-radius:99px; background:rgba(251,191,36,.12) }
 .card.pop{ animation:pop .35s cubic-bezier(.2,1.6,.4,1) }
 @keyframes pop{ 0%{ transform:scale(.85); opacity:0 } 100%{ transform:scale(1); opacity:1 } }
-
 .buyuk{ padding:18px 34px; border-radius:99px; border:none; cursor:pointer;
   background:linear-gradient(135deg,var(--esas),var(--esas2)); color:#2a1c00;
   font-size:20px; font-weight:900; box-shadow:0 10px 30px rgba(251,191,36,.25);
   transition:transform .12s }
 .buyuk:active{ transform:scale(.95) }
-
 .alt{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:18px }
 .alt button{ cursor:pointer; border:1px solid var(--cg); background:var(--yuz2);
   color:var(--met); border-radius:10px; padding:9px 15px; font-size:13px; font-weight:600 }
@@ -56,23 +45,14 @@ body{ background:
 <div class="bas">
   <span class="uk">🙃</span>
   <b>Bahane Makinesi</b>
-  <small>Rahat bırak bu dünyada: butona bas, inandırıcı bahane hazır</small>
+  <small>Kankalara özel: saçma ama inandırıcı bahaneler. Kopyala, gönder, kurtul.</small>
 </div>
 
 <div class="kutu">
-  <div class="filtre" id="filtre">
-    <button data-f="hepsi" class="aktif">🎲 Hepsi</button>
-    <button data-f="is">🏢 İş / Patron</button>
-    <button data-f="okul">🏫 Okul / Hoca</button>
-    <button data-f="arkadas">🤝 Arkadaş / Buluşma</button>
-    <button data-f="aile">🏠 Aile / Yemeğe Geç</button>
-  </div>
-
   <div class="card" id="kart">
     <span class="ik" id="kIk">🤔</span>
-    <span class="til" id="kTil" hidden></span>
     <h2 id="kBas">Butona bas</h2>
-    <p id="kAlt">Sana durumu kurtaran bir bahane üreteceğim. Kopyala, gönder, rahatla.</p>
+    <p id="kAlt">Sana kankalarını ikna edecek bir bahane üreteceğim.</p>
   </div>
 
   <button class="buyuk" id="buyuk">BAHANE ÜRET 🎯</button>
@@ -86,67 +66,47 @@ body{ background:
 
 <script>
 const B = [
-  ["🏢","is","'Ailevi bir acil durum çıktı, bugün izin istiyorum'","Detaya girmezsin. 'Acil ve özel' demek yeterli; kimse soru sormaz.","İş / Patron"],
-  ["🏢","is","'İnternet kesildi, bugün bağlanamıyorum'","'Bölgede genel arıza var, teknik ekip çalışıyor' de. Kanıt isteyen olmaz.","İş / Patron"],
-  ["🏢","is","'Toplantıyı görmemişim, takvim çakışması oldu'","'Görev takvimime eklenmemiş, üzgünüm; yarın telafisi var' de.","İş / Patron"],
-  ["🏢","is","'Doktor kontrolüne gitmem gerek'","'Rutin kontrol, doktor randevusu akşama çakıştı. Sonra bağlanırım.'","İş / Patron"],
-  ["🏢","is","'Arabam serviste'","'Bu sabah çalışmadı, servise verdim. Akşam teslim alıyorum.'","İş / Patron"],
-  ["🏢","is","'Doğalgaz sayaç kontrolü için evde olmam gerekiyor'","'Şirket randevu verdi, evde beklemem şart. 1-2 saat çıkamam.'","İş / Patron"],
-  ["🏫","okul","'Bugün ateşim çıktı, raporu akşam gönderirim'","'Okula gelmeden önce ateşimi ölçtüm, 38 derece. Dinleneceğim.'","Okul / Hoca"],
-  ["🏫","okul","'Sunum dosyam bozuldu, yarın hazır ederim'","'Bilgisayarda dosya kurtarılamadı, bu haliyle sunamam. Yarın telafi ediyorum.'","Okul / Hoca"],
-  ["🏫","okul","'Evde su kesintisi var'","'Sabah erken kesildi, duş alamadım; öğleye düzelir, sonra hocayla konuşurum.'","Okul / Hoca"],
-  ["🏫","okul","'Servisim gecikti, otobüsü de kaçırdım'","'Servis 20 dakika gecikti, alternatif otobüs de şoför değişikliği yüzünden duraksadı.'","Okul / Hoca"],
-  ["🏫","okul","'Aile üniversite tanıtım fuarına beni davet etti'","'Kardeşim için ailem beni de çağırdı; yarın derse kati olacağım.'","Okul / Hoca"],
-  ["🤝","arkadas","'Bugün aile misafiri geldi, başka güne alalım'","'Ailenin misafirleri geldi, evden ayrılamıyorum. Yarın buluşuruz.'","Arkadaş / Buluşma"],
-  ["🤝","arkadas","'Önce bir yere götürüp sonra katılırım'","'Küçük bir aile işi çıktı, 1 saat sonra yetişirim. Yer bile değiştirmeyin.'","Arkadaş / Buluşma"],
-  ["🤝","arkadas","'Telefonum öldü, buluşmaya gelmeye çalışıyorum'","'Şarjım bitti, kaldırımda şarj arıyorum. 20 dakika sonra oradayım.'","Arkadaş / Buluşma"],
-  ["🤝","arkadas","'Bilgisayarda acil iş çıktı, yarın görüşelim'","'İş çıkışında acil bir şey belirdi, bitiremem. Yarın hallederiz.'","Arkadaş / Buluşma"],
-  ["🤝","arkadas","'Bugün ciddi bir öncelik çıktı, yarın görüşürüz'","'Öncelikli bir iş belirdi, bugün olmaz. Yarın mutlaka buluşalım.'","Arkadaş / Buluşma"],
-  ["🤝","arkadas","'Şarjım %3, eve ulaşınca yazarım'","'Telefonum %3'te, yolda kapanır. Eve varınca yazacağım.'","Arkadaş / Buluşma"],
-  ["🤝","arkadas","'Bugün çok yorgunum, yarın daha iyi görüşürüz'","'Bu hafta bitik durumdayım, bugün dinlenmem gerek. Yarın buluşalım.'","Arkadaş / Buluşma"],
-  ["🤝","arkadas","'Bugün ev işleri bitmez, geç gelirim'","'Ev işleri sıra bekliyor; bitince bağlanacağım. İyi eğlenceler.'","Arkadaş / Buluşma"],
-  ["🤝","arkadas","'Bugün bütçem boş, sonrakine ben çıkarım'","'Bu ayın bütçesi bitti. Sonraki buluşmada ben çıkarım, söz.'","Arkadaş / Buluşma"],
-  ["🤝","arkadas","'Ailem bugün beni yemeğe davet etti, katılamam'","'Ailem yemeğe beni de çağırdı; geri dönüşü yok, yarın telafi ederim.'","Arkadaş / Buluşma"],
-  ["🤝","arkadas","'Bugün kendimi iyi hissetmiyorum, yarın konuşuruz'","'Horga gibiyim, dinlenmem gerek. Yarın kontrol edip haber veririm.'","Arkadaş / Buluşma"],
-  ["🤝","arkadas","'Ödev ve raporum bugün bitmeyecek, sonradan katılırım'","'Ödev işi uzadı. 40 dakika sonra bağlanacağım, beni bekleyin.'","Arkadaş / Buluşma"],
-  ["🤝","arkadas","'Bugün trafikte sıkıştım, geç yetişirim'","'Yolda trafik kilit. 30 dakikada yola çıkarım, gelmeyi garanti ederim.'","Arkadaş / Buluşma"],
-  ["🤝","arkadas","'Bugün online katılırım'","'Bugün eve gidemem; ses/video ile katılırım, çok yoğundum.'","Arkadaş / Buluşma"],
-  ["🏠","aile","'Trafik haberinde kaza var, 40 dakika geç kalırım'","'Ana yolda kaza ediyorlar; öğle yemeği başlayabilir, ben yetişirim.'","Aile / Yemeğe Geç"],
-  ["🏠","aile","'Komşudan acil telefon geldi, gelemiyorum'","'Komşunun işi çıktı, yardım etmem gerek. Yarın telafi ederim.'","Aile / Yemeğe Geç"],
-  ["🏠","aile","'Bulaşık makinesi taştı, zemini sildikten sonra gelirim'","'Mutfakta su taşmış, hemen temizliyorum. Yarın telafi ederim.'","Aile / Yemeğe Geç"],
-  ["🏠","aile","'Bu akşam işim bitmez, yarın netleşelim'","'Bugün akşama iş bitmeyecek, kayıtları yarın sizinle planlarım.'","Aile / Yemeğe Geç"],
-  ["🏠","aile","'Trafikte sıkıştım, geç yetişirim'","'Ana yolda kaza var, 30 dakikada yola çıkarım. Beklemeyin, ben yetişirim.'","Aile / Yemeğe Geç"],
-  ["🏠","aile","'Komşudan acil telefon geldi, gelemiyorum'","'Komşunun işi çıktı, yardım etmem gerek. Yarın telafi ederim.'","Aile / Yemeğe Geç"],
-  ["🏠","aile","'Bulaşık makinesi taştı, zemini sildikten sonra gelirim'","'Mutfakta su taşmış, hemen temizliyorum. Yarın telafi ederim.'","Aile / Yemeğe Geç"],
-  ["🏠","aile","'Bugün yorgunlukta yatmaktayım, yarın katılırım'","'Bugün uykuya yenilgim var; bugün gelip katılamam. Yarın konuşuruz.'","Aile / Yemeğe Geç"]
+  ["🐱","Kanka kedimin maması bitti, mağaza kapanıyor. Yarın kahve benden.","Hayvan işi önce gelir. Kahve sözü buluşmayı kurtarır."],
+  ["🔋","Kanka şarjım yüzde üç kaldı, eve girince yazarım.","Pil hakkı tartışmasız. Eve varınca mesaj atarsın."],
+  ["🧹","Kanka annem temizlik tutturdu, odamı toplamam gerek. Bitince yazarım.","Anne emri geçer. Bitince mesaj atarsın."],
+  ["🎓","Kanka hocam proje dosyasını bekliyor, teslim ediyorum. Bir saat sonra yetişirim.","Proje teslimi önemli. Saat verirsen kanka bekler."],
+  ["🚗","Kanka arabamın lastiği patladı, servise bıraktım. Yarın buluşalım.","Lastik patlaması kimseye tuhaf gelmez. Yarına söz var."],
+  ["👨‍👩‍👧","Kanka aile yemeğine kaldım, çıkamam. Yarın saat sekizde oradayım.","Aile yemeği pas geçilmez. Kesin saat verirsin."],
+  ["🛠️","Kanka musluk patladı, tamirci kapıda. Yarın konuşuruz.","Ev tamiri acildir. Kimse tartışmadan kabul eder."],
+  ["🏥","Kanka ablama hastane randevusu çıktı, götürmem gerek.","Hastane görevi kimseye açıklanmaz bile."],
+  ["🚦","Kanka asansör bozuldu, merdivenden inmem lazım. Geç yetişirim.","Asansör arızası klasik. Geç gelmak normal sayılır."],
+  ["🩺","Kanka doktora gittim, dinlenmemi önerdi. Akşam katılırım.","Doktor önerisi pazarlıksız. Akşam buluşmayı kurtarır."],
+  ["📱","Kanka telefonum servise girdi, ikinci telefonla ararım. Akşam yer bulabiliriz.","Servis hikayesi kesin. Akşam planı kalır."],
+  ["🐕","Kanka köpeğimi yürüyüşe çıkardım, yorgunum. Yarın kebap benden.","Köpek işi kutsal. Kebap sözüyle buluşma güvencede."],
+  ["🎬","Kanka ailem film akşamı yapıyor, bugün çıkamam. Yarın kahve benden.","Aile akşamı olmazsa olmaz. Kahve sözü iyi durur."],
+  ["🧑‍🍳","Kanka abime yemek taşıyorum, kırk beş dakikada yetişirim. Beni bekleyin.","Yemek taşıma görevi sağlam. Süre belli, kanka bekler."],
+  ["🚑","Kanka komşumun tesisatı patladı, yardım ediyorum. Yarın buluşuruz.","Komşu yardımı iyidir. Hiç kimse soru sormaz."],
+  ["🎮","Kanka bugün konsolda yazılım güncellemesi uzun sürüyor, evdeyim. Yarın konuşuruz.","Güncelleme esprili. Yarına netleşme bırakılır."],
+  ["🥱","Kanka bugün çok yorgunum, eve yatayım. Yarın iyi görüşürüz.","Yorgunluk her zaman kabul edilir. Yarına söz verirsin."],
 ];
 
 const kart = document.getElementById('kart');
 const kartIk = document.getElementById('kIk');
-const kartTil = document.getElementById('kTil');
 const kartBas = document.getElementById('kBas');
 const kartAlt = document.getElementById('kAlt');
 const buyuk = document.getElementById('buyuk');
 const sayacEl = document.getElementById('sayac');
-const filtreEl = document.getElementById('filtre');
 
-let filtre = 'hepsi', adet = 0;
+let adet = 0;
 const gecmis = [];
 
 function rastgele() {
-  const havuz = B.filter(b => filtre === 'hepsi' || b[1] === filtre).filter(b => b[2] && b[3] && b[4]);
-  if (!havuz.length) return;
+  if (!B.length) return;
   let sec;
-  do { sec = havuz[Math.floor(Math.random() * havuz.length)]; }
-  while (havuz.length > 1 && gecmis.includes(sec[2]) && gecmis.length < havuz.length);
-  gecmis.push(sec[2]); if (gecmis.length > 6) gecmis.shift();
+  do { sec = B[Math.floor(Math.random() * B.length)]; }
+  while (B.length > 1 && gecmis.includes(sec[1]) && gecmis.length < B.length);
+  gecmis.push(sec[1]); if (gecmis.length > 7) gecmis.shift();
   kartIk.textContent = sec[0];
-  kartTil.hidden = false; kartTil.textContent = '📌 ' + sec[4];
-  kartBas.textContent = sec[2];
-  kartAlt.textContent = sec[3];
+  kartBas.textContent = sec[1];
+  kartAlt.textContent = sec[2];
   kart.classList.remove('pop'); void kart.offsetWidth; kart.classList.add('pop');
   adet++;
-  sayacEl.textContent = adet + ' bahane ürettin — sen bir kurtarıcısın 😉';
+  sayacEl.textContent = adet + ' bahane ürettin — kankalar sana şaşırdı 😉';
   try { localStorage.setItem('bm_adet', adet); } catch (e) {}
 }
 try { adet = parseInt(localStorage.getItem('bm_adet'), 10) || 0; } catch (e) {}
@@ -155,17 +115,10 @@ sayacEl.textContent = adet ? adet + ' bahane ürettin — devam!' : '0 bahane ü
 buyuk.onclick = rastgele;
 document.getElementById('baska').onclick = rastgele;
 document.getElementById('kopya').onclick = () => {
-  const m = kartBas.textContent;
-  navigator.clipboard.writeText(m).then(() => {
+  navigator.clipboard.writeText(kartBas.textContent).then(() => {
     document.getElementById('kopya').textContent = '✅ Kopyalandı';
     setTimeout(() => document.getElementById('kopya').textContent = '📋 Kopyala', 1400);
   });
-};
-filtreEl.onclick = e => {
-  const b = e.target.closest('button'); if (!b) return;
-  filtre = b.dataset.f;
-  filtreEl.querySelectorAll('button').forEach(x => x.classList.toggle('aktif', x === b));
-  rastgele();
 };
 </script>
 </body>
