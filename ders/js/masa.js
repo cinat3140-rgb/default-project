@@ -753,7 +753,7 @@ const MASA = (function () {
       <div class="izgara iz-2">
         <div class="kart">
           <div class="k-bas"><div><h2>📚 Kitaplık</h2>
-            <p>${V.dosya.length} dosya · ${V.dosya.reduce((t,d)=>t+d.adet,0)} soru</p></div></div>
+            <p>${V.dosya.length} dosya</p></div></div>
           ${V.dosya.length ? `<div class="izgara iz-auto">${V.dosya.slice(0,4).map(dosyaKarti).join('')}</div>`
             : bosKutu('📚','Kitaplık boş','PDF veya soru fotoğrafı ekle', 'yukle')}
         </div>
@@ -819,7 +819,7 @@ const MASA = (function () {
   function sayfaKutup() {
     $('#icerik').innerHTML = `<div class="ekran">
       <div class="k-bas"><div><h2>Kitaplık</h2>
-        <p>${V.dosya.length} dosya · toplam ${V.dosya.reduce((t,d)=>t+d.adet,0)} soru</p></div>
+        <p>${V.dosya.length} dosya</p></div>
         <button class="p-btn ana" data-git="yukle">📤 PDF Ekle</button></div>
       ${V.dosya.length ? `<div class="izgara iz-auto">${V.dosya.map(dosyaKarti).join('')}</div>`
         : bosKutu('📭','Kitaplık boş','PDF veya soru fotoğrafı ekle', 'yukle')}
@@ -867,7 +867,7 @@ const MASA = (function () {
     const z = zayifListe();
     $('#icerik').innerHTML = `<div class="ekran">
       <div class="k-bas"><div><h2>Soru Çöz</h2>
-        <p>${V.dosya.reduce((t,d)=>t+d.adet,0)} soru hazır</p></div></div>
+        <p>Seç, çöz, puanını gör</p></div></div>
 
       ${V.dosya.length ? `
       <div class="izgara iz-2">
@@ -875,7 +875,7 @@ const MASA = (function () {
           <p style="margin-bottom:16px">Hangi dosyanın sorularını çözeceksin?</p>
           <div class="izgara" style="gap:8px">
             ${V.dosya.map(d => `<button class="p-btn" data-coz="${d.id}" style="justify-content:space-between">
-              <span>${esc(d.ad)}</span><span style="color:var(--metin-3)">${d.adet} soru</span>
+              <span>${esc(d.ad)}</span>
             </button>`).join('')}
           </div>
         </div>
