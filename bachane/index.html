@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bahane Makinesi</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent }
+:root{ --bg:#0b0f1a; --yuz:#161d2c; --yuz2:#1d2740; --cg:#2a3650; --met:#e8edf7;
+  --met3:#8a94ab; --esas:#fbbf24; --esas2:#f59e0b }
+body{ background:
+  radial-gradient(1000px 600px at 80% -10%, #3a2f12 0%, transparent 60%),
+  radial-gradient(900px 500px at 10% 110%, #2a1c46 0%, transparent 55%),
+  var(--bg); color:var(--met);
+  font-family:'Segoe UI', system-ui, sans-serif; min-height:100vh;
+  display:flex; flex-direction:column; align-items:center; padding:24px 14px 40px }
+.bas{ text-align:center; margin-bottom:20px }
+.bas .uk{ font-size:46px; display:block; filter:drop-shadow(0 0 16px rgba(251,191,36,.5)) }
+.bas b{ font-size:22px; display:block; margin-top:6px }
+.bas small{ color:var(--met3); font-size:12.5px }
+
+.kutu{ width:min(560px,100%); background:var(--yuz); border:1px solid var(--cg);
+  border-radius:20px; padding:22px; text-align:center }
+
+.filtre{ display:flex; gap:7px; justify-content:center; flex-wrap:wrap; margin-bottom:18px }
+.filtre button{ cursor:pointer; border:1px solid var(--cg); background:var(--yuz2);
+  color:var(--met); border-radius:99px; padding:7px 15px; font-size:12.5px; font-weight:700 }
+.filtre button.aktif{ background:var(--esas); color:#2a1c00; border-color:transparent }
+
+.card{ min-height:170px; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:10px; border-radius:16px; padding:20px 16px;
+  background:var(--yuz2); border:1px solid var(--cg); margin-bottom:18px }
+.card .ik{ font-size:48px }
+.card h2{ font-size:19px; line-height:1.4 }
+.card p{ color:var(--met3); font-size:13.5px; line-height:1.55; max-width:430px }
+.card .til{ font-size:11px; font-weight:700; color:var(--esas);
+  letter-spacing:1px; padding:4px 12px; border-radius:99px; background:rgba(251,191,36,.12) }
+.card.pop{ animation:pop .35s cubic-bezier(.2,1.6,.4,1) }
+@keyframes pop{ 0%{ transform:scale(.85); opacity:0 } 100%{ transform:scale(1); opacity:1 } }
+
+.buyuk{ padding:18px 34px; border-radius:99px; border:none; cursor:pointer;
+  background:linear-gradient(135deg,var(--esas),var(--esas2)); color:#2a1c00;
+  font-size:20px; font-weight:900; box-shadow:0 10px 30px rgba(251,191,36,.25);
+  transition:transform .12s }
+.buyuk:active{ transform:scale(.95) }
+
+.alt{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:18px }
+.alt button{ cursor:pointer; border:1px solid var(--cg); background:var(--yuz2);
+  color:var(--met); border-radius:10px; padding:9px 15px; font-size:13px; font-weight:600 }
+.alt button:hover{ border-color:var(--esas) }
+.sayac{ margin-top:14px; font-size:12px; color:var(--met3) }
+</style>
+</head>
+<body>
+
+<div class="bas">
+  <span class="uk">🙃</span>
+  <b>Bahane Makinesi</b>
+  <small>Rahat bırak bu dünyada: butona bas, inandırıcı bahane hazır</small>
+</div>
+
+<div class="kutu">
+  <div class="filtre" id="filtre">
+    <button data-f="hepsi" class="aktif">🎲 Hepsi</button>
+    <button data-f="is">🏢 İş / Patron</button>
+    <button data-f="okul">🏫 Okul / Hoca</button>
+    <button data-f="arkadas">🤝 Arkadaş / Buluşma</button>
+    <button data-f="aile">🏠 Aile / Yemeğe Geç</button>
+  </div>
+
+  <div class="card" id="kart">
+    <span class="ik" id="kIk">🤔</span>
+    <span class="til" id="kTil" hidden></span>
+    <h2 id="kBas">Butona bas</h2>
+    <p id="kAlt">Sana durumu kurtaran bir bahane üreteceğim. Kopyala, gönder, rahatla.</p>
+  </div>
+
+  <button class="buyuk" id="buyuk">BAHANE ÜRET 🎯</button>
+
+  <div class="alt">
+    <button id="kopya">📋 Kopyala</button>
+    <button id="baska">➡️ Başka Bahane</button>
+  </div>
+  <p class="sayac" id="sayac">0 bahane ürettin</p>
+</div>
+
+<script>
+const B = [
+  ["🏢","is","'Ailevi bir acil durum çıktı, bugün izin istiyorum'","Detaya girmezsin. 'Acil ve özel' demek yeterli; kimse soru sormaz.","İş / Patron"],
+  ["🏢","is","'İnternet kesildi, bugün bağlanamıyorum'","'Bölgede genel arıza var, teknik ekip çalışıyor' de. Kanıt isteyen olmaz.","İş / Patron"],
+  ["🏢","is","'Toplantıyı görmemişim, takvim çakışması oldu'","'Görev takvimime eklenmemiş, üzgünüm; yarın telafisi var' de.","İş / Patron"],
+  ["🏢","is","'Doktor kontrolüne gitmem gerek'","'Rutin kontrol, doktor randevusu akşama çakıştı. Sonra bağlanırım.'","İş / Patron"],
+  ["🏢","is","'Arabam serviste'","'Bu sabah çalışmadı, servise verdim. Akşam teslim alıyorum.'","İş / Patron"],
+  ["🏢","is","'Doğalgaz sayaç kontrolü için evde olmam gerekiyor'","'Şirket randevu verdi, evde beklemem şart. 1-2 saat çıkamam.'","İş / Patron"],
+  ["🏫","okul","'Bugün ateşim çıktı, raporu akşam gönderirim'","'Okula gelmeden önce ateşimi ölçtüm, 38 derece. Dinleneceğim.'","Okul / Hoca"],
+  ["🏫","okul","'Sunum dosyam bozuldu, yarın hazır ederim'","'Bilgisayarda dosya kurtarılamadı, bu haliyle sunamam. Yarın telafi ediyorum.'","Okul / Hoca"],
+  ["🏫","okul","'Evde su kesintisi var'","'Sabah erken kesildi, duş alamadım; öğleye düzelir, sonra hocayla konuşurum.'","Okul / Hoca"],
+  ["🏫","okul","'Servisim gecikti, otobüsü de kaçırdım'","'Servis 20 dakika gecikti, alternatif otobüs de şoför değişikliği yüzünden duraksadı.'","Okul / Hoca"],
+  ["🏫","okul","'Aile üniversite tanıtım fuarına beni davet etti'","'Kardeşim için ailem beni de çağırdı; yarın derse kati olacağım.'","Okul / Hoca"],
+  ["🤝","arkadas","'Bugün aile misafiri geldi, başka güne alalım'","'Anneannem kapıya çıkıp geldi, takvim değişti. Yarın haber veririm.'","Arkadaş / Buluşma"],
+  ["🤝","arkadas","'Önce bir yere götürüp sonra katılırım'","'Küçük bir aile işi çıktı, 1 saat sonra yetişirim. Yer bile değiştirmeyin.'","Arkadaş / Buluşma"],
+  ["🤝","arkadas","'Telefonum öldü, buluşmaya gelmeye çalışıyorum'","'Şarjım bitti, kaldırımda şarj arıyorum. 20 dakika sonra oradayım.'","Arkadaş / Buluşma"],
+  ["🤝","arkadas","'Bilgisayarda acil iş çıktı, yarın görüşelim'","'İş çıkışında acil bir şey belirdi, bitiremem. Yarın hallederiz.'","Arkadaş / Buluşma"],
+  ["🤝","arkadas","'Bugün ciddi bir öncelik çıktı, yarın görüşürüz'","'Öncelikli bir iş belirdi, bugün olmaz. Yarın mutlaka buluşalım.'","Arkadaş / Buluşma"],
+  ["🏠","aile","'Trafik haberinde kaza var, 40 dakika geç kalırım'","'Ana yolda kaza ediyorlar; öğle yemeği başlayabilir, ben yetişirim.'","Aile / Yemeğe Geç"],
+  ["🏠","aile","'Komşudan acil telefon geldi, gelemiyorum'","'Komşunun işi çıktı, yardım etmem gerek. Yarın telafi ederim.'","Aile / Yemeğe Geç"],
+  ["🏠","aile","'Bulaşık makinesi taştı, zemini sildikten sonra gelirim'","'Mutfakta su taşmış, hemen temizliyorum. Yarın telafi ederim.'","Aile / Yemeğe Geç"],
+  ["🏠","aile","'Bu akşam işim bitmez, yarın netleşelim'","'Bugün akşama iş bitmeyecek, kayıtları yarın sizinle planlarım.'","Aile / Yemeğe Geç"]
+];
+
+const kart = document.getElementById('kart');
+const kartIk = document.getElementById('kIk');
+const kartTil = document.getElementById('kTil');
+const kartBas = document.getElementById('kBas');
+const kartAlt = document.getElementById('kAlt');
+const buyuk = document.getElementById('buyuk');
+const sayacEl = document.getElementById('sayac');
+const filtreEl = document.getElementById('filtre');
+
+let filtre = 'hepsi', adet = 0;
+const gecmis = [];
+
+function rastgele() {
+  const havuz = B.filter(b => filtre === 'hepsi' || b[1] === filtre).filter(b => b[2] && b[3] && b[4]);
+  if (!havuz.length) return;
+  let sec;
+  do { sec = havuz[Math.floor(Math.random() * havuz.length)]; }
+  while (havuz.length > 1 && gecmis.includes(sec[2]) && gecmis.length < havuz.length);
+  gecmis.push(sec[2]); if (gecmis.length > 6) gecmis.shift();
+  kartIk.textContent = sec[0];
+  kartTil.hidden = false; kartTil.textContent = '📌 ' + sec[4];
+  kartBas.textContent = sec[2];
+  kartAlt.textContent = sec[3];
+  kart.classList.remove('pop'); void kart.offsetWidth; kart.classList.add('pop');
+  adet++;
+  sayacEl.textContent = adet + ' bahane ürettin — sen bir kurtarıcısın 😉';
+  try { localStorage.setItem('bm_adet', adet); } catch (e) {}
+}
+try { adet = parseInt(localStorage.getItem('bm_adet'), 10) || 0; } catch (e) {}
+sayacEl.textContent = adet ? adet + ' bahane ürettin — devam!' : '0 bahane ürettin';
+
+buyuk.onclick = rastgele;
+document.getElementById('baska').onclick = rastgele;
+document.getElementById('kopya').onclick = () => {
+  const m = kartBas.textContent;
+  navigator.clipboard.writeText(m).then(() => {
+    document.getElementById('kopya').textContent = '✅ Kopyalandı';
+    setTimeout(() => document.getElementById('kopya').textContent = '📋 Kopyala', 1400);
+  });
+};
+filtreEl.onclick = e => {
+  const b = e.target.closest('button'); if (!b) return;
+  filtre = b.dataset.f;
+  filtreEl.querySelectorAll('button').forEach(x => x.classList.toggle('aktif', x === b));
+  rastgele();
+};
+</script>
+</body>
+</html>
