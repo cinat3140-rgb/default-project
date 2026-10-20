@@ -539,6 +539,13 @@ body.light .koc-ai-bas{ color:var(--ana) }
   background:var(--yuzey-2); border:1px solid var(--cizgi); font-size:13px; outline:0;
 }
 .koc-form input:focus{ border-color:var(--ana) }
+.koc-gercek{ display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+  padding:8px var(--b5); border-top:1px solid var(--cizgi); flex-shrink:0;
+  font-size:11.5px; color:var(--metin-3) }
+.koc-gercek a{ padding:5px 10px; border-radius:99px; background:var(--yuzey-2);
+  border:1px solid var(--cizgi); font-size:11.5px; font-weight:600; color:var(--metin-2);
+  text-decoration:none; transition:.14s var(--e) }
+.koc-gercek a:hover{ background:var(--ana); color:#fff }
 
 /* ═══════════ PANEL ═══════════ */
 .suru{
