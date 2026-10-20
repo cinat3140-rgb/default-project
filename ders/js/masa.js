@@ -796,20 +796,15 @@ const MASA = (function () {
   }
 
   function dosyaKarti(d) {
-    const c = rengi(d.ders);
     return `<div class="dosya">
       <div class="dosya-ust">
         <span style="font-size:15px">${d.tur==='gorsel'?'🖼️':'📄'}</span>
         <span class="dosya-ad">${esc(d.ad)}</span>
-        <span class="dosya-no">#${String(d.no).padStart(2,'0')}</span>
       </div>
-      <div class="dosya-govde"><div class="dosya-ozet">${esc(d.ders)} · ${d.sayfa} sayfa · ${d.adet} soru</div></div>
-        <div class="dosya-alt">
-          <span class="et" style="background:${c}">${esc(d.ders)}</span>
-          <span class="et" style="background:var(--ok)">${d.adet} soru</span>
-          <button class="mini-btn duz" data-ac="${d.id}">Aç</button>
-          <button class="mini-btn tehlike" data-sil="${d.id}" title="Sil">✕</button>
-        </div></div>`;
+      <div class="dosya-alt">
+        <button class="mini-btn duz" data-ac="${d.id}">Aç</button>
+        <button class="mini-btn tehlike" data-sil="${d.id}" title="Sil">✕</button>
+      </div></div>`;
     }
 
 
@@ -1316,22 +1311,28 @@ const MASA = (function () {
     const sx = 60 + (V.dosya.length % 3) * 330;
     const sy = 70 + Math.floor(V.dosya.length / 3) * 232;
     ic.innerHTML = (V.dosya.length ? V.dosya.map(d => {
-      const c = rengi(d.ders);
       return `<div class="ka" style="--x:${d.x}px;--y:${d.y}px;--w:280px">
         <div class="ka-kutu" data-ac="${d.id}" style="cursor:pointer">
           <div class="ka-ust"><span style="font-size:14px">${d.tur==='gorsel'?'🖼️':'📄'}</span>
-            <span class="ka-ad">${esc(d.ad)}</span>
-            <span class="ka-no">#${String(d.no).padStart(2,'0')}</span></div>
-          <div class="ka-govde">${(d.sorular || []).slice(0,4).map((s,i) =>
-            `<div class="ka-sat"><i>${i+1}</i>${esc(s.metin.slice(0,34))}…</div>`).join('')
-            || '<div class="ka-sat"><i>1</i>'+esc(d.ad)+'</div>'}</div>
+            <span class="ka-ad">${esc(d.ad)}</span></div>
           <div class="ka-alt">
-            <span class="et" style="background:${c}">${esc(d.ders)}</span>
-            <span class="et" style="background:var(--ok)">${d.adet} soru</span>
+            <button class="mini-btn duz" data-ac="${d.id}">Aç</button>
+            <button class="mini-btn tehlike" data-sil="${d.id}" title="Sil">✕</button>
           </div></div></div>`;
     }).join('') : masaBosHTML()) + masaSaat3HTML(sx, sy);
     $$('#masaIc [data-ac]').forEach(e => e.onclick = ev => {
+      ev.stopPropagation();
       kitapAc(V.dosya.find(x => x.id === e.dataset.ac));
+    });
+    $$('#masaIc [data-sil]').forEach(e => e.onclick = ev => {
+      ev.stopPropagation();
+      const dd = V.dosya.find(x => x.id === e.dataset.sil);
+      if (!dd) return;
+      if (!confirm('"' + dd.ad + '" silinsin mi?')) return;
+      V.dosya = V.dosya.filter(x => x.id !== e.dataset.sil);
+      V.dosya.forEach((x, i) => x.no = i + 1);
+      ikiliSil(e.dataset.sil);
+      kaydet(); masaCiz(); bildir('Silindi', 'basari');
     });
     const mBosEkle = $('#mBosEkle');
     if (mBosEkle) mBosEkle.onclick = () => kaydirAc();
