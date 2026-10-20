@@ -1985,31 +1985,36 @@ const MASA = (function () {
     if (!anahtar) {
       const sys = mesajlar.filter(m => m.role === 'system').map(m => m.content).join(' ');
       const kisi = mesajlar.filter(m => m.role !== 'system').map(m => m.content).join('\n');
-      const denemeler = [
+      const post = model => fetch('https://text.pollinations.ai/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: mesajlar, model })
+      });
+      const hedefler = [
+        () => post('openai-large'),
+        () => post('openai'),
         () => fetch('https://text.pollinations.ai/' + encodeURIComponent(kisi.slice(0, 2000)) +
           '?system=' + encodeURIComponent('Türkçe cevap ver. ' + sys.slice(0, 1400)) +
-          '&model=openai&seed=' + Math.floor(Math.random() * 9999) + '&max_tokens=' + (sec.mt || 500)),
-        () => fetch('https://text.pollinations.ai/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messages: mesajlar, model: 'openai' })
-        }),
-        () => fetch('https://text.pollinations.ai/openai', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messages: mesajlar, model: 'openai' })
-        })
+          '&model=openai&seed=' + Math.floor(Math.random() * 9999) + '&max_tokens=' + (sec.mt || 500))
       ];
-      for (const dene of denemeler) {
-        try {
-          const r = await dene();
-          const m = await r.text().catch(() => '');
-          if (r.ok && m && m.trim().length > 4) {
-            return m.replace(/^=[[\s"'\`]+/g, '').replace(/[\n\s]+$/, '').slice(0, 2000);
+      for (const dene of hedefler) {
+        for (let cuna = 0; cuna < 2; cuna++) {
+          let r = null, m = '';
+          try {
+            r = await dene();
+            m = await r.text().catch(() => '');
+          } catch (e) { r = null; }
+          if (r && r.ok && m && m.trim().length > 4) {
+            return m.replace(/^=[[\s"'`]+/g, '').replace(/[\n\s]+$/, '').slice(0, 2000);
           }
-        } catch (e) { /* sıradaki deneme */ }
+          /* ücretsiz sınır doluysa: 32 sn sessizce bekle ve aynı hedefi yeniden dene */
+          if (r && (r.status === 429 || (m && /limit reached/i.test(m)))) {
+            if (cuna === 0) { await new Promise(g => setTimeout(g, 32000)); continue; }
+          }
+          break;
+        }
       }
-      throw new Error('Koç servisi şu an yoğun ya da bağlantı yok. 15-30 sn sonra tekrar dene.');
+      throw new Error('Koç servisi şu an yoğun ya da bağlantı yok. 1-2 dk sonra tekrar dene.');
     }
     const t = { model: V.ayar.aiModel || 'gpt-4o-mini', messages: mesajlar,
       temperature: sec.t !== undefined ? sec.t : .4, max_tokens: sec.mt || 1600 };
