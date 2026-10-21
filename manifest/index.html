@@ -95,7 +95,10 @@ body{ background:
 .od-file .n{ flex:1; min-width:0; font-family:var(--mono); font-size:12px; word-break:break-all }
 .od-file .s{ font-size:10.5px; color:var(--met3); white-space:nowrap }
 .od-file a{ text-decoration:none; font-size:11px; font-weight:900; color:#fff;
-  background:linear-gradient(135deg,var(--pink2),var(--pink)); padding:7px 12px; border-radius:8px; white-space:nowrap }
+  background:linear-gradient(135deg,#ec4899,#f472b6); padding:8px 14px; border-radius:9px; white-space:nowrap }
+.od-in{ cursor:pointer; border:none; font-size:11px; font-weight:900; color:#fff;
+  background:linear-gradient(135deg,#ec4899,#f472b6); padding:8px 14px; border-radius:9px; white-space:nowrap }
+.od-in:disabled{ opacity:.6 }
 .mnk b{ color:var(--pink) }
 .mnk a{ color:#ffd2e4; font-weight:900 }
 .araclar{ display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; text-align:left }
@@ -348,14 +351,45 @@ document.getElementById('odAra').onclick = async () => {
         sat.className = 'od-file';
         const kb = f.size > 1048576 ? (f.size / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(f.size / 1024)) + ' KB';
         sat.innerHTML = `<span class="n">${escHtml(f.name)}</span><span class="s">${kb}</span>` +
-          `<a href="${escHtml(f.download_url)}" download indir="1">İNDİR ⬇</a>`;
+          `<button class="od-in" data-ad="${escHtml(f.name)}" data-url="${escHtml(f.download_url)}">İNDİR ⬇</button>`;
         odList.appendChild(sat);
       }
+      const zipsat = document.createElement('div');
+      zipsat.className = 'od-file';
+      zipsat.innerHTML = `<span class="n">${escHtml(dal)} · bütün şube (manifest + anahtarlar)</span>` +
+        `<a href="https://codeload.github.com/eudaimence/OpenDepot/zip/refs/heads/${encodeURIComponent(dal)}" target="_blank" rel="noopener">📦 ZIP AL</a>`;
+      odList.appendChild(zipsat);
     }
   } catch (e) {
     odBilgi.textContent = 'GitHub bağlantısı kurulamadı — biraz sonra tekrar dene.';
   }
 };
+
+odList.addEventListener('click', async e => {
+  const b = e.target.closest('.od-in');
+  if (!b) return;
+  const eski = b.textContent;
+  b.disabled = true; b.textContent = 'ALINIYOR…';
+  try {
+    const r = await fetch(b.dataset.url);
+    if (!r.ok) throw new Error(r.status);
+    const blob = await r.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = b.dataset.ad;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    b.textContent = '✅ Az önce indirildi';
+  } catch (err) {
+    b.textContent = 'hata — ZIP dene';
+  } finally {
+    b.disabled = false;
+    if (b.textContent.startsWith('✅')) { setTimeout(() => b.textContent = 'İNDİR ⬇', 2500); }
+    else setTimeout(() => b.textContent = eski, 2500);
+  }
+});
 
 function escHtml(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 
