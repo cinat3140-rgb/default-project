@@ -200,19 +200,19 @@ body{ background:
         <p class="ek" id="rDlcEk"></p>
       </div>
       <div class="mnk" id="mkutu">
-        <b>MANIFEST MOTORU — TEK DOSYAYLA İNDİRİCİ</b>
-        <div class="mk-sat">
-          <input id="depotId" inputmode="numeric" maxlength="12" placeholder="Depot ID (boş = tum depotlar)">
-          <input id="manId" inputmode="numeric" maxlength="20" placeholder="Manifest ID (boş = guncel)">
-          <button class="git mk-btn" id="manGet">Komut Üret 📋</button>
+        <b>MANIFEST MOTORU — TEK TIK İNDİRİCİ</b>
+        <div class="mk-sat" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px">
+          <a class="git mk-btn" href="../tools/kanka.bat" download="kanka.bat" style="text-decoration:none; text-align:center;
+            background:linear-gradient(135deg,#9333ea,#c084fc)">① kanka.bat İNDİR</a>
+          <a class="mk-btn2" href="https://github.com/SteamRE/DepotDownloader/releases" target="_blank" rel="noopener" style="text-decoration:none; display:inline-block;
+            cursor:pointer; border:none; border-radius:9px; padding:13px 18px; font-size:14px; font-weight:900;
+            background:linear-gradient(135deg,#0891b2,#22d3ee); color:#fff">② DepotDownloader ZIP</a>
         </div>
         <div class="mk-ip">
-          <b>Hızlı yol:</b>
-          <a href="https://raw.githubusercontent.com/noobtrainer23/tr-web/main/tools/kanka.bat" download="kanka.bat">kanka.bat indir →</a>
-          DepotDownloader.exe ile aynı klasöre koy, çift tıkla, AppID + hesap yaz — dosyalar
-          <b>depots/</b> klasörüne iner. Ya da komutu kopyala, PowerShell'de çalıştır:
-          <a href="https://github.com/SteamRE/DepotDownloader/releases" target="_blank" rel="noopener">DepotDownloader</a>
-          — giriş <b>kendi Steam hesabınla</b>, dolayısıyla resmî ve meşru.
+          <b>Sonra ne olacak:</b> masaüstünde yeni bir klasör aç → ① bat dosyasını ② ZIP'in içindeki
+          <b>DepotDownloader.exe</b> → her ikisi aynı klasörde olsun → <b>bat'ı çift tıkla</b> →
+          AppID yaz → hesap adı + Steam şifre + 2FA gir → dosyalar <b>depots/</b> klasörüne iner.
+          Depot/Manifest ID boş bırakılırsa tüm depoların güncel hali gelir.
         </div>
       </div>
       <div class="araclar">
@@ -431,20 +431,7 @@ document.getElementById('araSon').addEventListener('click', e => {
   gitB.click();
 });
 
-document.getElementById('manGet').onclick = () => {
-  const app = idEl.value.trim();
-  const d = document.getElementById('depotId').value.trim();
-  const m = document.getElementById('manId').value.trim();
-  if (!/^\d{2,10}$/.test(app)) { hataGoster('Üstteki Steam App ID kutusunu doldur (ör: 730).'); return; }
-  let komut = `DepotDownloader.exe -app ${app} -username KULLANICI_ADIN`;
-  if (/^\d{1,10}$/.test(d)) komut += ` -depot ${d}`;
-  if (/^\d{1,18}$/.test(m)) komut += ` -manifest ${m}`;
-  navigator.clipboard.writeText(komut).then(() => {
-    const b = document.getElementById('manGet');
-    b.textContent = '✅ Kopyalandı';
-    setTimeout(() => b.textContent = 'Komut Üret 📋', 1500);
-  });
-};
+document.querySelectorAll('.mk-sat a').forEach(() => {});
 
 function escHtml(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 
