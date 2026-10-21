@@ -52,6 +52,25 @@ body{ background:
 .api-bonus{ margin-top:12px; display:none }
 .api-bonus h4{ font-size:11px; letter-spacing:1px; color:var(--pink); margin-bottom:6px }
 .api-ach{ font-size:12.5px; line-height:1.7 }
+.radar{ width:min(700px,100%); background:var(--kart); border:1px solid var(--cizgi);
+  border-radius:18px; padding:20px; box-shadow:0 18px 45px rgba(0,0,0,.35); margin-bottom:20px }
+.radar .basciz{ font-size:11.5px; font-weight:900; letter-spacing:2px; color:var(--pink);
+  margin-bottom:12px; display:flex; align-items:center; gap:8px }
+.radar .basciz::after{ content:''; flex:1; height:1px; background:var(--cizgi) }
+.radar .alt2{ font-size:12px; color:var(--met3); margin-bottom:12px; line-height:1.6 }
+.rfiltre{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px }
+.rfiltre button{ cursor:pointer; border:1px solid var(--cizgi); background:transparent;
+  color:var(--met3); border-radius:99px; padding:6px 13px; font-size:11.5px; font-weight:800 }
+.rfiltre button.on{ background:rgba(244,114,182,.13); color:var(--pink); border-color:var(--pink) }
+.rliste{ display:grid; gap:8px; text-align:left }
+.r-sat{ display:flex; gap:12px; align-items:center; background:var(--kart2);
+  border:1px solid var(--cizgi); border-radius:12px; padding:9px 12px }
+.r-sat img{ width:56px; height:20px; object-fit:cover; border-radius:5px; flex:none }
+.r-sat .bil{ flex:1; min-width:0 }
+.r-sat b{ display:block; font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.r-sat small{ font-size:10.5px; color:var(--met3) }
+.r-sat a{ text-decoration:none; font-size:11px; font-weight:900; color:#fff;
+  background:linear-gradient(135deg,#16a34a,#4ade80); padding:8px 14px; border-radius:9px; white-space:nowrap }
 .alan{ font-size:11.5px; font-weight:800; letter-spacing:.8px; color:var(--met3); margin-bottom:7px }
 .sorgu{ display:flex; gap:10px }
 .sorgu input{ flex:1; min-width:0; padding:13px 15px; border-radius:11px; background:var(--kart2);
@@ -135,7 +154,21 @@ body{ background:
   <div class="arslan">
     <h1>Kanka<em>.Manifest</em> Finder</h1>
     <p>Bir Steam App ID gir — depot, künye ve manifest yolu sana sunuluyor.<br>
-       .manifest dosyaları Steam'in resmî content sunucusundan, hesapsız indirilir.</p>
+       Üstte radar açık: bedava oyun resmî kapısından al.</p>
+  </div>
+
+  <div class="radar">
+    <div class="basciz">BEDAVA OYUN RADARI</div>
+    <p class="alt2">Şu an aktif, resmî kanaldan dağıtılan ücretsiz oyunlar — linki tıkla, mağaza/anahtar sayfasından al. Hepsi yasal.</p>
+    <div class="rfiltre" id="rfiltre">
+      <button class="on" data-p="">TÜMÜ</button>
+      <button data-p="steam">STEAM</button>
+      <button data-p="epic-games-store">EPIC</button>
+      <button data-p="gog">GOG</button>
+      <button data-p="itch.io">ITCH.IO</button>
+      <button data-p="pc">PC</button>
+    </div>
+    <div class="rliste" id="rliste"><div class="r-sat"><b>yükleniyor…</b></div></div>
   </div>
 
   <div class="panel">
@@ -495,6 +528,37 @@ function sayacYaz() {
 }
 try { adet = parseInt(localStorage.getItem('km_adet'), 10) || 0; } catch (e) {}
 sayacYaz();
+
+const rliste = document.getElementById('rliste');
+async function radar(p) {
+  rliste.innerHTML = '<div class="r-sat"><b>radar çevir siyor…</b></div>';
+  try {
+    const q = p ? `&platform=${p}` : '';
+    const r = await fetch(`https://www.gamerpower.com/api/giveaways?type=game&sort-by=popularity${q}`);
+    if (!r.ok) throw new Error(r.status);
+    const liste = (await r.json()).filter(o => o.status === 'Active').slice(0, 14);
+    if (!liste.length) { rliste.innerHTML = '<div class="r-sat"><b>şu an aktif giveaway yok — sonra gel</b></div>'; return; }
+    rliste.innerHTML = '';
+    for (const o of liste) {
+      const sat = document.createElement('div');
+      sat.className = 'r-sat';
+      const sure = o.end_date ? ' · son: ' + o.end_date.slice(0, 10) : '';
+      sat.innerHTML = (o.thumbnail ? `<img src="${escHtml(o.thumbnail)}" alt="">` : '') +
+        `<div class="bil"><b>${escHtml((o.title || '').replace(' Giveaway', ''))}</b>` +
+        `<small>${escHtml(o.platforms || o.publisher || '—')}${sure}${o.worth && o.worth !== 'N/A' ? ' · worth ' + escHtml(o.worth) : ''}</small></div>` +
+        `<a href="${escHtml(o.gamerpower_url || '')}" target="_blank" rel="noopener">AL ⬇</a>`;
+      rliste.appendChild(sat);
+    }
+  } catch (e) {
+    rliste.innerHTML = '<div class="r-sat"><b>radar uçağı bağlanamadı — sonra tekrar dene</b></div>';
+  }
+}
+document.querySelectorAll('#rfiltre button').forEach(b => b.onclick = () => {
+  document.querySelector('#rfiltre .on').classList.remove('on');
+  b.classList.add('on');
+  radar(b.dataset.p);
+});
+radar('');
 </script>
 </body>
 </html>
