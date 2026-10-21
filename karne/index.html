@@ -3,175 +3,271 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Karne Üretici</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0f1a'/%3E%3Crect x='12' y='12' width='40' height='40' rx='6' fill='%23f8fafc'/%3E%3Cpath d='M17 22 H47 M17 30 H47 M17 38 H39' stroke='%2394a3b8' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='44' cy='44' r='9' fill='%23f43f5e'/%3E%3Cpath d='M40 44 L43 47 L49 41' stroke='%23fff' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<title>e-Okul Karnesi Üretici</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23efe6d5'/%3E%3Crect x='10' y='14' width='44' height='36' rx='4' fill='%23fffdf7' stroke='%23b08d57'/%3E%3Cpath d='M16 24 H48 M16 31 H48 M16 38 H40' stroke='%23c9a86a' stroke-width='2.5' stroke-linecap='round'/%3E%3Ccircle cx='46' cy='45' r='8' fill='%23c8102e'/%3E%3Cpath d='M43 41 L43 49 M43 41 L50 45 M43 45 L50 41' stroke='%23fff' stroke-width='1.6'/%3E%3C/svg%3E">
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent }
-:root{ --bg:#0b0f1a; --yuz:#161d2c; --yuz2:#1d2740; --cg:#2a3650; --met:#e8edf7;
-  --met3:#8a94ab; --esas:#f43f5e; --esas2:#fb7185 }
+:root{ --bg:#0d1120; --met:#e8edf7; --met3:#8a94ab; --esas:#c8102e; --cizgi:rgba(255,255,255,.1) }
 body{ background:
-  radial-gradient(1000px 600px at 75% -10%, #33121f 0%, transparent 60%),
-  radial-gradient(900px 500px at 8% 110%, #1c2a4d 0%, transparent 55%),
+  radial-gradient(900px 500px at 80% -10%, #3b1224 0%, transparent 60%),
+  radial-gradient(800px 460px at 6% 108%, #1d2b52 0%, transparent 55%),
   var(--bg); color:var(--met);
   font-family:'Segoe UI', system-ui, sans-serif; min-height:100vh;
-  display:flex; flex-direction:column; align-items:center; padding:24px 14px 40px }
+  display:flex; flex-direction:column; align-items:center; padding:26px 14px 46px }
 .bas{ text-align:center; margin-bottom:18px }
-.bas .uk{ font-size:46px; display:block; filter:drop-shadow(0 0 16px rgba(244,63,94,.5)) }
-.bas b{ font-size:22px; display:block; margin-top:6px }
-.bas small{ color:var(--met3); font-size:12.5px }
-.kutu{ width:min(600px,100%); background:var(--yuz); border:1px solid var(--cg);
-  border-radius:20px; padding:22px }
-.sorgu{ display:flex; gap:10px; margin-bottom:16px }
-.sorgu input{ flex:1; padding:13px 16px; border-radius:12px; background:var(--yuz2);
-  border:1px solid var(--cg); color:var(--met); font-size:15px; outline:0 }
-.sorgu input:focus{ border-color:var(--esas) }
-.buyuk{ width:100%; padding:16px; border-radius:14px; border:none; cursor:pointer;
-  background:linear-gradient(135deg,var(--esas),var(--esas2)); color:#fff;
-  font-size:17px; font-weight:900; box-shadow:0 10px 30px rgba(244,63,94,.25) }
+.bas .uk{ font-size:44px; display:block; filter:drop-shadow(0 0 14px rgba(200,16,46,.4)) }
+.bas b{ font-size:21px; display:block; margin-top:6px }
+.bas small{ color:var(--met3); font-size:12.5px; display:block; margin-top:2px }
+
+.form{ width:min(660px,100%); background:rgba(255,255,255,.04); border:1px solid var(--cizgi);
+  border-radius:18px; padding:18px; display:grid; gap:12px;
+  grid-template-columns:1fr 1fr; }
+.form label{ font-size:11.5px; color:var(--met3); display:block; margin-bottom:5px; font-weight:700; letter-spacing:.4px }
+.form input{ width:100%; padding:12px 14px; border-radius:10px; background:rgba(255,255,255,.06);
+  border:1px solid var(--cizgi); color:var(--met); font-size:15px; outline:0 }
+.form input:focus{ border-color:var(--esas) }
+.foto-alan{ grid-column:1/-1 }
+.foto-sat{ display:flex; gap:12px; align-items:center }
+.foto-on{ width:64px; height:80px; border-radius:8px; border:1px dashed var(--met3);
+  background:rgba(255,255,255,.05); display:flex; align-items:center; justify-content:center;
+  font-size:10px; color:var(--met3); text-align:center; overflow:hidden; flex:none }
+.foto-on img{ width:100%; height:100%; object-fit:cover }
+.foto-sat button{ cursor:pointer; padding:10px 16px; border-radius:10px;
+  border:1px solid var(--cizgi); background:rgba(255,255,255,.07); color:var(--met); font-size:13px; font-weight:700 }
+.buyuk{ width:min(660px,100%); margin-top:14px; padding:16px; border-radius:14px; border:none; cursor:pointer;
+  background:linear-gradient(135deg,#c8102e,#e35b70); color:#fff;
+  font-size:16.5px; font-weight:900; box-shadow:0 10px 30px rgba(200,16,46,.3) }
 .buyuk:active{ transform:scale(.98) }
-.karne{ display:none; margin-top:20px; background:#f8fafc; color:#1e293b;
-  border-radius:14px; padding:22px 20px; position:relative;
-  box-shadow:0 18px 50px rgba(0,0,0,.35) }
-.karne::after{ content:'SAHTE DEĞİL · SADECE EĞLENCE'; position:absolute; top:14px; right:-10px;
-  transform:rotate(8deg); font-size:9.5px; font-weight:900; letter-spacing:1px;
-  color:#b91c1c; border:2px dashed #b91c1c; border-radius:6px; padding:3px 8px; opacity:.85 }
-.karne h2{ font-size:17px; color:#0f172a; border-bottom:2px solid #cbd5e1; padding-bottom:8px }
-.karne h2 small{ display:block; font-size:11px; color:#64748b; font-weight:600; margin-top:3px }
-.ders-sat{ display:flex; gap:10px; padding:9px 0; border-bottom:1px dashed #e2e8f0;
-  align-items:flex-start }
-.ders-sat b{ min-width:96px; font-size:13px; color:#334155 }
-.ders-sat .puan{ min-width:34px; text-align:center; font-weight:900; font-size:13px;
-  padding:2px 0; border-radius:6px; color:#fff }
-.ders-sat p{ font-size:12.5px; color:#475569; line-height:1.5; flex:1 }
-.genel{ margin-top:12px; background:#fff7ed; border:1px solid #fed7aa; border-radius:10px;
-  padding:12px 14px; font-size:13.5px; line-height:1.55; color:#7c2d12 }
-.genel b{ color:#9a3412 }
-.imza{ margin-top:10px; text-align:right; font-size:11px; color:#94a3b8; font-style:italic }
-.alt{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:16px }
-.alt button{ cursor:pointer; border:1px solid var(--cg); background:var(--yuz2);
-  color:var(--met); border-radius:10px; padding:10px 16px; font-size:13.5px; font-weight:700 }
-.alt button:hover{ border-color:var(--esas) }
+
+.kagit{ width:min(660px,100%); margin-top:22px; display:none }
+.karne{ background:#fffdf7; color:#26221c; border-radius:6px; overflow:hidden;
+  box-shadow:0 24px 60px rgba(0,0,0,.5); position:relative;
+  font-family:Georgia, 'Times New Roman', serif }
+.karne .serit{ background:linear-gradient(135deg,#c8102e 0%, #a50c24 100%); color:#fff;
+  padding:14px 22px; display:flex; align-items:center; gap:14px }
+.karne .serit .bayrak{ width:38px; height:26px; flex:none; background:#c8102e; border:1px solid #fff2; border-radius:3px; position:relative }
+.karne .serit .bayrak::before{ content:''; position:absolute; left:50%; top:50%; transform:translate(-30%,-50%);
+  border:8px solid transparent; border-left-color:#fff }
+.karne .serit b{ font-size:14.5px; letter-spacing:2px; font-family:inherit }
+.karne .serit small{ display:block; font-size:10px; opacity:.85; letter-spacing:1.4px }
+.govde{ padding:18px 22px 20px }
+.bilgi{ display:flex; gap:16px; margin-bottom:14px }
+.foto-k{ width:74px; height:94px; border:2px solid #b08d57; border-radius:4px; background:#f0ead8;
+  overflow:hidden; display:flex; align-items:center; justify-content:center; flex:none; font-size:9.5px; color:#8a7c5e }
+.foto-k img{ width:100%; height:100%; object-fit:cover }
+.kim{ flex:1 }
+.kim .sat{ display:flex; gap:6px; font-size:13px; padding:2.5px 0; border-bottom:1px dotted #cbbfa4 }
+.kim .sat span:first-child{ color:#8a7c5e; min-width:74px; font-size:11px; padding-top:1.5px }
+.kim .sat b{ font-weight:700 }
+.tablo{ width:100%; border-collapse:collapse; font-size:12.5px }
+.tablo th{ background:#eee5cf; padding:7px 8px; border:1px solid #d7c79f; font-size:11px; letter-spacing:.6px; color:#6b5d3f }
+.tablo td{ border:1px solid #d7c79f; padding:7px 8px; vertical-align:top; line-height:1.45 }
+.tablo td.d{ font-weight:700; width:104px; background:#f7f1e0 }
+.tablo td.p{ text-align:center; font-weight:800; width:52px }
+.p-iyi{ color:#1a7a36 } .p-orta{ color:#b07514 } .p-zayif{ color:#c8102e }
+.genel-sat{ margin-top:12px; border:1px solid #d7c79f; background:#f7f1e0; padding:10px 13px;
+  font-size:13px; line-height:1.55 }
+.genel-sat b{ color:#7a5c22 }
+.konu-k{ margin-top:12px; display:flex; justify-content:space-between; align-items:flex-end }
+.imza-b{ font-size:11px; color:#8a7c5e; text-align:center }
+.imza-b svg{ display:block; margin:2px auto 0 }
+.glu{ font-size:10px; color:#9a8c6c; transform:rotate(-4deg); font-family:Georgia }
+.muhur{ width:74px; height:74px; border:3px double rgba(153,42,52,.55); border-radius:50%;
+  display:flex; align-items:center; justify-content:center; transform:rotate(-12deg);
+  color:rgba(153,42,52,.6); font-size:8px; text-align:center; line-height:1.35; font-weight:700; letter-spacing:.5px }
+.alt-araclar{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:16px }
+.alt-araclar button{ cursor:pointer; border:1px solid var(--cizgi); background:rgba(255,255,255,.07);
+  color:var(--met); border-radius:10px; padding:11px 18px; font-size:13.5px; font-weight:700 }
+.alt-araclar button:hover{ border-color:var(--esas) }
 .sayac{ margin-top:12px; font-size:12px; color:var(--met3); text-align:center }
+@media(max-width:560px){ .form{ grid-template-columns:1fr } .bilgi{ flex-direction:row } }
 </style>
 </head>
 <body>
 
 <div class="bas">
-  <span class="uk">📜</span>
-  <b>Arkadaş Karne Üretici</b>
-  <small>Arkadaşının adını yaz — saçma ama tatlı karne hazır olsun, gruba at</small>
+  <span class="uk">🎓</span>
+  <b>e-Okul Karnesi Üretici</b>
+  <small>Arkadaşın için resmi görünümlü ama saçma kâğıt karne — fotoğrafını koy, PNG indir</small>
 </div>
 
-<div class="kutu">
-  <div class="sorgu">
-    <input id="ad" maxlength="20" placeholder="Arkadaşının adı (ör. Melih)" autocomplete="off">
+<div class="form">
+  <div><label>ADI SOYADI</label><input id="ad" maxlength="24" placeholder="Melih Yılmaz"></div>
+  <div><label>SINIF</label><input id="sinif" maxlength="8" placeholder="10-B"></div>
+  <div class="foto-alan">
+    <label>FOTOĞRAF (isteğe bağlı)</label>
+    <div class="foto-sat">
+      <div class="foto-on" id="fotoOn">FOTO<br>YÜKLE</div>
+      <button type="button" id="fotoBtn">📷 Fotoğraf Yükle</button>
+      <button type="button" id="fotoSil" style="display:none">✕</button>
+    </div>
+    <input type="file" id="fotoInp" accept="image/*" hidden>
   </div>
-  <button class="buyuk" id="uret">KARNE ÜRET 🎓</button>
+</div>
+<button class="buyuk" id="uret">KARNESİ OLUŞTUR 📄</button>
 
+<div class="kagit" id="kagit">
   <div class="karne" id="karne">
-    <h2 id="kBas"></h2>
-    <div id="kSatirlar"></div>
-    <div class="genel" id="kGenel"></div>
-    <div class="imza" id="kImza">Sınıf öğretmeni imzası: (okunamadı — acil toplantıda)</div>
+    <div class="serit">
+      <div class="bayrak"></div>
+      <div><b>MİLLİ ESPRİ BAKANLIĞI</b><small>EĞLENCE AMANLI · BUNDAN TEYİT ALINMAZ</small></div>
+    </div>
+    <div class="govde">
+      <h3 style="text-align:center; font-size:15px; letter-spacing:1px; margin-bottom:14px">2026 ÖĞRETİM YILI · EĞLENCE KARNESİ</h3>
+      <div class="bilgi">
+        <div class="foto-k" id="fotoK">FOTO</div>
+        <div class="kim">
+          <div class="sat"><span>ADI SOYADI</span><b id="kAd"></b></div>
+          <div class="sat"><span>SINIFI</span><b id="kSinif"></b></div>
+          <div class="sat"><span>NUMARASI</span><b id="kNo"></b></div>
+          <div class="sat"><span>EN SÖYLEDİĞİ</span><b id="kKelime"></b></div>
+        </div>
+      </div>
+      <table class="tablo">
+        <tr><th style="width:104px">DERS</th><th style="width:52px">NOT</th><th>İZLENİM</th></tr>
+        <tbody id="kSatirlar"></tbody>
+      </table>
+      <div class="genel-sat"><b>GENEL DEĞERLENDİRME:</b> <span id="kGenel"></span></div>
+      <div class="genel-sat" style="background:#fff3ec; border-color:#e8b8a8"><b>EŞSİZ YETENEĞİ:</b> <span id="kYetenek"></span></div>
+      <div class="konu-k">
+        <div class="imza-b">Islak imza<div class="glu">— kanka stüdyoları —</div></div>
+        <div class="muhur">SAHTE DEĞİL<br>SADECE GÜLMEK İÇİN</div>
+      </div>
+    </div>
   </div>
 
-  <div class="alt">
-    <button id="kopya" style="display:none">📋 Karnenin Metnini Kopyala</button>
-    <button id="yeni" style="display:none">🔄 Başka Karne</button>
+  <div class="alt-araclar">
+    <button id="indir">📥 PNG olarak indir</button>
+    <button id="kopya">📋 Metnini kopyala</button>
+    <button id="yeni">🔄 Başka sürüm</button>
   </div>
   <p class="sayac" id="sayac"></p>
 </div>
 
 <script>
 const DERSLER = [
-  ["Matematik","'Bu soru nasıl çözülür kanka' diye bakar; çoğu zaman cevabı senden alır."],
-  ["Türkçe","Güzel yazar ama her mesaja 'kanka' ile başlar."],
-  ["Fizik","Hızını ancak telefonu fırlatınca hesaplar."],
-  ["Kimya","Üzgün hissedince anında asitleşir."],
-  ["Biyoloji","Uyku evresi uzmanı; gündüz uyku halini ders gibi işler."],
-  ["Tarih","Kendi geçmişini unutur ama senin esprini asla unutmaz."],
+  ["Matematik","'Kanka bu soru nasıl çözülür' diye bakar; cevabı senden alır, lafı gezer."],
+  ["Türkçe","Güzel yazar ama her mesajına 'kanka' ile başlar, noktalı virgül kullanmasını bilmez."],
+  ["Fizik","Hızını ancak telefonu fırlatınca hesaplar; ivmesi de 'yanına gel' derken belli olur."],
+  ["Kimya","Üzgün hissedince anında asitleşir; kahve içmeyi aside çevirir."],
+  ["Biyoloji","Uyku evresi uzmanı; gündüz uykusunu ders gibi işler."],
+  ["Tarih","Kendi geçmişini unutur ama senin üç gün önceki esprini asla unutmaz."],
   ["Coğrafya","Evinden okula üç farklı rota bilir; üçü de simitçiye uğrar."],
-  ["Beden Eğitimi","Uzanmayı profesyonel yaptı; koşmayı sadece servis kaçınca yapar."],
-  ["İngilizce","'OK' der; gerisini göz kırpışlarıyla anlatır."],
-  ["Sanat","Ders kitabının kenarını sergiye çevirir."],
-  ["Müzik","Klavyenin tuşlarını nota gibi çalar."],
-  ["Bilişim","Telefonu sökmez ama 'şarj hilesi' der uydurur."],
+  ["Beden Eğitimi","Uzanmayı profesyonel yaptı; koşmayı sadece servis kaçarken yapar."],
+  ["İngilizce","'OK' der, gerisini göz kırpışlarıyla anlatır."],
+  ["Sanat","Ders kitabının kenarını sergiye çevirir; cetvel sayfayı düz tutmak içindir."],
+  ["Müzik","Klavyenin tuşlarını nota gibi çalar; kapıyı akortlu çalar."],
+  ["Bilişim","Telefonu sökmez ama şarj hilesi uydurur; pil onun can yoldaşıdır."],
   ["Rehberlik","Kankalarına güzel tavsiye verir; kendine uygulamayı unutur."],
-  ["Felsefe","'Neden?' diye sorar; cevabı duymaz, kendi kafasında bitirir."]
+  ["Felsefe","'Neden?' diye sorar; cevabı duymaz, kendi kafasında bitirir."],
+  ["Foto","Grup fotoğrafında pozunu 3 saniye önce hazır bulur."]
 ];
 
 const GENEL = [
-  "Potansiyeli yüksek, motivasyonu anlık çıkıyor.",
-  "Sınıfın neşesi; sessizliğini sadece sınavlarda kullanıyor.",
-  "Ders dinlerken zihni kaşarlı sandviçte geziniyor.",
-  "Geleceği parlak; parlaklık seviyesi telefon ekranı ayarında.",
-  "Kanka duyguları çok kuvvetli; ödev hissi henüz gelişim aşamasında.",
-  "Aile ve arkadaş dengesini iyi kurmuş; uyku dengesini bir türlü kuramamış."
+  "potansiyeli yüksek, motivasyonu anlık; 'şimdi kankam an' deyince hemen harekete geçer.",
+  "sınıfın neşesi; sessizliğini sadece sınavlarda kullanıyor, gerisi neşeli.",
+  "ders dinlerken zihni kaşarlı sandviçte geziniyor; sandviç bittiğinde geri dönüyor.",
+  "geleceği parlak; parlaklık seviyesi telefon ekranı ayarında.",
+  "kanka duyguları çok kuvvetli; ödev hissi henüz gelişim aşamasında.",
+  "aile ve arkadaş dengesini iyi kurmuş; uyku dengesini bir türlü kuramamış.",
+  "her sabah şekerli çayla uyanır; kahvaltı netleşmeden hiçbir karar vermez.",
+  "iyi bir arkadaş; geç kalmana da karar, kitaplarını da saklar."
 ];
 
-const IMZA = [
-  "Sınıf öğretmeni imzası: (okunamadı — acil toplantıda)",
-  "Veli imzası: ☕ 'bunu imzalayamam' dedi, bu yüzden buradayız",
-  "Müdür imzası: imza kalemi bitti; parmakla atıldı",
-  "Rehber öğretmen imzası: 'bunu yazarken güldüm' dipnotuyla"
+const YETENEK = [
+  "Aç karnına simit malzemelerinden kahvaltı masası kurabilmek.",
+  "Herhangi bir ortamda 6 saniye içinde 'iyi bu' moduna geçebilmek.",
+  "Şarkı kafasında döndüğünde alt yazısını da eş zamanlı yazabilmek.",
+  "Kanka olduğuna dair güven tabanı kurmak; hiç sarsılmaz.",
+  "Her yerde 4 dakikada uyuyabilmek; servis, metro, kürsü farketmez.",
+  "Pil yüzdesine göre kendini otomatik tasarruf moduna alabilmek."
 ];
+
+const KELIME = ["'kanka' (günde 42 kez)", "'yok ya' (günde 88 kez)", "'yav he'", "'bak sana'", "'ne desem'", "'kesin' (ama eksik)"];
+const NOU = "12";
 
 const adEl = document.getElementById('ad');
+const sinifEl = document.getElementById('sinif');
 const uret = document.getElementById('uret');
+const kagit = document.getElementById('kagit');
 const karne = document.getElementById('karne');
-const kBas = document.getElementById('kBas');
-const kSatirlar = document.getElementById('kSatirlar');
-const kGenel = document.getElementById('kGenel');
-const kImza = document.getElementById('kImza');
-const kopyaBtn = document.getElementById('kopya');
-const yeniBtn = document.getElementById('yeni');
-const sayacEl = document.getElementById('sayac');
+const fotoInp = document.getElementById('fotoInp');
+const fotoBtn = document.getElementById('fotoBtn');
+const fotoOn = document.getElementById('fotoOn');
+const fotoSil = document.getElementById('fotoSil');
+const fotoK = document.getElementById('fotoK');
 
-let adet = 0, surum = 0;
-function rastSayfa() { return Math.floor(Math.random() * 10) + 1; }
-function renkP(p) { return p >= 8 ? '#22c55e' : p >= 5 ? '#f59e0b' : '#ef4444'; }
+let adet = 0, surum = 0, fotoData = null;
+function puan() { return Math.floor(Math.random() * 10) + 1; }
+function pSinif(p){ return p >= 8 ? 'p-iyi' : p >= 5 ? 'p-orta' : 'p-zayif'; }
+function sec(a) { return a[Math.floor(Math.random() * a.length)]; }
+
+fotoBtn.onclick = () => fotoInp.click();
+fotoInp.onchange = e => {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => { fotoData = r.result;
+    fotoOn.innerHTML = '<img src="' + fotoData + '">';
+    fotoK.innerHTML = '<img src="' + fotoData + '">';
+    fotoSil.style.display = 'inline-block'; };
+  r.readAsDataURL(f);
+};
+fotoSil.onclick = () => { fotoData = null; fotoOn.textContent = 'FOTO YÜKLE'; fotoK.textContent = 'FOTO'; fotoSil.style.display = 'none'; };
+
+function esc(t) { return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
 function karneYaz() {
   const ad = adEl.value.trim();
   if (!ad) { adEl.focus(); return; }
   surum++;
-  const secim = DERSLER.slice().sort(() => Math.random() - .5).slice(0, 7);
-  kBas.innerHTML = esc(ad) + ' · ' + new Date().getFullYear() + ' Eğlence Karnesi' +
-    (surum > 1 ? ' <small>v' + surum + ' — alternatif sürüm</small>' : '');
-  kSatirlar.innerHTML = secim.map(d => {
-    const p = rastSayfa();
-    return `<div class="ders-sat"><b>${d[0]}</b>
-      <span class="puan" style="background:${renkP(p)}">${p}/10</span>
-      <p>${d[1]}</p></div>`;
+  document.getElementById('kAd').textContent = ad;
+  document.getElementById('kSinif').textContent = sinifEl.value.trim() || '10-B';
+  document.getElementById('kNo').textContent = 100 + Math.floor(Math.random() * 900);
+  document.getElementById('kKelime').textContent = sec(KELIME);
+  const secDers = DERSLER.slice().sort(() => Math.random() - .5).slice(0, 7);
+  document.getElementById('kSatirlar').innerHTML = secDers.map(d => {
+    const p = puan();
+    return `<tr><td class="d">${d[0]}</td><td class="p ${pSinif(p)}">${p}</td><td>${d[1]}</td></tr>`;
   }).join('');
-  kGenel.innerHTML = '<b>Genel Değerlendirme:</b> ' + GENEL[Math.floor(Math.random() * GENEL.length)];
-  kImza.textContent = IMZA[Math.floor(Math.random() * IMZA.length)];
-  karne.style.display = 'block';
-  kopyaBtn.style.display = 'inline-block';
-  yeniBtn.style.display = 'inline-block';
-  karne.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  document.getElementById('kGenel').textContent = sec(GENEL);
+  document.getElementById('kYetenek').textContent = sec(YETENEK);
+  kagit.style.display = 'block';
+  kagit.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   adet++;
-  sayacEl.textContent = adet + ' karne üretildi — hedefi gülme salgını 🎯';
   try { localStorage.setItem('kr_adet', adet); } catch (e) {}
+  document.getElementById('sayac').textContent = adet + ' karne üretildi — hedef gülme salgını 🎯';
 }
 try { adet = parseInt(localStorage.getItem('kr_adet'), 10) || 0; } catch (e) {}
-if (adet) sayacEl.textContent = adet + ' karne üretildi — devam!';
-
-function esc(t) { return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+if (adet) document.getElementById('sayac').textContent = adet + ' karne üretildi — devam!';
 
 uret.onclick = karneYaz;
 adEl.onkeydown = e => { if (e.key === 'Enter') karneYaz(); };
-yeniBtn.onclick = karneYaz;
-kopyaBtn.onclick = () => {
+sinifEl.onkeydown = e => { if (e.key === 'Enter') karneYaz(); };
+document.getElementById('yeni').onclick = karneYaz;
+
+document.getElementById('kopya').onclick = () => {
   const ad = adEl.value.trim() || 'Kanka';
-  let m = '📜 ' + ad + ' KARNE (eğlence amaçlı)\n';
-  kSatirlar.querySelectorAll('.ders-sat').forEach(s => {
-    m += '\n' + s.querySelector('b').textContent + ' — ' + s.querySelector('.puan').textContent + ' · ' + s.querySelector('p').textContent;
+  let m = '🎓 MİLLİ ESPRİ BAKANLIĞI KARNE — ' + ad + ' (eğlence amaçlı)\n';
+  m += 'Sınıf: ' + (sinifEl.value.trim() || '10-B') + '\n';
+  document.querySelectorAll('#kSatirlar tr').forEach(s => {
+    m += '\n' + s.querySelector('.d').textContent + ' [' + s.querySelector('.p').textContent + '] ' + s.querySelector('td:last-child').textContent;
   });
-  m += '\n\n' + kGenel.textContent + '\n' + kImza.textContent;
+  m += '\n\nGenel: ' + document.getElementById('kGenel').textContent;
+  m += '\nBüyük yetenek: ' + document.getElementById('kYetenek').textContent;
   navigator.clipboard.writeText(m).then(() => {
-    kopyaBtn.textContent = '✅ Kopyalandı';
-    setTimeout(() => kopyaBtn.textContent = '📋 Karnenin Metnini Kopyala', 1400);
+    const b = document.getElementById('kopya');
+    b.textContent = '✅ Kopyalandı';
+    setTimeout(() => b.textContent = '📋 Metnini kopyala', 1400);
+  });
+};
+
+document.getElementById('indir').onclick = () => {
+  html2canvas(karne, { scale: 2, backgroundColor: '#fffdf7' }).then(c => {
+    const a = document.createElement('a');
+    a.download = 'karne-' + (adEl.value.trim() || 'kanka') + '.png';
+    a.href = c.toDataURL('image/png');
+    a.click();
   });
 };
 </script>
