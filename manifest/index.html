@@ -87,6 +87,15 @@ body{ background:
 .mk-btn{ padding:11px 16px !important; font-size:13px !important }
 .mk-ip{ font-size:11.5px; color:var(--met3); margin-top:9px; line-height:1.6 }
 .mk-ip a{ color:var(--pink); font-weight:900 }
+.od-sat{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:10px }
+.od-bilgi{ font-size:11.5px; color:var(--met3) }
+.od-list{ display:grid; gap:6px; margin-top:10px }
+.od-file{ display:flex; gap:10px; align-items:center; background:var(--kart2);
+  border:1px solid var(--cizgi); border-radius:9px; padding:9px 12px; text-align:left }
+.od-file .n{ flex:1; min-width:0; font-family:var(--mono); font-size:12px; word-break:break-all }
+.od-file .s{ font-size:10.5px; color:var(--met3); white-space:nowrap }
+.od-file a{ text-decoration:none; font-size:11px; font-weight:900; color:#fff;
+  background:linear-gradient(135deg,var(--pink2),var(--pink)); padding:7px 12px; border-radius:8px; white-space:nowrap }
 .mnk b{ color:var(--pink) }
 .mnk a{ color:#ffd2e4; font-weight:900 }
 .araclar{ display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; text-align:left }
@@ -169,6 +178,19 @@ body{ background:
           (dal adına Steam App ID yaz). Komut üretildiğinde kopyalanır —
           <a href="https://github.com/SteamRE/DepotDownloader/releases" target="_blank" rel="noopener">DepotDownloader</a> ile çalıştır.
         </div>
+      </div>
+
+      <div class="mnk">
+        <b>OPENDEPOT KÜTÜPHANESİ — GERÇEK .MANIFEST İNDİRME</b>
+        <p style="margin-top:8px">
+          App ID'nin da açık kütüphaneye bak: varsa <b>.manifest ve anahtar</b> dosyalarını
+          kayıt olmadan, direkt indir.
+        </p>
+        <div class="od-sat">
+          <button class="git mk-btn" id="odAra">Bu App ID için manifest ara 🔎</button>
+          <span class="od-bilgi" id="odBilgi">hazır</span>
+        </div>
+        <div class="od-list" id="odList"></div>
       </div>
       <div class="araclar">
         <a id="rLink" target="_blank" rel="noopener">🏪 Steam sayfası</a>
@@ -269,6 +291,73 @@ document.getElementById('manGet').onclick = () => {
     setTimeout(() => b.textContent = 'Komut Üret 📋', 1500);
   });
 };
+
+const GH = 'https://api.github.com/repos/eudaimence/OpenDepot';
+const odBilgi = document.getElementById('odBilgi');
+const odList = document.getElementById('odList');
+
+function odOnbellek() {
+  try {
+    const c = JSON.parse(localStorage.getItem('od_dallar') || 'null');
+    if (c && Date.now() - c.t < 3600e3 && Array.isArray(c.l)) return c.l;
+  } catch (e) {}
+  return null;
+}
+
+async function dallar() {
+  const ozb = odOnbellek();
+  if (ozb) return ozb;
+  const hepsi = [];
+  for (let p = 1; p <= 5; p++) {
+    const r = await fetch(`${GH}/branches?per_page=100&page=${p}`);
+    if (!r.ok) break;
+    const dilim = await r.json();
+    hepsi.push(...dilim.map(b => b.name));
+    if (dilim.length < 100) break;
+  }
+  if (hepsi.length) {
+    try { localStorage.setItem('od_dallar', JSON.stringify({ t: Date.now(), l: hepsi })); } catch (e) {}
+  }
+  return hepsi;
+}
+
+document.getElementById('odAra').onclick = async () => {
+  const id = idEl.value.trim();
+  if (!/^\d{2,10}$/.test(id)) { hataGoster('Önce Steam App ID yaz (ör: 730).'); return; }
+  odBilgi.textContent = 'kütüphane şubeleri yükleniyor…';
+  odList.innerHTML = '';
+  try {
+    const hepsi = await dallar();
+    if (!hepsi.length) { odBilgi.textContent = 'GitHub kütüphane listesi kısıtlı (saatlik 60); 1 saat sonra tekrar dene.'; return; }
+    const esles = hepsi.filter(b => b === id || b.startsWith(id + '_') || b.startsWith(id + ' '));
+    if (!esles.length) { odBilgi.textContent = 'OpenDepot kütüphanesinde bu App ID yok — DepotDownloader bölümüyle gidebilirsin.'; return; }
+    odBilgi.textContent = `✅ ${esles.length} şube bulundu — dosyalar:`; 
+    for (const dal of esles.slice(0, 3)) {
+      const r = await fetch(`${GH}/contents/?ref=${encodeURIComponent(dal)}`);
+      if (!r.ok) continue;
+      const files = await r.json();
+      if (!Array.isArray(files) || !files.length) continue;
+      const bas = document.createElement('div');
+      bas.className = 'od-bilgi';
+      bas.style.marginTop = '6px';
+      bas.textContent = '.Branch: ' + dal;
+      odList.appendChild(bas);
+      for (const f of files) {
+        if (f.type !== 'file') continue;
+        const sat = document.createElement('div');
+        sat.className = 'od-file';
+        const kb = f.size > 1048576 ? (f.size / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(f.size / 1024)) + ' KB';
+        sat.innerHTML = `<span class="n">${escHtml(f.name)}</span><span class="s">${kb}</span>` +
+          `<a href="${escHtml(f.download_url)}" download indir="1">İNDİR ⬇</a>`;
+        odList.appendChild(sat);
+      }
+    }
+  } catch (e) {
+    odBilgi.textContent = 'GitHub bağlantısı kurulamadı — biraz sonra tekrar dene.';
+  }
+};
+
+function escHtml(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 
 function ciz(d, p) {
   setTimeout(() => document.getElementById('rBar').style.width = '100%', 30);
