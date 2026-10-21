@@ -80,6 +80,13 @@ body{ background:
 .mnk{ margin-top:16px; background:linear-gradient(135deg, rgba(244,114,182,.08), rgba(190,24,93,.06));
   border:1px dashed rgba(244,114,182,.38); border-radius:12px; padding:14px 16px;
   font-size:13px; line-height:1.65; text-align:left }
+.mk-sat{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap }
+.mk-sat input{ flex:1; min-width:120px; padding:11px 13px; border-radius:10px; background:var(--kart2);
+  border:1px solid var(--cizgi); color:#fff; font-size:13px; font-family:var(--mono); outline:0 }
+.mk-sat input:focus{ border-color:var(--pink) }
+.mk-btn{ padding:11px 16px !important; font-size:13px !important }
+.mk-ip{ font-size:11.5px; color:var(--met3); margin-top:9px; line-height:1.6 }
+.mk-ip a{ color:var(--pink); font-weight:900 }
 .mnk b{ color:var(--pink) }
 .mnk a{ color:#ffd2e4; font-weight:900 }
 .araclar{ display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; text-align:left }
@@ -101,14 +108,14 @@ body{ background:
 
 <div class="nav">
   <div class="logo"><div class="ic">💗</div>KankaManifest</div>
-  <a href="https://discord.gg/QKh2f28k5K" target="_blank" rel="noopener">Discord'a Katıl</a>
+  <a href="https://store.steampowered.com" target="_blank" rel="noopener">Steam Mağaza</a>
 </div>
 
 <div class="govde">
   <div class="arslan">
     <h1>Kanka<em>.Manifest</em> Finder</h1>
     <p>Bir Steam App ID gir — depot, künye ve manifest yolu sana sunuluyor.<br>
-       120 bin oyun Ahmed'in botunda; aşağıdan Katıl'a bas ve kullan.</p>
+       .manifest dosyaları Steam'in resmî content sunucusundan, hesapsız indirilir.</p>
   </div>
 
   <div class="panel">
@@ -149,11 +156,19 @@ body{ background:
         <ul id="rDlc"></ul>
         <p class="ek" id="rDlcEk"></p>
       </div>
-      <div class="mnk">
-        <b>.manifest indirme:</b> Depot dizin dosyalarının 120 bin oyunluk kütüphanesi
-        Ahmed'in Discord botunda — <a href="https://discord.gg/QKh2f28k5K" target="_blank" rel="noopener">Discord'a Katıl →</a><br>
-        <b>kanka ipucu:</b> manifest dosyasını Steam'in depots klasörüne atarsan
-        SteamKit cache kaynağı olarak görür (Discord'da anlatım mevcut).
+      <div class="mnk" id="mkutu">
+        <b>MANIFEST MOTORU</b>
+        <div class="mk-sat">
+          <input id="depotId" inputmode="numeric" maxlength="12" placeholder="Depot ID (ör: 731)">
+          <input id="manId" inputmode="numeric" maxlength="20" placeholder="Manifest ID">
+          <button class="git mk-btn" id="manGet">Komut Üret 📋</button>
+        </div>
+        <div class="mk-ip">
+          Manifest &amp; anahtarların halka açık deposu:
+          <a href="https://github.com/eudaimence/OpenDepot" target="_blank" rel="noopener">OpenDepot →</a>
+          (dal adına Steam App ID yaz). Komut üretildiğinde kopyalanır —
+          <a href="https://github.com/SteamRE/DepotDownloader/releases" target="_blank" rel="noopener">DepotDownloader</a> ile çalıştır.
+        </div>
       </div>
       <div class="araclar">
         <a id="rLink" target="_blank" rel="noopener">🏪 Steam sayfası</a>
@@ -164,13 +179,13 @@ body{ background:
   </div>
 
   <p class="iph">
-    <b>İpucu:</b> İndirmeler yeni sekme açarsa tarayıcın çoklu otomatik indirmeyi engelleyebilir —
-    az sayıda seç ya da tek tek indir.<br>
-    120 bin oyun Ahmed'in botunda — <a href="https://discord.gg/QKh2f28k5K" target="_blank" rel="noopener">Discord'a Katıl</a>
+    <b>İpucu:</b> .manifest dosyası indirilmiyorsa tarayıcın otomatik indirmeyi engelliyordur —
+    adres çubuğundaki kilitten "Sitene izin ver" de, ya da dosyayı tek tek indir.
   </p>
   <p class="altsat">
-    Veri kaynağı: Steam resmî halka açık API (store + oyuncu istatistikleri).
-    Bu site Valve ile bağımsızdır; oyun dosyası barındırmaz — oyunlar Steam mağazasından alınır.
+    Veri kaynağı: Steam resmî halka açık uçlar (store.appdetails + ISteamUserStats).
+    Manifest dosyaları 2022'den beri Steam hesap sahipliği ister — bu site Valve ile bağımsızdır,
+    oyun dosyası barındırmaz; oyunlar Steam mağazasından alınır.
   </p>
 </div>
 
@@ -241,6 +256,19 @@ gitB.onclick = async () => {
 };
 iptalB.onclick = () => { if (ctrl) ctrl.abort(); };
 idEl.onkeydown = e => { if (e.key === 'Enter') gitB.click(); };
+
+document.getElementById('manGet').onclick = () => {
+  const app = idEl.value.trim() || 'HESAP_APPID';
+  const d = document.getElementById('depotId').value.trim();
+  const m = document.getElementById('manId').value.trim();
+  if (!/^\d{1,10}$/.test(d) || !/^\d{1,18}$/.test(m)) { hataGoster('Depot ID ve Manifest ID sayı olmalı — OpenDepot dalından alabilirsin.'); return; }
+  const komut = `DepotDownloader -app ${app} -depot ${d} -manifest ${m} -username KULLANICI_ADIN`;
+  navigator.clipboard.writeText(komut).then(() => {
+    const b = document.getElementById('manGet');
+    b.textContent = '✅ Kopyalandı';
+    setTimeout(() => b.textContent = 'Komut Üret 📋', 1500);
+  });
+};
 
 function ciz(d, p) {
   setTimeout(() => document.getElementById('rBar').style.width = '100%', 30);
