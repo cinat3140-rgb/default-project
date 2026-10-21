@@ -67,6 +67,13 @@ body{ background:
 .iptal:disabled{ opacity:.4 }
 .hata{ display:none; margin-top:12px; background:rgba(244,114,182,.09); border:1px solid rgba(244,114,182,.4);
   color:#ffd2e4; border-radius:10px; padding:11px 14px; font-size:13px; line-height:1.55 }
+.ara-son{ display:grid; gap:6px; margin-top:10px; text-align:left }
+.ara-sat{ display:flex; gap:10px; align-items:center; background:var(--kart2);
+  border:1px solid var(--cizgi); border-radius:9px; padding:8px 12px }
+.ara-sat img{ width:38px; height:18px; border-radius:4px; flex:none; object-fit:cover }
+.ara-sat b{ flex:1; font-size:13px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.ara-sat button{ cursor:pointer; border:1px solid var(--pink); background:rgba(244,114,182,.1);
+  color:var(--pink); border-radius:8px; padding:6px 12px; font-size:11px; font-weight:900; white-space:nowrap }
 .sonuc{ display:none; margin-top:18px; text-align:left }
 .baslik{ display:flex; gap:14px; align-items:flex-start }
 .baslik img{ width:184px; border-radius:8px; border:1px solid var(--cizgi); flex:none }
@@ -172,6 +179,11 @@ body{ background:
       <button class="git" id="git">Sorgula</button>
       <button class="iptal" id="iptal" disabled>İptal</button>
     </div>
+    <div class="sorgu" style="margin-top:10px">
+      <input id="araInp" maxlength="40" autocomplete="off" placeholder="İsimle de bulursun: dota, cs2, ark…">
+      <button class="git" id="araBtn">Ara 🔍</button>
+    </div>
+    <div class="ara-son" id="araSon"></div>
     <div class="hata" id="hata"></div>
 
     <div class="sonuc" id="sonuc">
@@ -251,12 +263,28 @@ const iptalB = document.getElementById('iptal');
 const hataEl = document.getElementById('hata');
 const sonucEl = document.getElementById('sonuc');
 let yol = 1, ctrl = null, adet = 0;
-const ZINCIR = [
-  u => u,
-  u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u),
-  u => 'https://corsproxy.io/?url=' + encodeURIComponent(u),
-  u => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u)
+const KOPRU = [
+  u => 'https://r.jina.ai/' + u,
+  u => 'https://api.cors.lol/?url=' + encodeURIComponent(u),
+  u => 'https://cors.eu.org/' + u,
+  u => 'https://whateverorigin.org/get?url=' + encodeURIComponent(u),
+  u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u)
 ];
+
+function jsonCik(txt) {
+  let j;
+  try { j = JSON.parse(txt); } catch (e) {
+    const s = txt.indexOf('{'), e2 = txt.lastIndexOf('}');
+    if (s < 0 || e2 < 0) throw new Error('biçim');
+    j = JSON.parse(txt.slice(s, e2 + 1));
+  }
+  if (j && typeof j.contents === 'string') { try { return JSON.parse(j.contents); } catch (e) {} }
+  if (j && j.data && typeof j.data.content === 'string') {
+    const m = j.data.content, s = m.indexOf('{'), e2 = m.lastIndexOf('}');
+    if (s >= 0 && e2 > s) { try { return JSON.parse(m.slice(s, e2 + 1)); } catch (e) {} }
+  }
+  return j;
+}
 
 async function jGet(url) {
   let sonErr;
@@ -264,17 +292,18 @@ async function jGet(url) {
     try {
       const r = await fetch(url);
       if (!r.ok) throw new Error(r.status);
-      return await r.json();
+      return jsonCik(await r.text());
     } catch (e) { sonErr = e; }
     throw sonErr || new Error('baglanti');
   }
-  for (let i = 1; i < ZINCIR.length; i++) {
+  for (let i = 0; i < KOPRU.length; i++) {
     try {
       const r = await (ctrl != null
-        ? fetch(ZINCIR[i](url), { signal: ctrl.signal })
-        : fetch(ZINCIR[i](url)));
+        ? fetch(KOPRU[i](url), { signal: ctrl.signal })
+        : fetch(KOPRU[i](url)));
       if (!r.ok) throw new Error(r.status);
-      return await r.json();
+      const j = jsonCik(await r.text());
+      if (j) return j;
     } catch (e) { if (e.name === 'AbortError') throw e; sonErr = e; }
   }
   throw sonErr || new Error('baglanti');
@@ -283,7 +312,7 @@ async function jGet(url) {
 function yolYazi() {
   document.getElementById('yolBilgi').innerHTML = yol === 1
     ? 'SUNUCU 1: tarayıcıdan Steam\'e <b>direkt</b> istek — aracı yok, kodun ham hali. &quot;Direct fetch&quot; denen yöntem.'
-    : 'SUNUCU 2: <b>API köprüleri</b> üzerinden gider — allorigins / corsproxy / codetabs promitikleri sırayla denenir.';
+    : 'SUNUCU 2: <b>5 katmanlı API köprü zinciri</b> — jina.ai → cors.lol → cors.eu.org → whateverorigin → allorigins; hepsi Steam verisini sana taşır.';
   document.getElementById('apiAlan').classList.toggle('gorun', yol === 2);
 }
 
@@ -361,6 +390,42 @@ gitB.onclick = async () => {
 };
 iptalB.onclick = () => { if (ctrl) ctrl.abort(); };
 idEl.onkeydown = e => { if (e.key === 'Enter') gitB.click(); };
+document.getElementById('araInp').onkeydown = e => {
+  if (e.key === 'Enter') document.getElementById('araBtn').click();
+};
+document.getElementById('araBtn').onclick = async () => {
+  const q = document.getElementById('araInp').value.trim();
+  const kutu = document.getElementById('araSon');
+  if (q.length < 2) { kutu.innerHTML = '<div class="ara-sat"><b>En az 2 harf yaz.</b></div>'; return; }
+  kutu.innerHTML = '<div class="ara-sat"><b>aranıyor…</b></div>';
+  try {
+    const r = await fetch(`https://www.cheapshark.com/api/1.0/games?title=${encodeURIComponent(q)}&limit=8`);
+    if (!r.ok) throw new Error(r.status);
+    const liste = await r.json();
+    if (!Array.isArray(liste) || !liste.length) {
+      kutu.innerHTML = '<div class="ara-sat"><b>Takıntı yok — ismi biraz farklı yaz.</b></div>'; return;
+    }
+    kutu.innerHTML = '';
+    for (const o of liste) {
+      if (!o.steamAppID) continue;
+      const sat = document.createElement('div');
+      sat.className = 'ara-sat';
+      sat.innerHTML = `${o.thumb ? `<img src="${escHtml(o.thumb)}" alt="">` : ''}` +
+        `<b>${escHtml(o.external)}</b>` +
+        `<button data-app="${o.steamAppID}">AppID ${o.steamAppID} · sorgula</button>`;
+      kutu.appendChild(sat);
+    }
+    if (!kutu.children.length) kutu.innerHTML = '<div class="ara-sat"><b>Steam App ID bulunamadı.</b></div>';
+  } catch (e) {
+    kutu.innerHTML = '<div class="ara-sat"><b>Aracı servis cevap vermedi — sonra tekrar bas.</b></div>';
+  }
+};
+document.getElementById('araSon').addEventListener('click', e => {
+  const b = e.target.closest('button[data-app]');
+  if (!b) return;
+  idEl.value = b.dataset.app;
+  gitB.click();
+});
 
 document.getElementById('manGet').onclick = () => {
   const app = idEl.value.trim() || 'HESAP_APPID';
