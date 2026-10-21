@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Karne Üretici</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0f1a'/%3E%3Crect x='12' y='12' width='40' height='40' rx='6' fill='%23f8fafc'/%3E%3Cpath d='M17 22 H47 M17 30 H47 M17 38 H39' stroke='%2394a3b8' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='44' cy='44' r='9' fill='%23f43f5e'/%3E%3Cpath d='M40 44 L43 47 L49 41' stroke='%23fff' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent }
+:root{ --bg:#0b0f1a; --yuz:#161d2c; --yuz2:#1d2740; --cg:#2a3650; --met:#e8edf7;
+  --met3:#8a94ab; --esas:#f43f5e; --esas2:#fb7185 }
+body{ background:
+  radial-gradient(1000px 600px at 75% -10%, #33121f 0%, transparent 60%),
+  radial-gradient(900px 500px at 8% 110%, #1c2a4d 0%, transparent 55%),
+  var(--bg); color:var(--met);
+  font-family:'Segoe UI', system-ui, sans-serif; min-height:100vh;
+  display:flex; flex-direction:column; align-items:center; padding:24px 14px 40px }
+.bas{ text-align:center; margin-bottom:18px }
+.bas .uk{ font-size:46px; display:block; filter:drop-shadow(0 0 16px rgba(244,63,94,.5)) }
+.bas b{ font-size:22px; display:block; margin-top:6px }
+.bas small{ color:var(--met3); font-size:12.5px }
+.kutu{ width:min(600px,100%); background:var(--yuz); border:1px solid var(--cg);
+  border-radius:20px; padding:22px }
+.sorgu{ display:flex; gap:10px; margin-bottom:16px }
+.sorgu input{ flex:1; padding:13px 16px; border-radius:12px; background:var(--yuz2);
+  border:1px solid var(--cg); color:var(--met); font-size:15px; outline:0 }
+.sorgu input:focus{ border-color:var(--esas) }
+.buyuk{ width:100%; padding:16px; border-radius:14px; border:none; cursor:pointer;
+  background:linear-gradient(135deg,var(--esas),var(--esas2)); color:#fff;
+  font-size:17px; font-weight:900; box-shadow:0 10px 30px rgba(244,63,94,.25) }
+.buyuk:active{ transform:scale(.98) }
+.karne{ display:none; margin-top:20px; background:#f8fafc; color:#1e293b;
+  border-radius:14px; padding:22px 20px; position:relative;
+  box-shadow:0 18px 50px rgba(0,0,0,.35) }
+.karne::after{ content:'SAHTE DEĞİL · SADECE EĞLENCE'; position:absolute; top:14px; right:-10px;
+  transform:rotate(8deg); font-size:9.5px; font-weight:900; letter-spacing:1px;
+  color:#b91c1c; border:2px dashed #b91c1c; border-radius:6px; padding:3px 8px; opacity:.85 }
+.karne h2{ font-size:17px; color:#0f172a; border-bottom:2px solid #cbd5e1; padding-bottom:8px }
+.karne h2 small{ display:block; font-size:11px; color:#64748b; font-weight:600; margin-top:3px }
+.ders-sat{ display:flex; gap:10px; padding:9px 0; border-bottom:1px dashed #e2e8f0;
+  align-items:flex-start }
+.ders-sat b{ min-width:96px; font-size:13px; color:#334155 }
+.ders-sat .puan{ min-width:34px; text-align:center; font-weight:900; font-size:13px;
+  padding:2px 0; border-radius:6px; color:#fff }
+.ders-sat p{ font-size:12.5px; color:#475569; line-height:1.5; flex:1 }
+.genel{ margin-top:12px; background:#fff7ed; border:1px solid #fed7aa; border-radius:10px;
+  padding:12px 14px; font-size:13.5px; line-height:1.55; color:#7c2d12 }
+.genel b{ color:#9a3412 }
+.imza{ margin-top:10px; text-align:right; font-size:11px; color:#94a3b8; font-style:italic }
+.alt{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:16px }
+.alt button{ cursor:pointer; border:1px solid var(--cg); background:var(--yuz2);
+  color:var(--met); border-radius:10px; padding:10px 16px; font-size:13.5px; font-weight:700 }
+.alt button:hover{ border-color:var(--esas) }
+.sayac{ margin-top:12px; font-size:12px; color:var(--met3); text-align:center }
+</style>
+</head>
+<body>
+
+<div class="bas">
+  <span class="uk">📜</span>
+  <b>Arkadaş Karne Üretici</b>
+  <small>Arkadaşının adını yaz — saçma ama tatlı karne hazır olsun, gruba at</small>
+</div>
+
+<div class="kutu">
+  <div class="sorgu">
+    <input id="ad" maxlength="20" placeholder="Arkadaşının adı (ör. Melih)" autocomplete="off">
+  </div>
+  <button class="buyuk" id="uret">KARNE ÜRET 🎓</button>
+
+  <div class="karne" id="karne">
+    <h2 id="kBas"></h2>
+    <div id="kSatirlar"></div>
+    <div class="genel" id="kGenel"></div>
+    <div class="imza" id="kImza">Sınıf öğretmeni imzası: (okunamadı — acil toplantıda)</div>
+  </div>
+
+  <div class="alt">
+    <button id="kopya" style="display:none">📋 Karnenin Metnini Kopyala</button>
+    <button id="yeni" style="display:none">🔄 Başka Karne</button>
+  </div>
+  <p class="sayac" id="sayac"></p>
+</div>
+
+<script>
+const DERSLER = [
+  ["Matematik","'Bu soru nasıl çözülür kanka' diye bakar; çoğu zaman cevabı senden alır."],
+  ["Türkçe","Güzel yazar ama her mesaja 'kanka' ile başlar."],
+  ["Fizik","Hızını ancak telefonu fırlatınca hesaplar."],
+  ["Kimya","Üzgün hissedince anında asitleşir."],
+  ["Biyoloji","Uyku evresi uzmanı; gündüz uyku halini ders gibi işler."],
+  ["Tarih","Kendi geçmişini unutur ama senin esprini asla unutmaz."],
+  ["Coğrafya","Evinden okula üç farklı rota bilir; üçü de simitçiye uğrar."],
+  ["Beden Eğitimi","Uzanmayı profesyonel yaptı; koşmayı sadece servis kaçınca yapar."],
+  ["İngilizce","'OK' der; gerisini göz kırpışlarıyla anlatır."],
+  ["Sanat","Ders kitabının kenarını sergiye çevirir."],
+  ["Müzik","Klavyenin tuşlarını nota gibi çalar."],
+  ["Bilişim","Telefonu sökmez ama 'şarj hilesi' der uydurur."],
+  ["Rehberlik","Kankalarına güzel tavsiye verir; kendine uygulamayı unutur."],
+  ["Felsefe","'Neden?' diye sorar; cevabı duymaz, kendi kafasında bitirir."]
+];
+
+const GENEL = [
+  "Potansiyeli yüksek, motivasyonu anlık çıkıyor.",
+  "Sınıfın neşesi; sessizliğini sadece sınavlarda kullanıyor.",
+  "Ders dinlerken zihni kaşarlı sandviçte geziniyor.",
+  "Geleceği parlak; parlaklık seviyesi telefon ekranı ayarında.",
+  "Kanka duyguları çok kuvvetli; ödev hissi henüz gelişim aşamasında.",
+  "Aile ve arkadaş dengesini iyi kurmuş; uyku dengesini bir türlü kuramamış."
+];
+
+const IMZA = [
+  "Sınıf öğretmeni imzası: (okunamadı — acil toplantıda)",
+  "Veli imzası: ☕ 'bunu imzalayamam' dedi, bu yüzden buradayız",
+  "Müdür imzası: imza kalemi bitti; parmakla atıldı",
+  "Rehber öğretmen imzası: 'bunu yazarken güldüm' dipnotuyla"
+];
+
+const adEl = document.getElementById('ad');
+const uret = document.getElementById('uret');
+const karne = document.getElementById('karne');
+const kBas = document.getElementById('kBas');
+const kSatirlar = document.getElementById('kSatirlar');
+const kGenel = document.getElementById('kGenel');
+const kImza = document.getElementById('kImza');
+const kopyaBtn = document.getElementById('kopya');
+const yeniBtn = document.getElementById('yeni');
+const sayacEl = document.getElementById('sayac');
+
+let adet = 0, surum = 0;
+function rastSayfa() { return Math.floor(Math.random() * 10) + 1; }
+function renkP(p) { return p >= 8 ? '#22c55e' : p >= 5 ? '#f59e0b' : '#ef4444'; }
+
+function karneYaz() {
+  const ad = adEl.value.trim();
+  if (!ad) { adEl.focus(); return; }
+  surum++;
+  const secim = DERSLER.slice().sort(() => Math.random() - .5).slice(0, 7);
+  kBas.innerHTML = esc(ad) + ' · ' + new Date().getFullYear() + ' Eğlence Karnesi' +
+    (surum > 1 ? ' <small>v' + surum + ' — alternatif sürüm</small>' : '');
+  kSatirlar.innerHTML = secim.map(d => {
+    const p = rastSayfa();
+    return `<div class="ders-sat"><b>${d[0]}</b>
+      <span class="puan" style="background:${renkP(p)}">${p}/10</span>
+      <p>${d[1]}</p></div>`;
+  }).join('');
+  kGenel.innerHTML = '<b>Genel Değerlendirme:</b> ' + GENEL[Math.floor(Math.random() * GENEL.length)];
+  kImza.textContent = IMZA[Math.floor(Math.random() * IMZA.length)];
+  karne.style.display = 'block';
+  kopyaBtn.style.display = 'inline-block';
+  yeniBtn.style.display = 'inline-block';
+  karne.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  adet++;
+  sayacEl.textContent = adet + ' karne üretildi — hedefi gülme salgını 🎯';
+  try { localStorage.setItem('kr_adet', adet); } catch (e) {}
+}
+try { adet = parseInt(localStorage.getItem('kr_adet'), 10) || 0; } catch (e) {}
+if (adet) sayacEl.textContent = adet + ' karne üretildi — devam!';
+
+function esc(t) { return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+uret.onclick = karneYaz;
+adEl.onkeydown = e => { if (e.key === 'Enter') karneYaz(); };
+yeniBtn.onclick = karneYaz;
+kopyaBtn.onclick = () => {
+  const ad = adEl.value.trim() || 'Kanka';
+  let m = '📜 ' + ad + ' KARNE (eğlence amaçlı)\n';
+  kSatirlar.querySelectorAll('.ders-sat').forEach(s => {
+    m += '\n' + s.querySelector('b').textContent + ' — ' + s.querySelector('.puan').textContent + ' · ' + s.querySelector('p').textContent;
+  });
+  m += '\n\n' + kGenel.textContent + '\n' + kImza.textContent;
+  navigator.clipboard.writeText(m).then(() => {
+    kopyaBtn.textContent = '✅ Kopyalandı';
+    setTimeout(() => kopyaBtn.textContent = '📋 Karnenin Metnini Kopyala', 1400);
+  });
+};
+</script>
+</body>
+</html>
