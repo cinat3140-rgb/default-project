@@ -42,6 +42,16 @@ body{ background:
 .sekme button.on{ background:rgba(244,114,182,.13); color:var(--pink); border-color:var(--pink) }
 .yol-bilgi{ font-size:11.5px; color:var(--met3); margin:0 0 14px; line-height:1.6 }
 .yol-bilgi b{ color:var(--pink) }
+.api-alan{ display:none; margin-bottom:16px; background:var(--kart2); border:1px solid var(--cizgi);
+  border-radius:12px; padding:14px 15px }
+.api-alan.gorun{ display:block }
+.api-alan .alan{ margin-bottom:9px }
+.api-durum{ font-size:11px; color:var(--met3); margin-top:9px; line-height:1.55 }
+.api-durum b{ color:var(--pink) }
+.api-alan a{ color:var(--pink); font-weight:800 }
+.api-bonus{ margin-top:12px; display:none }
+.api-bonus h4{ font-size:11px; letter-spacing:1px; color:var(--pink); margin-bottom:6px }
+.api-ach{ font-size:12.5px; line-height:1.7 }
 .alan{ font-size:11.5px; font-weight:800; letter-spacing:.8px; color:var(--met3); margin-bottom:7px }
 .sorgu{ display:flex; gap:10px }
 .sorgu input{ flex:1; min-width:0; padding:13px 15px; border-radius:11px; background:var(--kart2);
@@ -139,6 +149,23 @@ body{ background:
       <button data-y="2">SUNUCU 2 · API</button>
     </div>
     <p class="yol-bilgi" id="yolBilgi">SUNUCU 1: tarayıcıdan Steam'e <b>direkt</b> istek — aracı yok, kodun ham hali. Kapanırsa aşağıya Sunucu 2'ye geç.</p>
+
+    <div class="api-alan" id="apiAlan">
+      <div class="alan">STEAM WEB API ANAHTARI (isteğe bağlı · sadece senin tarayıcında saklanır)</div>
+      <div class="sorgu">
+        <input id="keyInp" type="password" maxlength="40" autocomplete="off"
+          placeholder="32 karakterlik anahtar — steamcommunity.com/dev/apikey">
+        <button class="git" id="keyKay">Kaydet 🔑</button>
+      </div>
+      <p class="api-durum" id="apiDurum">Anahtarsız mod: temel uçlar çalışır, sadece künye/oyuncu gelir.</p>
+      <div class="api-bonus" id="apiBonus">
+        <h4>🔑 API BONUSU</h4>
+        <div class="api-ach" id="apiAch"></div>
+        <button id="apiAchGet" style="margin-top:8px; cursor:pointer; border:1px solid var(--cizgi);
+          background:rgba(244,114,182,.1); color:var(--pink); border-radius:9px; padding:9px 14px;
+          font-size:12px; font-weight:800">Achievement istatistiklerini getir 🎯</button>
+      </div>
+    </div>
     <div class="alan">STEAM APP ID</div>
     <div class="sorgu">
       <input id="id" maxlength="10" inputmode="numeric" autocomplete="off" placeholder="730, 570, 440…">
@@ -257,7 +284,44 @@ function yolYazi() {
   document.getElementById('yolBilgi').innerHTML = yol === 1
     ? 'SUNUCU 1: tarayıcıdan Steam\'e <b>direkt</b> istek — aracı yok, kodun ham hali. &quot;Direct fetch&quot; denen yöntem.'
     : 'SUNUCU 2: <b>API köprüleri</b> üzerinden gider — allorigins / corsproxy / codetabs promitikleri sırayla denenir.';
+  document.getElementById('apiAlan').classList.toggle('gorun', yol === 2);
 }
+
+let steamKey = '';
+try { steamKey = localStorage.getItem('km_key') || ''; } catch (e) {}
+function keyDurum() {
+  const d = document.getElementById('apiDurum');
+  const bonusEl = document.getElementById('apiBonus');
+  if (steamKey) {
+    d.innerHTML = '<b>🔑 Anahtar bağlı</b> — achievement uçları hazır. (Key sadece bu tarayıcıda saklanır.)';
+    bonusEl.style.display = 'block';
+  } else {
+    d.innerHTML = 'Anahtarsız mod: temel uçlar çalışır. Key almak: <a href="https://steamcommunity.com/dev/apikey" target="_blank" rel="noopener">steamcommunity.com/dev/apikey</a>';
+    bonusEl.style.display = 'none';
+  }
+  document.getElementById('keyInp').value = '';
+}
+document.getElementById('keyKay').onclick = () => {
+  const v = document.getElementById('keyInp').value.trim();
+  if (v) { steamKey = v; try { localStorage.setItem('km_key', v); } catch (e) {} }
+  else { steamKey = ''; try { localStorage.removeItem('km_key'); } catch (e) {} }
+  keyDurum();
+};
+keyDurum();
+
+document.getElementById('apiAchGet').onclick = async () => {
+  const id = idEl.value.trim();
+  const kutu = document.getElementById('apiAch');
+  if (!steamKey) { kutu.textContent = 'önce anahtar kaydet'; return; }
+  if (!/^\d{2,10}$/.test(id)) { kutu.textContent = 'önce App ID yaz'; return; }
+  kutu.textContent = 'çekiliyor…';
+  try {
+    const j = await jGet(`https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?appid=${id}&key=${steamKey}`);
+    const ach = j?.game?.availableGameStats?.achievements;
+    if (!ach) { kutu.textContent = 'Bu oyunun başarımları kilitli ya da hiç yok.'; return; }
+    kutu.innerHTML = `Toplam <b>${ach.length}</b> başarım · ilk 5: ${ach.slice(0,5).map(a=>escHtml(a.displayName||a.name)).join(' · ')}`;
+  } catch (e) { kutu.textContent = 'API cevap vermedi — key geçerli mi?'; }
+};
 
 document.querySelectorAll('.sekme button').forEach(b => b.onclick = () => {
   document.querySelector('.sekme .on').classList.remove('on');
