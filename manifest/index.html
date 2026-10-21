@@ -200,16 +200,19 @@ body{ background:
         <p class="ek" id="rDlcEk"></p>
       </div>
       <div class="mnk" id="mkutu">
-        <b>MANIFEST MOTORU — HESAPLI İNDİRME</b>
+        <b>MANIFEST MOTORU — TEK DOSYAYLA İNDİRİCİ</b>
         <div class="mk-sat">
-          <input id="depotId" inputmode="numeric" maxlength="12" placeholder="Depot ID (ör: 731)">
-          <input id="manId" inputmode="numeric" maxlength="20" placeholder="Manifest ID">
+          <input id="depotId" inputmode="numeric" maxlength="12" placeholder="Depot ID (boş = tum depotlar)">
+          <input id="manId" inputmode="numeric" maxlength="20" placeholder="Manifest ID (boş = guncel)">
           <button class="git mk-btn" id="manGet">Komut Üret 📋</button>
         </div>
         <div class="mk-ip">
-          Depot/manifest ID'leri SteamDB depot sayfalarından ve oyunun resmî depot listesinden görülebilir;
-          komut kopyalanır — <a href="https://github.com/SteamRE/DepotDownloader/releases" target="_blank" rel="noopener">DepotDownloader</a>
-          ile <b>kendi Steam hesabınla</b> çalıştır: dosyalar senin sahipliğin üzerinden iner (resmî ve meşru yol).
+          <b>Hızlı yol:</b>
+          <a href="https://raw.githubusercontent.com/noobtrainer23/tr-web/main/tools/kanka.bat" download="kanka.bat">kanka.bat indir →</a>
+          DepotDownloader.exe ile aynı klasöre koy, çift tıkla, AppID + hesap yaz — dosyalar
+          <b>depots/</b> klasörüne iner. Ya da komutu kopyala, PowerShell'de çalıştır:
+          <a href="https://github.com/SteamRE/DepotDownloader/releases" target="_blank" rel="noopener">DepotDownloader</a>
+          — giriş <b>kendi Steam hesabınla</b>, dolayısıyla resmî ve meşru.
         </div>
       </div>
       <div class="araclar">
@@ -429,15 +432,17 @@ document.getElementById('araSon').addEventListener('click', e => {
 });
 
 document.getElementById('manGet').onclick = () => {
-  const app = idEl.value.trim() || 'HESAP_APPID';
+  const app = idEl.value.trim();
   const d = document.getElementById('depotId').value.trim();
   const m = document.getElementById('manId').value.trim();
-  if (!/^\d{1,10}$/.test(d) || !/^\d{1,18}$/.test(m)) { hataGoster('Depot ID ve Manifest ID sayı olmalı — steamdb.info depot sayfasından alabilirsin.'); return; }
-  const komut = `DepotDownloader -app ${app} -depot ${d} -manifest ${m} -username KULLANICI_ADIN`;
+  if (!/^\d{2,10}$/.test(app)) { hataGoster('Üstteki Steam App ID kutusunu doldur (ör: 730).'); return; }
+  let komut = `DepotDownloader.exe -app ${app} -username KULLANICI_ADIN`;
+  if (/^\d{1,10}$/.test(d)) komut += ` -depot ${d}`;
+  if (/^\d{1,18}$/.test(m)) komut += ` -manifest ${m}`;
   navigator.clipboard.writeText(komut).then(() => {
     const b = document.getElementById('manGet');
     b.textContent = '✅ Kopyalandı';
-    setTimeout(() => b.textContent = 'Komun Üret 📋', 1500);
+    setTimeout(() => b.textContent = 'Komut Üret 📋', 1500);
   });
 };
 
