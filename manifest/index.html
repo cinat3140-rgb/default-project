@@ -105,19 +105,8 @@ body{ background:
 .mk-sat input:focus{ border-color:var(--pink) }
 .mk-btn{ padding:11px 16px !important; font-size:13px !important }
 .mk-ip{ font-size:11.5px; color:var(--met3); margin-top:9px; line-height:1.6 }
+.mk-ip b{ color:#ffd2e4 }
 .mk-ip a{ color:var(--pink); font-weight:900 }
-.od-sat{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:10px }
-.od-bilgi{ font-size:11.5px; color:var(--met3) }
-.od-list{ display:grid; gap:6px; margin-top:10px }
-.od-file{ display:flex; gap:10px; align-items:center; background:var(--kart2);
-  border:1px solid var(--cizgi); border-radius:9px; padding:9px 12px; text-align:left }
-.od-file .n{ flex:1; min-width:0; font-family:var(--mono); font-size:12px; word-break:break-all }
-.od-file .s{ font-size:10.5px; color:var(--met3); white-space:nowrap }
-.od-file a{ text-decoration:none; font-size:11px; font-weight:900; color:#fff;
-  background:linear-gradient(135deg,#ec4899,#f472b6); padding:8px 14px; border-radius:9px; white-space:nowrap }
-.od-in{ cursor:pointer; border:none; font-size:11px; font-weight:900; color:#fff;
-  background:linear-gradient(135deg,#ec4899,#f472b6); padding:8px 14px; border-radius:9px; white-space:nowrap }
-.od-in:disabled{ opacity:.6 }
 .mnk b{ color:var(--pink) }
 .mnk a{ color:#ffd2e4; font-weight:900 }
 .araclar{ display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; text-align:left }
@@ -211,31 +200,17 @@ body{ background:
         <p class="ek" id="rDlcEk"></p>
       </div>
       <div class="mnk" id="mkutu">
-        <b>MANIFEST MOTORU</b>
+        <b>MANIFEST MOTORU — HESAPLI İNDİRME</b>
         <div class="mk-sat">
           <input id="depotId" inputmode="numeric" maxlength="12" placeholder="Depot ID (ör: 731)">
           <input id="manId" inputmode="numeric" maxlength="20" placeholder="Manifest ID">
           <button class="git mk-btn" id="manGet">Komut Üret 📋</button>
         </div>
         <div class="mk-ip">
-          Manifest &amp; anahtarların halka açık deposu:
-          <a href="https://github.com/eudaimence/OpenDepot" target="_blank" rel="noopener">OpenDepot →</a>
-          (dal adına Steam App ID yaz). Komut üretildiğinde kopyalanır —
-          <a href="https://github.com/SteamRE/DepotDownloader/releases" target="_blank" rel="noopener">DepotDownloader</a> ile çalıştır.
+          Depot/manifest ID'leri SteamDB depot sayfalarından ve oyunun resmî depot listesinden görülebilir;
+          komut kopyalanır — <a href="https://github.com/SteamRE/DepotDownloader/releases" target="_blank" rel="noopener">DepotDownloader</a>
+          ile <b>kendi Steam hesabınla</b> çalıştır: dosyalar senin sahipliğin üzerinden iner (resmî ve meşru yol).
         </div>
-      </div>
-
-      <div class="mnk">
-        <b>OPENDEPOT KÜTÜPHANESİ — GERÇEK .MANIFEST İNDİRME</b>
-        <p style="margin-top:8px">
-          App ID'nin da açık kütüphaneye bak: varsa <b>.manifest ve anahtar</b> dosyalarını
-          kayıt olmadan, direkt indir.
-        </p>
-        <div class="od-sat">
-          <button class="git mk-btn" id="odAra">Bu App ID için manifest ara 🔎</button>
-          <span class="od-bilgi" id="odBilgi">hazır</span>
-        </div>
-        <div class="od-list" id="odList"></div>
       </div>
       <div class="araclar">
         <a id="rLink" target="_blank" rel="noopener">🏪 Steam sayfası</a>
@@ -457,110 +432,14 @@ document.getElementById('manGet').onclick = () => {
   const app = idEl.value.trim() || 'HESAP_APPID';
   const d = document.getElementById('depotId').value.trim();
   const m = document.getElementById('manId').value.trim();
-  if (!/^\d{1,10}$/.test(d) || !/^\d{1,18}$/.test(m)) { hataGoster('Depot ID ve Manifest ID sayı olmalı — OpenDepot dalından alabilirsin.'); return; }
+  if (!/^\d{1,10}$/.test(d) || !/^\d{1,18}$/.test(m)) { hataGoster('Depot ID ve Manifest ID sayı olmalı — steamdb.info depot sayfasından alabilirsin.'); return; }
   const komut = `DepotDownloader -app ${app} -depot ${d} -manifest ${m} -username KULLANICI_ADIN`;
   navigator.clipboard.writeText(komut).then(() => {
     const b = document.getElementById('manGet');
     b.textContent = '✅ Kopyalandı';
-    setTimeout(() => b.textContent = 'Komut Üret 📋', 1500);
+    setTimeout(() => b.textContent = 'Komun Üret 📋', 1500);
   });
 };
-
-const GH = 'https://api.github.com/repos/eudaimence/OpenDepot';
-const odBilgi = document.getElementById('odBilgi');
-const odList = document.getElementById('odList');
-
-function odOnbellek() {
-  try {
-    const c = JSON.parse(localStorage.getItem('od_dallar') || 'null');
-    if (c && Date.now() - c.t < 3600e3 && Array.isArray(c.l)) return c.l;
-  } catch (e) {}
-  return null;
-}
-
-async function dallar() {
-  const ozb = odOnbellek();
-  if (ozb) return ozb;
-  const hepsi = [];
-  for (let p = 1; p <= 5; p++) {
-    const r = await fetch(`${GH}/branches?per_page=100&page=${p}`);
-    if (!r.ok) break;
-    const dilim = await r.json();
-    hepsi.push(...dilim.map(b => b.name));
-    if (dilim.length < 100) break;
-  }
-  if (hepsi.length) {
-    try { localStorage.setItem('od_dallar', JSON.stringify({ t: Date.now(), l: hepsi })); } catch (e) {}
-  }
-  return hepsi;
-}
-
-document.getElementById('odAra').onclick = async () => {
-  const id = idEl.value.trim();
-  if (!/^\d{2,10}$/.test(id)) { hataGoster('Önce Steam App ID yaz (ör: 730).'); return; }
-  odBilgi.textContent = 'kütüphane şubeleri yükleniyor…';
-  odList.innerHTML = '';
-  try {
-    const hepsi = await dallar();
-    if (!hepsi.length) { odBilgi.textContent = 'GitHub kütüphane listesi kısıtlı (saatlik 60); 1 saat sonra tekrar dene.'; return; }
-    const esles = hepsi.filter(b => b === id || b.startsWith(id + '_') || b.startsWith(id + ' '));
-    if (!esles.length) { odBilgi.textContent = 'OpenDepot kütüphanesinde bu App ID yok — DepotDownloader bölümüyle gidebilirsin.'; return; }
-    odBilgi.textContent = `✅ ${esles.length} şube bulundu — dosyalar:`; 
-    for (const dal of esles.slice(0, 3)) {
-      const r = await fetch(`${GH}/contents/?ref=${encodeURIComponent(dal)}`);
-      if (!r.ok) continue;
-      const files = await r.json();
-      if (!Array.isArray(files) || !files.length) continue;
-      const bas = document.createElement('div');
-      bas.className = 'od-bilgi';
-      bas.style.marginTop = '6px';
-      bas.textContent = '.Branch: ' + dal;
-      odList.appendChild(bas);
-      for (const f of files) {
-        if (f.type !== 'file') continue;
-        const sat = document.createElement('div');
-        sat.className = 'od-file';
-        const kb = f.size > 1048576 ? (f.size / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(f.size / 1024)) + ' KB';
-        sat.innerHTML = `<span class="n">${escHtml(f.name)}</span><span class="s">${kb}</span>` +
-          `<button class="od-in" data-ad="${escHtml(f.name)}" data-url="${escHtml(f.download_url)}">İNDİR ⬇</button>`;
-        odList.appendChild(sat);
-      }
-      const zipsat = document.createElement('div');
-      zipsat.className = 'od-file';
-      zipsat.innerHTML = `<span class="n">${escHtml(dal)} · bütün şube (manifest + anahtarlar)</span>` +
-        `<a href="https://codeload.github.com/eudaimence/OpenDepot/zip/refs/heads/${encodeURIComponent(dal)}" target="_blank" rel="noopener">📦 ZIP AL</a>`;
-      odList.appendChild(zipsat);
-    }
-  } catch (e) {
-    odBilgi.textContent = 'GitHub bağlantısı kurulamadı — biraz sonra tekrar dene.';
-  }
-};
-
-odList.addEventListener('click', async e => {
-  const b = e.target.closest('.od-in');
-  if (!b) return;
-  const eski = b.textContent;
-  b.disabled = true; b.textContent = 'ALINIYOR…';
-  try {
-    const r = await fetch(b.dataset.url);
-    if (!r.ok) throw new Error(r.status);
-    const blob = await r.blob();
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = b.dataset.ad;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-    b.textContent = '✅ Az önce indirildi';
-  } catch (err) {
-    b.textContent = 'hata — ZIP dene';
-  } finally {
-    b.disabled = false;
-    if (b.textContent.startsWith('✅')) { setTimeout(() => b.textContent = 'İNDİR ⬇', 2500); }
-    else setTimeout(() => b.textContent = eski, 2500);
-  }
-});
 
 function escHtml(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 
