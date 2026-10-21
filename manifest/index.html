@@ -262,14 +262,30 @@ const gitB = document.getElementById('git');
 const iptalB = document.getElementById('iptal');
 const hataEl = document.getElementById('hata');
 const sonucEl = document.getElementById('sonuc');
-let yol = 1, ctrl = null, adet = 0;
+let yol = 1, ctrl = null, adet = 0, sonAra = '';
 const KOPRU = [
   u => 'https://r.jina.ai/' + u,
+  u => 'https://whateverorigin.org/get?url=' + encodeURIComponent(u),
   u => 'https://api.cors.lol/?url=' + encodeURIComponent(u),
   u => 'https://cors.eu.org/' + u,
-  u => 'https://whateverorigin.org/get?url=' + encodeURIComponent(u),
   u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u)
 ];
+
+function fetchZamanli(url, ms, ctrlr) {
+  const c = ctrlr || new AbortController();
+  const t = setTimeout(() => c.abort(), ms);
+  return fetch(url, { signal: c.signal }).finally(() => clearTimeout(t));
+}
+function kunyeSade(id, ad) {
+  return {
+    name: ad || ('AppID ' + id),
+    steam_appid: id,
+    header_image: `https://cdn.cloudflare.steamstatic.com/steam/apps/${id}/header.jpg`,
+    developers: null, release_date: null, genres: null,
+    is_free: null, price_overview: null, dlc: null,
+    sadeNot: 'Steam künyesi şu an köprüden gelmedi — sade mod. Manifest bölümü tam çalışır.'
+  };
+}
 
 function jsonCik(txt) {
   let j;
@@ -298,13 +314,17 @@ async function jGet(url) {
   }
   for (let i = 0; i < KOPRU.length; i++) {
     try {
-      const r = await (ctrl != null
-        ? fetch(KOPRU[i](url), { signal: ctrl.signal })
-        : fetch(KOPRU[i](url)));
+      const r = await fetchZamanli(KOPRU[i](url), 12000, ctrl);
       if (!r.ok) throw new Error(r.status);
       const j = jsonCik(await r.text());
       if (j) return j;
-    } catch (e) { if (e.name === 'AbortError') throw e; sonErr = e; }
+    } catch (e) {
+      if (e.name === 'AbortError') {
+        if (ctrl && ctrl.signal.aborted) throw e;
+        sonErr = e; continue;
+      }
+      sonErr = e;
+    }
   }
   throw sonErr || new Error('baglanti');
 }
@@ -372,17 +392,21 @@ gitB.onclick = async () => {
   iptalB.disabled = false;
   ctrl = new AbortController();
   try {
-    const d = (await jGet(`https://store.steampowered.com/api/appdetails?appids=${id}&cc=tr&l=tr`))?.[id]?.data;
-    if (!d) { hataGoster('O ID için künye bulunamadı — ID doğru mu? (bölge kilidi olabilir)'); return; }
-    const p = await jGet(`https://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1/?appid=${id}`).catch(() => null);
+    let d = null;
+    try { d = (await jGet(`https://store.steampowered.com/api/appdetails?appids=${id}&cc=tr&l=tr`))?.[id]?.data; } catch (e) { d = null; }
+    let p = null;
+    try { p = await jGet(`https://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1/?appid=${id}`).catch(() => null); } catch (e) { p = null; }
+    if (!d) {
+      d = kunyeSade(id, sonAra);
+      hataGoster('ℹ️ Steam künyesi köprüden gelmedi — SADE MOD açtım: kapak + AppID + manifest bölümleri aşağıda çalışır.');
+    }
     ciz(d, p);
     adet++;
     try { localStorage.setItem('km_adet', adet); } catch (e) {}
     sayacYaz();
   } catch (e) {
-    hataGoster(e.name === 'AbortError'
-      ? 'Sorgu iptal edildi.'
-      : 'Bağlantı zinciri başarısız — biraz sonra Sunucu 2 ile tekrar dene.');
+    if (e.name === 'AbortError') { hataGoster('Sorgu iptal edildi.'); }
+    else { ciz(kunyeSade(id, 'AppID ' + id), null); }
   } finally {
     gitB.disabled = false; gitB.textContent = 'Sorgula';
     iptalB.disabled = true; ctrl = null;
@@ -423,6 +447,8 @@ document.getElementById('araBtn').onclick = async () => {
 document.getElementById('araSon').addEventListener('click', e => {
   const b = e.target.closest('button[data-app]');
   if (!b) return;
+  const bAdi = b.closest('.ara-sat').querySelector('b');
+  sonAra = bAdi ? bAdi.textContent : '';
   idEl.value = b.dataset.app;
   gitB.click();
 });
@@ -549,22 +575,28 @@ function ciz(d, p) {
   document.getElementById('rDev').textContent = d.developers?.join(', ') || '—';
   document.getElementById('rTarih').textContent = d.release_date?.date || '—';
   document.getElementById('rTur').textContent = d.genres?.slice(0, 3).map(g => g.description).join(' · ') || '—';
-  document.getElementById('rDepot').textContent = 'depot ' + d.steam_appid + ' · ' + (d.steam_appid || '');
-  const f = document.getElementById('rFiyat');
-  f.textContent = d.is_free ? 'ÜCRETSİZ' : (d.price_overview?.final_formatted || (d.release_date?.coming_soon ? 'YAKINDA' : '—'));
+  document.getElementById('rDepot').textContent = 'depot: ' + (d.steam_appid || '—') + ' · AppID: ' + (d.steam_appid || '—') + ' · AppID kutusuna da aynı';
+  fiyatDoldur(d);
   dlcDoldur(d);
   hataEl.style.display = 'none';
   sonucEl.style.display = 'block';
   sonucEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
+function fiyatDoldur(d) {
+  const f = document.getElementById('rFiyat');
+  f.textContent = d.is_free === true ? 'ÜCRETSİZ'
+    : (d.price_overview?.final_formatted
+      || (d.release_date?.coming_soon ? 'YAKINDA' : '—'));
+}
 async function dlcDoldur(d) {
   const kutu = document.getElementById('rDlcKutu'), ul = document.getElementById('rDlc');
   if (!d.dlc || !d.dlc.length) { kutu.style.display = 'none'; return; }
   kutu.style.display = 'block'; ul.innerHTML = '<li>Yükleniyor…</li>';
   const ilk = d.dlc.slice(0, 5);
-  const sonlar = await Promise.all(ilk.map(i =>
-    jGet(`https://store.steampowered.com/api/appdetails?appids=${i}&cc=tr&l=tr`).catch(() => null)));
+  let sonlar = [];
+  try { sonlar = await Promise.all(ilk.map(i =>
+    jGet(`https://store.steampowered.com/api/appdetails?appids=${i}&cc=tr&l=tr`).catch(() => null))); } catch (e) { sonlar = []; }
   ul.innerHTML = '';
   sonlar.forEach((r, ix) => {
     const n = r?.[ilk[ix]]?.data?.name;
