@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kanka Manifest — Steam Depot Sorgu</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2316202d'/%3E%3Ccircle cx='26' cy='32' r='14' fill='%233b607d'/%3E%3Cpath d='M36 22 L52 32 L36 42 Z' fill='%2366c0f4'/%3E%3Ccircle cx='36' cy='32' r='3' fill='%23fff'/%3E%3C/svg%3E">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent }
+:root{ --bg:#0e1621; --kart:#16202d; --kart2:#1b2838; --cizgi:rgba(103,193,245,.16); --met:#c7d5e0; --met3:#6c839b; --esas:#66c0f4; --mono:'Consolas',ui-monospace,monospace }
+body{ background:
+  radial-gradient(900px 480px at 80% -8%, #1f3d5c 0%, transparent 60%),
+  radial-gradient(760px 420px at 4% 110%, #17324b 0%, transparent 55%),
+  var(--bg); color:var(--met);
+  font-family:'Segoe UI', system-ui, sans-serif; min-height:100vh;
+  display:flex; flex-direction:column; align-items:center; padding:26px 14px 46px }
+.bas{ text-align:center; margin-bottom:18px }
+.bas .uk{ font-size:44px; display:block; filter:drop-shadow(0 0 14px rgba(102,192,244,.45)) }
+.bas b{ font-size:22px; display:block; margin-top:6px; letter-spacing:.5px }
+.bas small{ color:var(--met3); font-size:12.5px; display:block; margin-top:3px }
+.kutu{ width:min(620px,100%); background:var(--kart); border:1px solid var(--cizgi);
+  border-radius:18px; padding:20px }
+.sekme{ display:flex; gap:8px; margin-bottom:14px }
+.sekme button{ flex:1; padding:9px 10px; border-radius:10px; border:1px solid var(--cizgi);
+  background:transparent; color:var(--met3); font-size:12.5px; font-weight:800; letter-spacing:.5px; cursor:pointer }
+.sekme button.on{ background:rgba(102,192,244,.12); color:var(--esas); border-color:var(--esas) }
+.sorgu{ display:flex; gap:10px }
+.sorgu input{ flex:1; min-width:0; padding:13px 15px; border-radius:11px; background:var(--kart2);
+  border:1px solid var(--cizgi); color:#fff; font-size:15px; font-family:var(--mono); outline:0 }
+.sorgu input:focus{ border-color:var(--esas) }
+.sorgu input::placeholder{ color:var(--met3); font-family:'Segoe UI' }
+.git{ padding:13px 20px; border:none; border-radius:11px; background:linear-gradient(135deg,#4a94d6,#66c0f4);
+  color:#fff; font-weight:900; font-size:14.5px; cursor:pointer; white-space:nowrap }
+.git:disabled{ opacity:.55; cursor:wait }
+.hata{ display:none; margin-top:12px; background:rgba(220,60,60,.12); border:1px solid rgba(220,60,60,.4);
+  color:#ff9d9d; border-radius:10px; padding:11px 14px; font-size:13px; line-height:1.5 }
+.sonuc{ display:none; margin-top:18px }
+.baslik{ display:flex; gap:14px; align-items:flex-start }
+.baslik img{ width:184px; border-radius:8px; border:1px solid var(--cizgi); flex:none }
+.baslik h2{ font-size:19px; line-height:1.35 }
+.baslik .alt{ font-size:12.5px; color:var(--met3); margin-top:5px; line-height:1.6 }
+.baslik .fiyat{ display:inline-block; margin-top:8px; background:rgba(102,192,244,.12);
+  border:1px solid var(--esas); color:var(--esas); font-size:12px; font-weight:800;
+  padding:4px 12px; border-radius:99px }
+.izgara{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px }
+.b.k{ background:var(--kart2); border:1px solid var(--cizgi); border-radius:12px; padding:12px 14px }
+.b.k small{ display:block; font-size:10.5px; color:var(--met3); letter-spacing:.6px; font-weight:800 }
+.b.k b{ font-size:15px; display:block; margin-top:4px; word-break:break-word }
+.psinif{ margin-top:14px; background:var(--kart2); border:1px solid var(--cizgi); border-radius:12px; padding:13px 15px }
+.psinif .tum{ display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--met3) }
+.psinif .bar{ height:9px; border-radius:99px; background:rgba(255,255,255,.07); margin-top:9px; overflow:hidden }
+.psinif .bar i{ display:block; height:100%; border-radius:99px; background:linear-gradient(90deg,#4a94d6,#8ef2c2); width:0 }
+.dlc{ margin-top:14px }
+.dlc h4{ font-size:12px; letter-spacing:.6px; color:var(--met3); margin-bottom:8px }
+.dlc ul{ list-style:none; display:grid; gap:6px }
+.dlc li{ font-size:13px; background:var(--kart2); border:1px solid var(--cizgi); border-radius:9px; padding:8px 12px }
+.dlc .ek{ font-size:12px; color:var(--met3); padding:4px 2px }
+.mnk{ margin-top:16px; background:linear-gradient(135deg, rgba(102,192,244,.07), rgba(142,242,194,.05));
+  border:1px dashed rgba(103,193,245,.35); border-radius:12px; padding:14px 16px; font-size:13px; line-height:1.65 }
+.mnk b{ color:var(--esas) }
+.mnk a{ color:#8ef2c2; font-weight:800 }
+.araclar{ display:flex; gap:8px; margin-top:14px; flex-wrap:wrap }
+.araclar button{ cursor:pointer; border:1px solid var(--cizgi); background:rgba(255,255,255,.05);
+  color:var(--met); border-radius:10px; padding:10px 15px; font-size:13px; font-weight:700 }
+.araclar a{ text-decoration:none; display:inline-block; cursor:pointer; border:1px solid var(--esas);
+  background:rgba(102,192,244,.1); color:var(--esas); border-radius:10px; padding:10px 15px; font-size:13px; font-weight:800 }
+.sayac{ margin-top:14px; font-size:11.5px; color:var(--met3); text-align:center }
+.uyari{ margin-top:18px; font-size:11px; color:var(--met3); text-align:center; line-height:1.7; max-width:620px }
+@media(max-width:560px){ .izgara{ grid-template-columns:1fr } .baslik{ flex-direction:column } .baslik img{ width:100% } }
+</style>
+</head>
+<body>
+
+<div class="bas">
+  <span class="uk">🛠️</span>
+  <b>Kanka Manifest</b>
+  <small>Steam App ID'yi yaz — oyunun künyesi, anlık oyuncu sayısı ve depot bilgisi gelsin</small>
+</div>
+
+<div class="kutu">
+  <div class="sekme">
+    <button class="on" data-y="1">SUNUCU 1 · OTO ZİNCİR</button>
+    <button data-y="2">SUNUCU 2 · PROXY</button>
+  </div>
+  <div class="sorgu">
+    <input id="id" maxlength="10" inputmode="numeric" autocomplete="off"
+      placeholder="Steam App ID — ör: 730, 570, 440">
+    <button class="git" id="git">GETİR</button>
+  </div>
+  <div class="hata" id="hata"></div>
+
+  <div class="sonuc" id="sonuc">
+    <div class="baslik">
+      <img id="rImg" alt="">
+      <div>
+        <h2 id="rAd"></h2>
+        <div class="alt" id="rAlt"></div>
+        <span class="fiyat" id="rFiyat"></span>
+      </div>
+    </div>
+    <div class="izgara">
+      <div class="k"><small>GELİŞTİRİCİ</small><b id="rDev"></b></div>
+      <div class="k"><small>ÇIKIŞ TARİHİ</small><b id="rTarih"></b></div>
+      <div class="k"><small>TÜRLER</small><b id="rTur"></b></div>
+      <div class="k"><small>DEPOT &amp; APP ID</small><b style="font-family:var(--mono); font-size:14px" id="rDepot"></b></div>
+    </div>
+    <div class="psinif">
+      <div class="tum"><b style="color:var(--met); font-size:13.5px" id="rSayi"></b><span>şu anda oynuyor</span></div>
+      <div class="bar"><i id="rBar"></i></div>
+    </div>
+    <div class="dlc" id="rDlcKutu">
+      <h4>DLC &amp; EK PAKETLER</h4>
+      <ul id="rDlc"></ul>
+      <p class="ek" id="rDlcEk"></p>
+    </div>
+    <div class="mnk">
+      <b>.manifest indirme:</b> Steam depot dizin dosyalarının 120 bin oyunluk kütüphanesi
+      Ahmed'in Discord botunda — <a href="https://discord.gg/QKh2f28k5K" target="_blank" rel="noopener">Discord'a katıl →</a><br>
+      <b>Kendine yerel dosya:</b> Steam ayarlarından "game depot dosyaları" klasörüne at, SteamKit'i
+      cache kaynağı göster (Discord'da anlatım var).
+    </div>
+    <div class="araclar">
+      <a id="rLink" target="_blank" rel="noopener">🏪 Steam sayfası</a>
+      <button id="kopya">📋 Künyeyi kopyala</button>
+    </div>
+  </div>
+  <p class="sayac" id="sayac"></p>
+</div>
+<p class="uyari">
+  Veri kaynağı: Steam resmî halka açık API (store.steampowered.com + ISteamUserStats).
+  Bu site Valve ile bağımsızdır; oyun içeri'i barındırmaz, oyunlar Steam mağazasından alınır.
+</p>
+
+<script>
+const idEl = document.getElementById('id');
+const gitB = document.getElementById('git');
+const hataEl = document.getElementById('hata');
+const sonucEl = document.getElementById('sonuc');
+let yol = 1, ctrl = null, sonKunye = null, adet = 0;
+
+document.querySelectorAll('.sekme button').forEach(b => b.onclick = () => {
+  document.querySelector('.sekme .on').classList.remove('on');
+  b.classList.add('on');
+  yol = +b.dataset.y;
+});
+
+const ZINCIR = [
+  u => u,
+  u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u),
+  u => 'https://corsproxy.io/?url=' + encodeURIComponent(u),
+  u => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u)
+];
+
+async function jGet(url) {
+  const bas = yol === 2 ? 1 : 0;
+  let sonErr;
+  for (let i = 0; i < ZINCIR.length; i++) {
+    const k = (bas + i) % ZINCIR.length;
+    try {
+      const r = await (ctrl != null
+        ? fetch(ZINCIR[k](url), { signal: ctrl.signal })
+        : fetch(ZINCIR[k](url)));
+      if (!r.ok) throw new Error(r.status);
+      return await r.json();
+    } catch (e) { if (e.name === 'AbortError') throw e; sonErr = e; }
+  }
+  throw sonErr || new Error('baglanti');
+}
+
+function hata(t) {
+  hataEl.style.display = 'block'; hataEl.textContent = t;
+  sonucEl.style.display = 'none';
+}
+
+gitB.onclick = async () => {
+  const id = idEl.value.trim();
+  if (!/^\d{2,10}$/.test(id)) { hata('Geçerli bir Steam App ID yaz (ör: 730).'); return; }
+  hataEl.style.display = 'none'; sonucEl.style.display = 'none';
+  gitB.disabled = true; gitB.textContent = 'BAĞLAN…';
+  ctrl = new AbortController();
+  try {
+    const d = await jGet(`https://store.steampowered.com/api/appdetails?appids=${id}&cc=tr&l=tr`)[id]?.data;
+    if (!d) { hata('O ID için künye bulunamadı — ID doğru mu? (bölge kilidi olabilir)'); return; }
+    const p = await jGet(`https://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1/?appid=${id}`).catch(() => null);
+    ciz(d, p);
+    adet++;
+    try { localStorage.setItem('km_adet', adet); } catch (e) {}
+    sayacYaz();
+  } catch (e) {
+    if (e.name === 'AbortError') { hata('Sorgu iptal edildi.'); }
+    else hata('Bağlantı zinciri başarısız — biraz sonra tekrar dene (yedek proxyler devreye girer).');
+  } finally {
+    gitB.disabled = false; gitB.textContent = 'GETİR';
+  }
+};
+idEl.onkeydown = e => { if (e.key === 'Enter') gitB.click(); };
+
+function ciz(d, p) {
+  setTimeout(() => document.getElementById('rBar').style.width = '100%', 30);
+  document.getElementById('rImg').src = d.header_image || '';
+  document.getElementById('rAd').textContent = d.name;
+  const oy = p?.response?.player_count;
+  document.getElementById('rSayi').textContent = oy != null ? oy.toLocaleString('tr-TR') : '—';
+  document.getElementById('rDev').textContent = d.developers?.join(', ') || '—';
+  document.getElementById('rTarih').textContent = d.release_date?.date || '—';
+  document.getElementById('rTur').textContent = d.genres?.slice(0, 3).map(g => g.description).join(' · ') || '—';
+  document.getElementById('rDepot').textContent = d.developer_depots ? JSON.stringify(d.developer_depots) : ('depot:' + d.steam_appid);
+  fiyat(d);
+  dlcDoldur(d);
+  hataEl.style.display = 'none';
+  sonucEl.style.display = 'block';
+  sonucEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function fiyat(d) {
+  const f = document.getElementById('rFiyat');
+  f.textContent = d.is_free ? 'ÜCRETSİZ'
+    : (d.price_overview?.final_formatted || (d.release_date?.coming_soon ? 'YAKINDA' : '—'));
+}
+
+async function dlcDoldur(d) {
+  const kutu = document.getElementById('rDlcKutu'), ul = document.getElementById('rDlc');
+  if (!d.dlc || !d.dlc.length) { kutu.style.display = 'none'; return; }
+  kutu.style.display = 'block'; ul.innerHTML = '<li>Yükleniyor…</li>';
+  const ilk = d.dlc.slice(0, 5);
+  const sonuc = await Promise.all(ilk.map(i =>
+    jGet(`https://store.steampowered.com/api/appdetails?appids=${i}&cc=tr&l=tr`).catch(() => null)));
+  ul.innerHTML = '';
+  sonuc.forEach((r, ix) => {
+    const n = r?.[ilk[ix]]?.data?.name;
+    if (n) { const li = document.createElement('li'); li.textContent = n; ul.appendChild(li); }
+  });
+  if (!ul.children.length) ul.innerHTML = '<li>DLC künyesi hâlâ kapalı</li>';
+  document.getElementById('rDlcEk').textContent = d.dlc.length > 5 ? `+ ${d.dlc.length - 5} paket daha var — Steam sayfasında listelenir` : '';
+}
+
+document.getElementById('kopya').onclick = () => {
+  if (!sonucEl.style.display || sonucEl.style.display === 'none') return;
+  const g = k => document.getElementById(k).textContent;
+  const m = `🛠 ${g('rAd')}\nGeliştirici: ${g('rDev')}\nÇıkış: ${g('rTarih')}\nTürler: ${g('rTur')}\nAppID: ${idEl.value.trim()} · ${g('rDepot')}\nŞu an oynayan: ${g('rSayi')}`;
+  navigator.clipboard.writeText(m).then(() => {
+    const b = document.getElementById('kopya');
+    b.textContent = '✅ Kopyalandı';
+    setTimeout(() => b.textContent = '📋 Künyeyi kopyala', 1400);
+  });
+};
+
+function sayacYaz() {
+  const s = document.getElementById('sayac');
+  s.textContent = adet ? adet + ' sorgulama yapıldı — depot kancasın 🛠' : '';
+}
+try { adet = parseInt(localStorage.getItem('km_adet'), 10) || 0; } catch (e) {}
+sayacYaz();
+</script>
+</body>
+</html>
