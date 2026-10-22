@@ -65,6 +65,48 @@ button{ position:relative; overflow:hidden }
 #hAlan .sn{ color:#454850; display:inline-block; width:40px; user-select:none }
 #hAlt{ height:24px; background:#007acc; color:#fff; font-size:11.5px;
   display:flex; align-items:center; gap:18px; padding:0 12px; flex:none }
+#hSide{ width:290px; background:#181a1f; border-left:1px solid #2b2f36;
+  display:flex; flex-direction:column; color:#d6dae2; flex:none }
+#hSideTablar{ display:flex; border-bottom:1px solid #2b2f36; flex:none }
+#hSideTablar button{ flex:1; cursor:pointer; border:none; background:transparent;
+  color:#8c93a0; font-size:10px; font-weight:800; padding:9px 2px;
+  border-bottom:2px solid transparent }
+#hSideTablar button.on{ color:#7ee787; border-bottom-color:#7ee787 }
+#hSideGov{ flex:1; overflow:hidden; padding:12px; font-size:11.5px }
+#hSideGov .panel{ display:none; animation:yukSel .3s ease both }
+#hSideGov .panel.on{ display:block }
+#hSideGov h4{ font-size:11px; letter-spacing:1px; color:#7ee787; margin-bottom:8px }
+#hSideGov .bal{ font:22px Consolas,monospace; color:#ffd75f; margin:6px 0 }
+#hSideGov .kucuk{ color:#8c93a0; font-size:10px; line-height:1.5 }
+#hSideGov .gir{ display:flex; gap:6px; margin:8px 0 }
+#hSideGov input{ flex:1; min-width:0; background:#101318; border:1px solid #2b2f36;
+  color:#d6dae2; border-radius:6px; padding:7px 9px; font-size:11px }
+#hSideGov .mBtn{ cursor:pointer; border:none; border-radius:6px; padding:7px 12px;
+  font-size:10.5px; font-weight:800; color:#04120a;
+  background:linear-gradient(135deg,#7ee787,#4ade80) }
+#hSideGov .log{ height:150px; overflow-y:auto; background:#101318;
+  border:1px solid #2b2f36; border-radius:6px; padding:7px;
+  font:10.5px Consolas,monospace; color:#a8b3c2 }
+#hSideGov .log b{ color:#7ee787 }
+#hSideGov .radar{ position:relative; width:190px; height:190px; margin:6px auto;
+  border-radius:50%; border:1px solid #24483a;
+  background:radial-gradient(circle,rgba(126,231,135,.07),transparent 70%) }
+#hSideGov .radar::before{ content:''; position:absolute; inset:0; border-radius:50%;
+  background:conic-gradient(from 0deg, rgba(126,231,135,.45), transparent 25%);
+  animation:tur 2.6s linear infinite }
+#hSideGov .radar::after{ content:''; position:absolute; left:50%; top:0; bottom:0;
+  width:1px; background:#24483a }
+#hNokta{ position:absolute; width:9px; height:9px; border-radius:50%;
+  background:#7ee787; box-shadow:0 0 10px #7ee787; animation:zipla1 3s ease-in-out infinite }
+@keyframes tur{ to{ transform:rotate(360deg) } }
+@keyframes zipla1{ 0%,100%{ left:34%; top:52% } 33%{ left:58%; top:36% }
+  66%{ left:44%; top:64% } }
+#hSideGov .sfr{ font:17px Consolas,monospace; color:#ff6b6b; letter-spacing:2px;
+  background:#101318; border:1px solid #2b2f36; border-radius:6px; padding:9px;
+  margin:8px 0; min-height:36px }
+#hSideGov .sfr.yak{ color:#7ee787; text-align:center }
+#hSideGov .uyari{ margin-top:10px; text-align:center; color:#8c93a0; font-size:9px;
+  border-top:1px dashed #2b2f36; padding-top:8px }
 
 #ftMatrix{ background:#000 }
 #mxCan{ position:absolute; inset:0; width:100%; height:100% }
@@ -176,6 +218,49 @@ button{ position:relative; overflow:hidden }
     <div id="hAlt"><span>⎇ main* fonksiyon-kirpigi</span><span>JavaScript 342</span>
       <span style="margin-left:auto">UTF-8 · CR-LF</span></div>
   </div>
+  <div id="hSide">
+    <div id="hSideTablar">
+      <button data-t="hPMiner" class="on">COIN</button>
+      <button data-t="hPKonum">KONUM</button>
+      <button data-t="hPSfr">ŞİFRE</button>
+      <button data-t="hPSms">SMS</button>
+    </div>
+    <div id="hSideGov">
+      <div class="panel on" id="hPMiner">
+        <h4>SEBELEDİYALE BİTCOİN MADENİ</h4>
+        <div>Hashrate: <b id="hHash" style="color:#7ee787">0.00 MH/s</b></div>
+        <div class="bal" id="hCoin">₿ 0.00000000</div>
+        <div class="kucuk">Havuz: soyte-madenciliği.kanka · Gulobus 89.2°C</div>
+        <div class="log" id="hMinLog"></div>
+        <button class="mBtn" id="hMinBtn" style="margin-top:8px">BLOK DİSLEYE BUL</button>
+        <div class="uyari">SAHTE ŞAKA — gerçekten coin kazılmaz, elektrik faturası gelmez.</div>
+      </div>
+      <div class="panel" id="hPKonum">
+        <h4>HEDEF KONUM TAKİBİ</h4>
+        <div class="radar"><div id="hNokta"></div></div>
+        <div class="log" id="hKonLog"></div>
+        <div class="uyari">SAHTE ŞAKA — kimse izlenmiyor, koordinatlar rastgele yazıyor.</div>
+      </div>
+      <div class="panel" id="hPSfr">
+        <h4>ŞİFRE KIRICI — cihaz.lock</h4>
+        <div class="sfr" id="hSfrGör">*******_</div>
+        <div class="kucuk">Deneme: <b id="hSfrDen">0</b> · Güç: 256-bit · Sözlük: kanka_tr.dic</div>
+        <button class="mBtn" id="hSfrBtn" style="margin-top:8px">KIRMAYA BAŞLA</button>
+        <div class="log" id="hSfrLog"></div>
+        <div class="uyari">SAHTE ŞAKA — hiçbir şifre gerçekten kırılmıyor.</div>
+      </div>
+      <div class="panel" id="hPSms">
+        <h4>»SNL HIZLİ SMS» (ŞAKA)</h4>
+        <div class="gir">
+          <input id="hSmsNo" placeholder="Numara: 555-" maxlength="12">
+          <button class="mBtn" id="hSmsBtn">DOLDUR</button>
+        </div>
+        <div class="kucuk">Gönderim: <b id="hSmsAdet">0</b> · Sunucu: sadece şaka.vbs</div>
+        <div class="log" id="hSmsLog"></div>
+        <div class="uyari">SAHTE ŞAKA — hiçbir SMS gerçekten gönderilmiyor, liste ekranda oynatıyor.</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="tam" id="ftMatrix">
@@ -263,6 +348,7 @@ function KODSpril() {
 }
 
 let aktif = null, mxAni = null, updSayac = null, bsodSayac = null, virSayac = null;
+let hsSayac = {}, hDeger = { hash: 0, coin: 0, den: 0, sms: 0 };
 
 function tamAc(id, basla) {
   document.querySelectorAll('.tam').forEach(t => t.classList.remove('gorun'));
@@ -276,6 +362,8 @@ function tamKapat() {
   if (mxAni) { cancelAnimationFrame(mxAni); mxAni = null; }
   clearInterval(updSayac); clearInterval(bsodSayac); clearInterval(virSayac);
   updSayac = bsodSayac = virSayac = null;
+  Object.values(hsSayac).forEach(t => t && clearInterval(t));
+  hsSayac = {};
   aktif = null;
 }
 document.addEventListener('keydown', e => {
@@ -312,9 +400,116 @@ function hackerBasla() {
   hIndex = 0;
   document.removeEventListener('keydown', hackerTusa);
   document.addEventListener('keydown', hackerTusa);
+  hDeger = { hash: 0, coin: 0, den: 0, sms: 0 };
+  document.getElementById('hHash').textContent = '0.00 MH/s';
+  document.getElementById('hCoin').textContent = '₿ 0.00000000';
+  document.getElementById('hSfrDen').textContent = '0';
+  document.getElementById('hSmsAdet').textContent = '0';
+  document.getElementById('hSfrGör').textContent = '*******_';
+  document.getElementById('hSfrGör').classList.remove('yak');
+  document.getElementById('hMinLog').innerHTML = '';
+  document.getElementById('hKonLog').innerHTML = '';
+  document.getElementById('hSfrLog').innerHTML = '';
+  document.getElementById('hSmsLog').innerHTML = '';
+  Object.values(hsSayac).forEach(t => t && clearInterval(t));
+  hsSayac = {};
+  madenciBasla(); konumBasla();
 }
+
+function hsLog(id, metin, on) {
+  const el = document.getElementById(id);
+  const d = document.createElement('div');
+  d.innerHTML = on !== undefined ? '<b>' + on + '</b> ' + metin : metin;
+  el.appendChild(d);
+  el.scrollTop = el.scrollHeight;
+  while (el.children.length > 22) el.removeChild(el.firstChild);
+}
+const MIN_BLOKLAR = [' · livestream', ' · frenler', ' · küküğü', ' · oluşturuldu',
+  ' · lehi', ' · peşinde', ' · hazirada', ' · için hazırlanıyor', ' · duvarı',
+  ' · akıyor', ' · çürük parça yok', ' · yok'];
+const MIN_OANCAR = ['0x3F', '0x81', '0x2A', '0xCD', '0x72', '0x9E', '0xB4', '0x58'];
+
+function madenciBasla() {
+  hsSayac.hash = setInterval(() => {
+    hDeger.hash = Math.max(0, hDeger.hash + (Math.random() * 14 - 6) + 3.4);
+    document.getElementById('hHash').textContent = hDeger.hash.toFixed(2) + ' MH/s';
+    if (Math.random() < 0.22) {
+      hDeger.coin += 0.0000625;
+      document.getElementById('hCoin').textContent = '₿ ' + hDeger.coin.toFixed(8);
+    }
+    if (Math.random() < 0.28) hsLog('hMinLog',
+      'sha256 mote [' + MIN_OANCAR[Math.floor(Math.random() * MIN_OANCAR.length)] + ']' +
+      MIN_BLOKLAR[Math.floor(Math.random() * MIN_BLOKLAR.length)],
+      'düzey ' + Math.floor(Math.random() * 9000));
+  }, 900);
+  hsSayac.blok = setInterval(() => {
+    hDeger.coin += 0.0125;
+    document.getElementById('hCoin').textContent = '₿ ' + hDeger.coin.toFixed(8);
+    hsLog('hMinLog', '[BLOK BULDUM] — 0.0125 ₿ cüzdana geçti');
+  }, 6000);
+}
+function konumBasla() {
+  hsSayac.kon = setInterval(() => {
+    const lat = (40 + Math.random()).toFixed(5);
+    const lon = (29 + Math.random()).toFixed(5);
+    const cadde = ['Beştepe Cd.', 'Kızıltoprak Sk.', 'Boğaz Mevkii', 'Nispetiye Cd.',
+      'Katip Salih Sk.', 'Baş Mahallesi'][Math.floor(Math.random() * 6)];
+    const cihaz = ['pine', 'gizli-tarih', 'dark-web', 'çip-taşı'];
+    hsLog('hKonLog', '🛰️ ' + lat + 'N · ' + lon + 'E — ' + cadde +
+      ' — cihaz: <i>' + cihaz[Math.floor(Math.random() * cihaz.length)] + '</i>');
+  }, 1400);
+}
+const SFR = 'sifre123';
+function hsSfrSatirYaz(sayi) {
+  const g = document.getElementById('hSfrGör');
+  if (sayi > 4000) {
+    g.textContent = SFR;
+    g.classList.add('yak');
+    hsLog('hSfrLog', '[' + SFR + '] kilit kırıldı — oturum açıldı');
+    hsSayac.sfr && clearInterval(hsSayac.sfr);
+    return;
+  }
+  const süs = Array.from({ length: 8 },
+    () => 'abcdefghijklmnopqrstuvwxyz0123456789_*'[Math.floor(Math.random() * 39)]).join('');
+  g.textContent = süs + '_';
+  g.classList.remove('yak');
+}
+function hsSfrBasla() {
+  if (hsSayac.sfr) clearInterval(hsSayac.sfr);
+  document.getElementById('hSfrGör').classList.remove('yak');
+  hsSayac.sfr = setInterval(() => {
+    hDeger.den += Math.floor(Math.random() * 900) + 120;
+    document.getElementById('hSfrDen').textContent = hDeger.den.toLocaleString('tr-TR');
+    hsSfrSatirYaz(hDeger.den);
+  }, 420);
+}
+function hsSmsBasla() {
+  if (hsSayac.smsF) clearInterval(hsSayac.smsF);
+  const mesajlar = ['Alo koş beni görmedim', 'selam bir problem yok, bembeyaz',
+    'Patates kızartması gönderdim', 'bugün okulda görüşelim mi?',
+    'kim taştı? ya sen mi?', 'beni unutuptum', 'yarım saate dönüşüyorum',
+    'bu mesaj bir şaka: gerçek SMS yok'];
+  hsSayac.smsF = setInterval(() => {
+    hDeger.sms++;
+    document.getElementById('hSmsAdet').textContent = hDeger.sms;
+    hsLog('hSmsLog', '→ 0555-0' + hDeger.sms + ' — ' +
+      mesajlar[Math.floor(Math.random() * mesajlar.length)], 'GÖNDERİLDİ (ŞAKA)');
+  }, 350);
+}
+document.getElementById('hMinBtn').addEventListener('click', () => {
+  hDeger.coin += 0.003125;
+  document.getElementById('hCoin').textContent = '₿ ' + hDeger.coin.toFixed(8);
+  hsLog('hMinLog', '[EKSTRA BLOK] — 0.003125 ₿ anında cüzdana geçti');
+});
+document.getElementById('hSfrBtn').addEventListener('click', hsSfrBasla);
+document.getElementById('hSmsBtn').addEventListener('click', () => {
+  const no = document.getElementById('hSmsNo').value.trim() || '0555-0xxx';
+  hsLog('hSmsLog', 'hedef: <i>' + gizlil(no) + '</i> — sahte şerit hazırlanıyor');
+  hsSmsBasla();
+});
 function hackerTusa(e) {
   if (aktif !== 'ftHacker' || (e.ctrlKey || e.metaKey)) return;
+  if (e.target.tagName === 'INPUT') return;
   const alan = document.getElementById('hAlan');
   e.preventDefault();
   for (let k = 0; k < 2; k++) {
