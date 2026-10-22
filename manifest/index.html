@@ -71,6 +71,9 @@ body{ background:
 .r-sat small{ font-size:10.5px; color:var(--met3) }
 .r-sat a{ text-decoration:none; font-size:11px; font-weight:900; color:#fff;
   background:linear-gradient(135deg,#16a34a,#4ade80); padding:8px 14px; border-radius:9px; white-space:nowrap }
+.r-sat .rkun{ cursor:pointer; border:none; font-size:11px; font-weight:900; color:#fff;
+  background:linear-gradient(135deg,#0891b2,#22d3ee); padding:8px 12px; border-radius:9px; white-space:nowrap }
+.r-sat .rkun:disabled{ opacity:.6 }
 .f3{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:14px }
 .f3 .k{ text-align:center }
 .f3 .k b{ color:var(--pink) }
@@ -366,6 +369,7 @@ button, .mk-btn, .mk-btn2{ position:relative; overflow:hidden }
       </div>
       <div class="araclar">
         <a id="rLink" target="_blank" rel="noopener">🏪 Steam sayfası</a>
+        <a id="dbLink" target="_blank" rel="noopener" style="display:none">📊 SteamDB</a>
         <button id="kopya">📋 Künyeyi kopyala</button>
       </div>
     </div>
@@ -688,6 +692,9 @@ function ciz(d, p) {
   document.getElementById('rTarih').textContent = d.release_date?.date || '—';
   document.getElementById('rTur').textContent = d.genres?.slice(0, 3).map(g => g.description).join(' · ') || '—';
   document.getElementById('rDepot').textContent = 'depot: ' + (d.steam_appid || '—') + ' · AppID: ' + (d.steam_appid || '—') + ' · AppID kutusuna da aynı';
+  const db = document.getElementById('dbLink');
+  db.href = 'https://steamdb.info/app/' + d.steam_appid + '/charts/';
+  db.style.display = '';
   fiyatDoldur(d);
   fiyatTrio(d.steam_appid);
   dukkBak(d.steam_appid);
@@ -809,6 +816,7 @@ async function radar(p) {
       sat.innerHTML = (o.thumbnail ? `<img src="${escHtml(o.thumbnail)}" alt="">` : '') +
         `<div class="bil"><b>${escHtml((o.title || '').replace(' Giveaway', ''))}</b>` +
         `<small>${escHtml(o.platforms || o.publisher || '—')}${sure}${o.worth && o.worth !== 'N/A' ? ' · worth ' + escHtml(o.worth) : ''}</small></div>` +
+        `<button class="rkun" data-ad="${escHtml((o.title || '').replace(' Giveaway', ''))}">🔎 Künye</button>` +
         `<a href="${escHtml(o.gamerpower_url || '')}" target="_blank" rel="noopener">AL ⬇</a>`;
       rliste.appendChild(sat);
     }
@@ -821,6 +829,30 @@ document.querySelectorAll('#rfiltre button').forEach(b => b.onclick = () => {
   b.classList.add('on');
   radar(b.dataset.p);
 });
+rliste.addEventListener('click', e => {
+  const b = e.target.closest('.rkun');
+  if (b) knyBul(b.dataset.ad, b);
+});
+async function knyBul(ad, btn) {
+  const eski = btn.textContent;
+  btn.textContent = '…'; btn.disabled = true;
+  try {
+    const r = await fetch('https://www.cheapshark.com/api/1.0/games?title=' + encodeURIComponent(ad) + '&limit=1');
+    const j = await r.json();
+    const id = j && j[0] && j[0].steamAppID;
+    if (!id) {
+      btn.textContent = '❓ Steam yok'; dbgeri(btn, eski); return;
+    }
+    idEl.value = id; git('pKunye');
+    setTimeout(() => gitB.click(), 60);
+    btn.textContent = eski; btn.disabled = false;
+  } catch (e) {
+    btn.textContent = '❗'; dbgeri(btn, eski);
+  }
+}
+function dbgeri(btn, eski) {
+  setTimeout(() => { btn.textContent = eski; btn.disabled = false; }, 1800);
+}
 radar('');
 </script>
 </body>
