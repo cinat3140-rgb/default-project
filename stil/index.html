@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Metin Stilleyici — Yazın El Yazısı Gotik Monospace Olsun</title>
+<meta name="description" content="Metnini 12 farklı unicode biçime çevir: gotik, el yazısı, bold serif, monospace, ters, dalga, boşluklu, çizgili. Tek tıkla kopyala, biyoya yapıştır.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230e1420'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle'%3E%E2%9C%92%3C/text%3E%3C/svg%3E">
+<style>
+:root{ --ark:#0e1420; --kart:#161d2e; --kart2:#101726; --cizgi:#242e44;
+  --met:#e8edf7; --met3:#8c96ad; --neon:#22d3ee; --neon2:#a78bfa; --babi:#34d399 }
+*{ margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',system-ui,sans-serif }
+body{ background:radial-gradient(1100px 540px at 30% -10%,#26204ae8,transparent),
+  var(--ark); color:var(--met); min-height:100vh; display:flex; flex-direction:column;
+  align-items:center; padding:26px 14px }
+.basciz{ width:min(700px,100%); background:linear-gradient(135deg,var(--neon2),var(--neon));
+  color:#fff; text-align:center; padding:10px 16px; border-radius:14px 14px 0 0;
+  font-weight:900; letter-spacing:2px; font-size:13.5px }
+.kabinet{ width:min(700px,100%); background:var(--kart); border:1px solid var(--cizgi);
+  border-top:none; border-radius:0 0 18px 18px; padding:20px 18px 26px }
+.hero{ text-align:center; margin-bottom:14px }
+.hero h1{ font-size:26px; margin-bottom:6px }
+.hero h1 em{ color:var(--neon2); font-style:normal }
+.hero p{ color:var(--met3); font-size:13.5px; line-height:1.6 }
+.gir{ display:flex; gap:8px; margin-bottom:14px }
+.gir input{ flex:1; background:var(--kart2); border:1px solid var(--cizgi); color:var(--met);
+  border-radius:10px; padding:12px 14px; font-size:14.5px }
+.gir input:focus{ outline:none; border-color:var(--neon2) }
+.gir button{ cursor:pointer; border:none; border-radius:10px; font-size:13px; font-weight:900;
+  padding:12px 20px; color:#160c26; background:linear-gradient(135deg,var(--neon2),var(--neon));
+  transition:transform .18s ease }
+.gir button:hover{ transform:translateY(-2px) }
+.liste{ display:grid; gap:8px; max-height:520px; overflow-y:auto; padding-right:3px;
+  scrollbar-width:thin; scrollbar-color:rgba(167,139,250,.4) transparent }
+.liste::-webkit-scrollbar{ width:7px }
+.liste::-webkit-scrollbar-thumb{ background:rgba(167,139,250,.35); border-radius:99px }
+.stil{ background:var(--kart2); border:1px solid var(--cizgi); border-radius:12px;
+  padding:10px 12px; display:flex; gap:10px; align-items:center; animation:yukSel .3s ease both;
+  transition:border-color .18s ease }
+.stil:hover{ border-color:var(--neon2) }
+.stil .ism{ width:118px; flex:none; color:var(--met3); font-size:10px; font-weight:900;
+  letter-spacing:1px }
+.stil .oniz{ flex:1; min-width:0; font-size:16px; overflow-x:auto; white-space:nowrap;
+  padding:2px 0 }
+.stil .oniz::-webkit-scrollbar{ height:4px }
+.kop{ cursor:pointer; border:1px solid var(--cizgi); background:transparent; color:var(--met3);
+  border-radius:8px; width:34px; height:34px; flex:none; font-size:14px;
+  display:inline-flex; align-items:center; justify-content:center; transition:all .15s ease }
+.kop:hover{ color:#fff; background:var(--neon2); border-color:transparent; transform:scale(1.1) }
+.bos{ text-align:center; color:var(--met3); font-size:13px; padding:26px 0 }
+.durum{ text-align:center; color:var(--babi); font-weight:800; font-size:12.5px;
+  min-height:18px; margin-top:12px }
+.altsat{ margin-top:10px; color:var(--met3); font-size:11px; text-align:center; line-height:1.6 }
+@keyframes yukSel{ from{ opacity:0; transform:translateY(10px) } to{ opacity:1; transform:none } }
+button{ position:relative; overflow:hidden }
+.dalga{ position:absolute; border-radius:50%; background:rgba(255,255,255,.35);
+  transform:scale(0); animation:dalgacik .6s ease-out forwards; pointer-events:none }
+@keyframes dalgacik{ to{ transform:scale(4); opacity:0 } }
+</style>
+</head>
+<body>
+<div class="basciz">METİN STİLLEYİCİ · 12 BİÇİM ANINDA</div>
+<div class="kabinet">
+  <div class="hero">
+    <h1>Yazın <em>Biçim</em> Değiştirir</h1>
+    <p>Cümleyi yaz — 12 farklı unicode biçimde listelenir. Hoşuna giden satırı tek tıkla kopyala, biyoya ya da yoruma yapıştır. Her şey tarayıcıda.</p>
+  </div>
+
+  <div class="gir">
+    <input id="metin" type="text" maxlength="80" placeholder="Biçimlenecek metin…">
+    <button id="bas">✒️ YAZ</button>
+  </div>
+
+  <div class="liste" id="liste"><div class="bos">üstteki kutuya yaz — 12 biçim anında belirir</div></div>
+  <p class="durum" id="durum"></p>
+
+  <p class="altsat">
+    Unicode biçimler kimi eski telefonlarda düz görünür; kopyalanan karakterler metnin kendisidir.
+    Türkçe harfleri (ğ ş ı ç ö ü) biçimler değiştirmeden olduğu gibi geçer.
+  </p>
+</div>
+
+<script>
+const VURGA = [
+  { isim: 'GOTİK BOLD', fonk: harfTablosu(0x1D56C, 0x1D586, null) },
+  { isim: 'EL YAZISI', fonk: harfTablosu(0x1D4D0, 0x1D4EA, null) },
+  { isim: 'BOLD SERİF', fonk: harfTablosu(0x1D400, 0x1D41A, 0x1D7CE) },
+  { isim: 'İTALİK', fonk: harfTablosu(0x1D434, 0x1D44E, null, { h: 0x210E }) },
+  { isim: 'MONOSPACE', fonk: harfTablosu(0x1D670, 0x1D68A, 0x1D7F6) },
+  { isim: 'BOLD SANS', fonk: harfTablosu(0x1D5D4, 0x1D5EE, 0x1D7EC) },
+  { isim: 'ÇİFT ÇİZGİLİ', fonk: harfTablosu(0x1D538, 0x1D552, 0x1D7D8, null, {
+      C: 0x2102, H: 0x210D, N: 0x2115, P: 0x2119, Q: 0x211A, R: 0x211B, Z: 0x2124 }) },
+  { isim: 'TERS', fonk: tersYaz },
+  { isim: 'DALGA', fonk: dalgaYaz },
+  { isim: 'BOŞLUKLU', fonk: s => [...s].join(' ') },
+  { isim: 'ÜSTÜ ÇİZGİLİ', fonk: ekliYaz(0x0336) },
+  { isim: 'ALTINA ÇİZGİ', fonk: ekliYaz(0x0332) }
+];
+function harfTablosu(capBas, lowerBas, rakamBas, lowerYama, capYama) {
+  return s => [...s].map(c => {
+    if (/[A-Z]/.test(c)) {
+      if (capYama && capYama[c]) return String.fromCodePoint(capYama[c]);
+      let k = capBas + (c.charCodeAt(0) - 65);
+      return String.fromCodePoint(k);
+    }
+    if (/[a-z]/.test(c)) {
+      if (lowerYama && lowerYama[c]) return String.fromCodePoint(lowerYama[c]);
+      let k = lowerBas + (c.charCodeAt(0) - 97);
+      return String.fromCodePoint(k);
+    }
+    if (/[0-9]/.test(c)) {
+      if (rakamBas == null) return c;
+      let k = rakamBas + (c.charCodeAt(0) - 48);
+      return String.fromCodePoint(k);
+    }
+    return c;
+  }).join('');
+}
+function tersYaz(s) {
+  const tablo = {
+    'a':'ɐ','b':'q','c':'ɔ','d':'p','e':'ǝ','f':'ɟ','g':'ƃ','h':'ɥ','i':'ı','j':'ɾ',
+    'k':'ʞ','l':'ן','m':'ɯ','n':'u','o':'o','p':'d','q':'b','r':'ɹ','s':'s','t':'ʇ',
+    'u':'n','v':'ʌ','w':'ʍ','x':'x','y':'ʎ','z':'z','A':'∀','B':'ᗺ','C':'Ɔ','D':'ᗡ',
+    'E':'Ǝ','F':'Ⅎ','G':'⅁','H':'H','I':'I','J':'ſ','K':'ʞ','L':'˥','M':'W','N':'N',
+    'O':'O','P':'Ԁ','Q':'Ὁ','R':'ᴚ','S':'S','T':'⊥','U':'∩','V':'Λ','W':'M','X':'X',
+    'Y':'⅄','Z':'Z','.':'˙',',':"'",'?':'¿','!':'¡'
+  };
+  const kopya = [...s].map(c => tablo[c] || c).reverse().join('');
+  return kopya;
+}
+function dalgaYaz(s) {
+  let i = 0;
+  return [...s].map(c => {
+    if (!/[a-zA-Z]/.test(c)) return c;
+    return (i++ % 2 === 0) ? c.toUpperCase() : c.toLowerCase();
+  }).join('');
+}
+function ekliYaz(kod) {
+  return s => [...s].map(c => c + String.fromCodePoint(kod)).join('');
+}
+</script>
+
+<script>
+const giris = document.getElementById('metin');
+const liste = document.getElementById('liste');
+const durum = document.getElementById('durum');
+giris.addEventListener('input', () => cizmele(giris.value.trim()));
+document.getElementById('bas').onclick = () => cizmele(giris.value.trim());
+giris.addEventListener('keydown', e => {
+  if (e.key === 'Enter') cizmele(giris.value.trim());
+});
+function cizmele(v) {
+  liste.innerHTML = '';
+  if (!v) {
+    liste.innerHTML = '<div class="bos">üstteki kutuya yaz — 12 biçim anında belirir</div>';
+    return;
+  }
+  VURGA.forEach((st, i) => {
+    const sat = document.createElement('div');
+    sat.className = 'stil';
+    sat.style.animationDelay = (i * 45) + 'ms';
+    let uygulan;
+    try { uygulan = st.fonk(v); } catch (e) { uygulan = '(hata)'; }
+    sat.innerHTML = '<span class="ism">' + st.isim + '</span>' +
+      '<span class="oniz">' + gizlil(uygulan) + '</span>' +
+      '<button class="kop" title="kopyala">📋</button>';
+    sat.dataset.metin = uygulan;
+    liste.appendChild(sat);
+  });
+  durum.textContent = '';
+}
+function gizlil(t) {
+  return String(t).replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+liste.addEventListener('click', async e => {
+  const b = e.target.closest('.kop');
+  if (!b) return;
+  const v = b.closest('.stil').dataset.metin;
+  try {
+    await navigator.clipboard.writeText(v);
+    durum.textContent = 'kopyalandı ✅ ' + b.closest('.stil').querySelector('.ism').textContent;
+  } catch (err) {
+    durum.textContent = 'kopyalama engellendi — satırı elle seç';
+  }
+});
+document.addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  const r = b.getBoundingClientRect();
+  const d = document.createElement('span');
+  d.className = 'dalga';
+  d.style.width = d.style.height = Math.max(r.width, r.height) + 'px';
+  d.style.left = (e.clientX - r.left - r.width / 2) + 'px';
+  d.style.top = (e.clientY - r.top - r.height / 2) + 'px';
+  b.appendChild(d);
+  setTimeout(() => d.remove(), 650);
+});
+</script>
+</body>
+</html>
