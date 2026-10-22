@@ -45,12 +45,11 @@ button{ position:relative; overflow:hidden }
 
 #ftHacker{ background:#0b0b0b; overflow:hidden; display:none; cursor:text }
 #ftHacker.gorun{ display:block }
-#tBar{ position:absolute; top:0; left:0; right:0; height:38px; flex:none;
-  background:#111; border-bottom:1px solid #2a2a2a; display:flex; align-items:center;
-  gap:14px; padding:0 14px; font-size:12px; color:#9ca3af; z-index:5 }
-#tBar .tlog{ font-weight:900; letter-spacing:1px; color:#4ade80 }
-#tKapat{ margin-left:auto; cursor:pointer; background:#1b1b1b; color:#d1d5db;
-  border:1px solid #333; border-radius:8px; padding:6px 14px; font-size:11.5px }
+#tBar{ position:absolute; top:0; left:0; right:0; height:34px; flex:none;
+  background:#0b0b0b; display:flex; align-items:center; z-index:5 }
+#tKapat{ margin-left:auto; background:#0b0b0b; color:#333; border:none;
+  padding:6px 16px; font-size:12px; cursor:pointer }
+#tKapat:hover{ color:#777 }
 #tEkr{ position:absolute; inset:38px 0 0 0; overflow-y:auto; overflow-x:hidden;
   font:13.5px/1.62 Consolas,'Courier New',monospace; color:#0f0;
   padding:12px 10px 60px; white-space:pre-wrap; }
@@ -146,11 +145,7 @@ button{ position:relative; overflow:hidden }
 </div>
 
 <div class="tam" id="ftHacker">
-  <div id="tBar">
-    <span class="tlog">root@kanka:~$</span>
-    <span>rasgele tuşlara bas — kod senin yazdığın gibi hızlı dağılır</span>
-    <button id="tKapat">✕ ÇIK (ESC)</button>
-  </div>
+  <div id="tBar"><button id="tKapat">✕</button></div>
   <div id="tEkr"></div>
 </div>
 
@@ -279,7 +274,7 @@ const TYPER2 = [
 '#include <sim/atomic.h>',
 '#include <asm/current.h>',
 '#include <asm/segment.h>',
-'#define KANKA_ADDR		0x0000FFFF',
+'#define DECK_ADDR		0x0000FFFF',
 '#define BUF_POOL_MAX	1024',
 '',
 'static inline unsigned long hash_sys(const char *buf, size_t len)',
@@ -340,10 +335,10 @@ const TYPER4 = [
 '#include <linux/interrupt.h>',
 '#include <linux/pci.h>',
 '#',
-'module_init(kanka_init);',
-'module_exit(kanka_exit);',
+'module_init(deck_init);',
+'module_exit(deck_exit);',
 'MODULE_LICENSE("GPL");',
-'MODULE_DESCRIPTION("sadece ekranda oynayan dekor; hicbir sey calismaz");',
+'MODULE_DESCRIPTION("scheduler compatibility shim");',
 '',
 'static irqreturn_t deck_isr(int irq, void *sid)',
 '{',
@@ -380,8 +375,7 @@ function typerYenile() {
 function typerBasla() {
   const el = document.getElementById('tEkr');
   typerYenile();
-  el.innerHTML = '<span class="gt">[bağlantı kuruldu] şaka modu aktif — rasgele yaz!</span>\n';
-  typerSatirVar = false;
+  el.innerHTML = '';
 }
 function typerYaz(n) {
   const el = document.getElementById('tEkr');
