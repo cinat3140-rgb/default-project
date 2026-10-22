@@ -147,6 +147,24 @@ body{ background:
   font-size:13px; font-weight:800 }
 .iph{ margin-top:18px; color:var(--met3); font-size:12.5px; text-align:center; line-height:1.65 }
 .iph b{ color:var(--pink) }
+.navmenu{ width:min(760px,100%); display:flex; gap:8px; justify-content:center; flex-wrap:wrap;
+  padding:14px 16px 0 }
+.navmenu button{ cursor:pointer; border:1px solid var(--cizgi); background:transparent;
+  color:var(--met3); border-radius:99px; padding:9px 18px; font-size:12.5px; font-weight:800 }
+.navmenu button.on{ background:rgba(244,114,182,.13); color:var(--pink); border-color:var(--pink) }
+.p-sayfa{ display:none; width:100% }
+.p-sayfa.gorun{ display:flex; flex-direction:column; align-items:center }
+.kart-tum{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:22px }
+.neden{ width:210px; background:var(--kart); border:1px solid var(--cizgi); border-radius:16px;
+  padding:16px; text-align:center }
+.neden .ik{ font-size:28px }
+.neden b{ display:block; font-size:14px; margin-top:6px }
+.neden small{ display:block; color:var(--met3); font-size:11.5px; margin-top:5px; line-height:1.55 }
+.sayilar{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:20px }
+.sayi{ min-width:120px; background:var(--kart2); border:1px solid var(--cizgi);
+  border-radius:14px; padding:14px 18px; text-align:center }
+.sayi b{ display:block; font-size:22px; color:var(--pink) }
+.sayi small{ color:var(--met3); font-size:10.5px; letter-spacing:.8px; font-weight:800 }
 .iph a{ color:var(--pink); font-weight:900 }
 .altsat{ margin-top:26px; padding-top:14px; border-top:1px solid var(--cizgi);
   font-size:10.5px; color:var(--met3); text-align:center; line-height:1.7 }
@@ -157,18 +175,40 @@ body{ background:
 <body>
 
 <div class="nav">
-  <div class="logo"><div class="ic">💗</div>KankaManifest</div>
+  <div class="logo"><div class="ic">💗</div>KankaHub</div>
   <a href="https://store.steampowered.com" target="_blank" rel="noopener">Steam Mağaza</a>
 </div>
 
-<div class="govde">
-  <div class="arslan">
-    <h1>Kanka<em>.Manifest</em> Finder</h1>
-    <p>Bir Steam App ID gir — depot, künye ve manifest yolu sana sunuluyor.<br>
-       Üstte radar açık: bedava oyun resmî kapısından al.</p>
-  </div>
+<div class="navmenu">
+  <button class="on" data-s="pHome">🏠 Anasayfa</button>
+  <button data-s="pKunye">🔎 Künye &amp; Fiyat</button>
+  <button data-s="pRadar">🎁 Bedava Radar</button>
+  <button data-s="pMotor">⬇ İndirme Motoru</button>
+</div>
 
-  <div class="radar">
+<div class="govde">
+  <section class="p-sayfa gorun" id="pHome">
+    <div class="arslan">
+      <h1>Kanka<em>Hub</em>'a Hoş Geldin</h1>
+      <p>Oyun künyesi, dört dörtlük fiyat kıyası, bedava radar ve resmî indirme motoru — tek pembe sayfa.</p>
+    </div>
+    <div class="kart-tum">
+      <div class="neden"><div class="ik">⚡</div><b>Hızlı</b><small>Sorgu zinciri elini kalçasına bile götürmeden 4 köprüde döner.</small></div>
+      <div class="neden"><div class="ik">🔒</div><b>Güvenli</b><small>Künya veri Steam ve CheapShark'tan; senin bilgisayarına dokunan bir şey indirmesin.</small></div>
+      <div class="neden"><div class="ik">📅</div><b>Güncel</b><small>Bedava oyun radarı her sayfa açılışında taze döküm alır.</small></div>
+    </div>
+    <div class="sayilar">
+      <div class="sayi"><b id="smK">0</b><small>KÜNYE SORGUSU</small></div>
+      <div class="sayi"><b id="smR">36+</b><small>MAĞAZA RADARI</small></div>
+      <div class="sayi"><b id="smM">4</b><small>KÖPRÜ SUNUCU</small></div>
+    </div>
+    <div class="kart-tum" style="margin-bottom:18px">
+      <button class="git" id="gKunye" style="border:none; border-radius:11px; padding:14px 22px; font-size:15px">Künye Sorgula →</button>
+      <button class="git" id="gRadar" style="border:none; border-radius:11px; padding:14px 22px; font-size:15px; background:linear-gradient(135deg,#16a34a,#4ade80)">Bedava Oyunlar →</button>
+    </div>
+  </section>
+
+  <section class="p-sayfa" id="pRadar">
     <div class="basciz">BEDAVA OYUN RADARI</div>
     <p class="alt2">Şu an aktif, resmî kanaldan dağıtılan ücretsiz oyunlar — linki tıkla, mağaza/anahtar sayfasından al. Hepsi yasal.</p>
     <div class="rfiltre" id="rfiltre">
@@ -181,7 +221,9 @@ body{ background:
     </div>
     <div class="rliste" id="rliste"><div class="r-sat"><b>yükleniyor…</b></div></div>
   </div>
+  </section>
 
+  <section class="p-sayfa" id="pKunye">
   <div class="panel">
     <div class="basciz">SORGULAMA</div>
     <div class="sekme">
@@ -253,22 +295,6 @@ body{ background:
         <ul id="rDlc"></ul>
         <p class="ek" id="rDlcEk"></p>
       </div>
-      <div class="mnk" id="mkutu">
-        <b>MANIFEST MOTORU — TEK TIK İNDİRİCİ</b>
-        <div class="mk-sat" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px">
-          <a class="git mk-btn" href="../tools/kanka.bat" download="kanka.bat" style="text-decoration:none; text-align:center;
-            background:linear-gradient(135deg,#9333ea,#c084fc)">① kanka.bat İNDİR</a>
-          <a class="mk-btn2" href="https://github.com/SteamRE/DepotDownloader/releases" target="_blank" rel="noopener" style="text-decoration:none; display:inline-block;
-            cursor:pointer; border:none; border-radius:9px; padding:13px 18px; font-size:14px; font-weight:900;
-            background:linear-gradient(135deg,#0891b2,#22d3ee); color:#fff">② DepotDownloader ZIP</a>
-        </div>
-        <div class="mk-ip">
-          <b>Sonra ne olacak:</b> masaüstünde yeni bir klasör aç → ① bat dosyasını ② ZIP'in içindeki
-          <b>DepotDownloader.exe</b> → her ikisi aynı klasörde olsun → <b>bat'ı çift tıkla</b> →
-          AppID yaz → hesap adı + Steam şifre + 2FA gir → dosyalar <b>depots/</b> klasörüne iner.
-          Depot/Manifest ID boş bırakılırsa tüm depoların güncel hali gelir.
-        </div>
-      </div>
       <div class="araclar">
         <a id="rLink" target="_blank" rel="noopener">🏪 Steam sayfası</a>
         <button id="kopya">📋 Künyeyi kopyala</button>
@@ -276,11 +302,31 @@ body{ background:
     </div>
     <p class="sayac" id="sayac"></p>
   </div>
+  </section>
+
+  <section class="p-sayfa" id="pMotor">
+  <div class="mnk" id="mkutu">
+    <b>MANIFEST MOTORU — TEK TIK İNDİRİCİ</b>
+    <div class="mk-sat" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px">
+      <a class="git mk-btn" href="../tools/kanka.bat" download="kanka.bat" style="text-decoration:none; text-align:center;
+        background:linear-gradient(135deg,#9333ea,#c084fc)">① kanka.bat İNDİR</a>
+      <a class="mk-btn2" href="https://github.com/SteamRE/DepotDownloader/releases" target="_blank" rel="noopener" style="text-decoration:none; display:inline-block;
+        cursor:pointer; border:none; border-radius:9px; padding:13px 18px; font-size:14px; font-weight:900;
+        background:linear-gradient(135deg,#0891b2,#22d3ee); color:#fff">② DepotDownloader ZIP</a>
+    </div>
+    <div class="mk-ip">
+      <b>Adımlar:</b> masaüstünde yeni bir klasör aç → ① bat + ② ZIP'ten çıkan tüm dosyalar
+      → hepsi aynı klasörde → <b>bat'ı çift tıkla</b> → AppID + hesap adı + Steam şifre + 2FA →
+      dosyalar <b>depots/</b> klasörüne iner. Depot/Manifest ID boş bırakılırsa tüm depoların güncel hali gelir.
+    </div>
+  </div>
 
   <p class="iph">
     <b>İpucu:</b> .manifest dosyası indirilmiyorsa tarayıcın otomatik indirmeyi engelliyordur —
     adres çubuğundaki kilitten "Sitene izin ver" de, ya da dosyayı tek tek indir.
   </p>
+  </section>
+
   <p class="altsat">
     Veri kaynağı: Steam resmî halka açık uçlar (store.appdetails + ISteamUserStats).
     Manifest dosyaları 2022'den beri Steam hesap sahipliği ister — bu site Valve ile bağımsızdır,
@@ -482,8 +528,22 @@ document.getElementById('araSon').addEventListener('click', e => {
   const bAdi = b.closest('.ara-sat').querySelector('b');
   sonAra = bAdi ? bAdi.textContent : '';
   idEl.value = b.dataset.app;
+  git('pKunye');
   gitB.click();
 });
+
+function git(s) {
+  document.querySelectorAll('.p-sayfa').forEach(x => x.classList.remove('gorun'));
+  document.getElementById(s).classList.add('gorun');
+  document.querySelectorAll('.navmenu button').forEach(b =>
+    b.classList.toggle('on', b.dataset.s === s));
+  window.scrollTo({ top: 0 });
+}
+document.querySelectorAll('.navmenu button').forEach(b =>
+  b.onclick = () => git(b.dataset.s));
+document.getElementById('gKunye').onclick = () => git('pKunye');
+document.getElementById('gRadar').onclick = () => git('pRadar');
+document.getElementById('smK').textContent = adet;
 
 document.querySelectorAll('.mk-sat a').forEach(() => {});
 
