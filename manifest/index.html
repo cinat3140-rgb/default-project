@@ -202,6 +202,37 @@ body{ background:
   .r-sat, .nav .ic{ animation:none !important }
   .p-sayfa{ opacity:1; transform:none }
 }
+
+/* ═══ DERİN HAREKET KATMANI ═══ */
+.zemin{ position:fixed; inset:0; z-index:-1; overflow:hidden; pointer-events:none }
+.zemin i{ position:absolute; border-radius:50%; filter:blur(90px); opacity:.5 }
+.zemin i:nth-child(1){ width:420px; height:420px; background:#ec4899; top:-120px; left:-100px; animation:yuz1 22s ease-in-out infinite alternate }
+.zemin i:nth-child(2){ width:360px; height:360px; background:#9333ea; bottom:-80px; right:-80px; animation:yuz2 26s ease-in-out infinite alternate }
+.zemin i:nth-child(3){ width:280px; height:280px; background:#0ea5e9; top:40%; left:60%; opacity:.25; animation:yuz3 30s ease-in-out infinite alternate }
+@keyframes yuz1{ to{ transform:translate(140px,110px) scale(1.25) } }
+@keyframes yuz2{ to{ transform:translate(-120px,-90px) scale(1.15) } }
+@keyframes yuz3{ to{ transform:translate(-160px,60px) scale(.85) } }
+@keyframes akis{ to{ background-position:200% 0 } }
+.arslan h1{
+  background:linear-gradient(90deg,#f472b6,#c084fc,#22d3ee,#f472b6);
+  background-size:200% 100%; -webkit-background-clip:text; background-clip:text;
+  color:transparent; animation:akis 7s linear infinite }
+.p-sayfa.gorun{ animation:kayit .5s cubic-bezier(.2,.9,.25,1) both }
+@keyframes kayit{ from{ opacity:0; transform:translateX(var(--gelx,40px)) } to{ opacity:1; transform:none } }
+button, .mk-btn, .mk-btn2{ position:relative; overflow:hidden }
+.dalga{ position:absolute; border-radius:50%; background:rgba(244,114,182,.35);
+  transform:scale(0); animation:dalgacik .65s ease-out forwards; pointer-events:none }
+@keyframes dalgacik{ to{ transform:scale(4); opacity:0 } }
+.rfiltre button.on{ animation:secil .35s cubic-bezier(.2,.9,.25,1) }
+@keyframes secil{ 0%{ transform:scale(.8) } 60%{ transform:scale(1.15) } 100%{ transform:scale(1) } }
+.sekme button.on{ animation:secil .35s cubic-bezier(.2,.9,.25,1) }
+.f3 .k{ animation:yukSel .45s ease both }
+.f3 .k:nth-child(2){ animation-delay:.08s }
+.f3 .k:nth-child(3){ animation-delay:.16s }
+.d-sat{ transition:transform .2s ease, border-color .2s ease, background .2s ease }
+.d-sat:hover{ transform:translateX(6px); border-color:var(--pink); background:rgba(244,114,182,.08) }
+.uy-anak{ position:absolute; inset:auto 0 -8px 0; height:2px;
+  background:linear-gradient(90deg,transparent,var(--pink),transparent) }
 .iph a{ color:var(--pink); font-weight:900 }
 .altsat{ margin-top:26px; padding-top:14px; border-top:1px solid var(--cizgi);
   font-size:10.5px; color:var(--met3); text-align:center; line-height:1.7 }
@@ -211,6 +242,7 @@ body{ background:
 </head>
 <body>
 
+<div class="zemin"><i></i><i></i><i></i></div>
 <div class="nav">
   <div class="logo"><div class="ic">💗</div>KankaHub</div>
   <a href="https://store.steampowered.com" target="_blank" rel="noopener">Steam Mağaza</a>
@@ -580,19 +612,50 @@ function git(s) {
   window.scrollTo({ top: 0 });
 }
 function git(s) {
-  document.querySelectorAll('.p-sayfa').forEach(x => x.classList.remove('gorun'));
+  const sayfalar = ['pHome', 'pKunye', 'pRadar', 'pMotor'];
+  const eskiX = sayfalar.indexOf(onceki), yeniX = sayfalar.indexOf(s);
+  document.querySelectorAll('.p-sayfa').forEach(x => {
+    x.classList.remove('gorun');
+    x.style.removeProperty('--gelx');
+  });
   const hedef = document.getElementById(s);
+  hedef.style.setProperty('--gelx', yeniX >= eskiX ? '60px' : '-60px');
   hedef.classList.add('gorun');
   document.querySelectorAll('.navmenu button').forEach(b =>
     b.classList.toggle('on', b.dataset.s === s));
   window.scrollTo({ top: 0 });
   if (s === 'pHome') sayiSay();
+  onceki = s;
 }
 function sayiSay() {
   nasilSay(document.getElementById('smK'), adet, '');
   nasilSay(document.getElementById('smR'), 36, '+');
   nasilSay(document.getElementById('smM'), 4, '');
 }
+let onceki = 'pHome';
+
+document.addEventListener('click', e => {
+  const b = e.target.closest('button, .mk-btn, .mk-btn2');
+  if (!b) return;
+  const k = b.getBoundingClientRect();
+  const d = document.createElement('span');
+  d.className = 'dalga';
+  d.style.width = d.style.height = Math.max(k.width, k.height) + 'px';
+  d.style.left = (e.clientX - k.left - k.width / 2) + 'px';
+  d.style.top = (e.clientY - k.top - k.height / 2) + 'px';
+  b.appendChild(d);
+  setTimeout(() => d.remove(), 700);
+});
+
+document.querySelectorAll('.neden, .sayi, .f3 .k').forEach(k =>
+  k.addEventListener('mousemove', e => {
+    const r = k.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - .5;
+    const y = (e.clientY - r.top) / r.height - .5;
+    k.style.transform = `perspective(600px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) translateY(-3px)`;
+  }));
+document.querySelectorAll('.neden, .sayi, .f3 .k').forEach(k =>
+  k.addEventListener('mouseleave', () => { k.style.transform = ''; }));
 function nasilSay(el, son, ek) {
   const t0 = performance.now(), sure = 800;
   function adim(t) {
