@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Prank Merkezi — Sevimli Şaka Ekranları</title>
-<meta name="description" content="Hacker modu, matrix yağmuru, sahte sistem güncellemesi, mavi ekran ve sahte virüs taraması. ESC ile her şakadan çıkars.">
+<meta name="description" content="Hacker simulator masaüstü, matrix yağmuru, sahte sistem güncellemesi, mavi ekran, sahte virüs taraması. Şakaların hepsi zararsız ekranda oynayan animasyonlar.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230e1420'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle'%3E%F0%9F%8E%AD%3C/text%3E%3C/svg%3E">
 <style>
 :root{ --ark:#0e1420; --kart:#161d2e; --kart2:#101726; --cizgi:#242e44;
@@ -42,71 +42,6 @@ button{ position:relative; overflow:hidden }
 
 .tam{ display:none; position:fixed; inset:0; z-index:999 }
 .tam.gorun{ display:block }
-
-#ftHacker{ background:#1e1e1e }
-#hKutu{ position:absolute; inset:0; display:flex; flex-direction:column }
-#hBaslik{ height:34px; background:#323233; display:flex; align-items:center;
-  gap:14px; padding:0 12px; color:#ccc; font-size:12px; flex:none }
-#hBaslik .logo{ width:16px; height:16px; border-radius:3px;
-  background:linear-gradient(135deg,#0d84d7,#31a2f2) }
-#hSekme{ background:#252526; width:190px; padding:7px 10px; font-size:12px;
-  color:#ffd7a1; border-right:1px solid #1e1e1e; flex:none }
-#hGov{ flex:1; display:flex; overflow:hidden }
-#hKenar{ width:190px; background:#252526; color:#a0a0a0; font-size:12px;
-  padding:10px 0; flex:none }
-#hKenar div{ padding:3px 10px; white-space:nowrap }
-#hAlanc{ flex:1; overflow:hidden; background:#1e1e1e; position:relative }
-#hAlan{ position:absolute; inset:0; overflow:hidden; font:13px/1.55 Consolas,monospace;
-  color:#d4d4d4; padding:8px 14px 8px 54px; }
-#hAlan::after{ content:'▊'; color:#c586c0; animation:blink .9s steps(1) infinite }
-@keyframes blink{ 50%{ opacity:0 } }
-.tk{ color:#569cd6 } .str{ color:#ce9178 } .cm{ color:#6a9955 }
-.fn{ color:#dcdcaa } .kw{ color:#c586c0 } .cl{ color:#4ec9b0 } .nu{ color:#b5cea8 }
-#hAlan .sn{ color:#454850; display:inline-block; width:40px; user-select:none }
-#hAlt{ height:24px; background:#007acc; color:#fff; font-size:11.5px;
-  display:flex; align-items:center; gap:18px; padding:0 12px; flex:none }
-#hSide{ width:290px; background:#181a1f; border-left:1px solid #2b2f36;
-  display:flex; flex-direction:column; color:#d6dae2; flex:none }
-#hSideTablar{ display:flex; border-bottom:1px solid #2b2f36; flex:none }
-#hSideTablar button{ flex:1; cursor:pointer; border:none; background:transparent;
-  color:#8c93a0; font-size:10px; font-weight:800; padding:9px 2px;
-  border-bottom:2px solid transparent }
-#hSideTablar button.on{ color:#7ee787; border-bottom-color:#7ee787 }
-#hSideGov{ flex:1; overflow:hidden; padding:12px; font-size:11.5px }
-#hSideGov .panel{ display:none; animation:yukSel .3s ease both }
-#hSideGov .panel.on{ display:block }
-#hSideGov h4{ font-size:11px; letter-spacing:1px; color:#7ee787; margin-bottom:8px }
-#hSideGov .bal{ font:22px Consolas,monospace; color:#ffd75f; margin:6px 0 }
-#hSideGov .kucuk{ color:#8c93a0; font-size:10px; line-height:1.5 }
-#hSideGov .gir{ display:flex; gap:6px; margin:8px 0 }
-#hSideGov input{ flex:1; min-width:0; background:#101318; border:1px solid #2b2f36;
-  color:#d6dae2; border-radius:6px; padding:7px 9px; font-size:11px }
-#hSideGov .mBtn{ cursor:pointer; border:none; border-radius:6px; padding:7px 12px;
-  font-size:10.5px; font-weight:800; color:#04120a;
-  background:linear-gradient(135deg,#7ee787,#4ade80) }
-#hSideGov .log{ height:150px; overflow-y:auto; background:#101318;
-  border:1px solid #2b2f36; border-radius:6px; padding:7px;
-  font:10.5px Consolas,monospace; color:#a8b3c2 }
-#hSideGov .log b{ color:#7ee787 }
-#hSideGov .radar{ position:relative; width:190px; height:190px; margin:6px auto;
-  border-radius:50%; border:1px solid #24483a;
-  background:radial-gradient(circle,rgba(126,231,135,.07),transparent 70%) }
-#hSideGov .radar::before{ content:''; position:absolute; inset:0; border-radius:50%;
-  background:conic-gradient(from 0deg, rgba(126,231,135,.45), transparent 25%);
-  animation:tur 2.6s linear infinite }
-#hSideGov .radar::after{ content:''; position:absolute; left:50%; top:0; bottom:0;
-  width:1px; background:#24483a }
-#hNokta{ position:absolute; width:9px; height:9px; border-radius:50%;
-  background:#7ee787; box-shadow:0 0 10px #7ee787; animation:zipla1 3s ease-in-out infinite }
-@keyframes tur{ to{ transform:rotate(360deg) } }
-@keyframes zipla1{ 0%,100%{ left:34%; top:52% } 33%{ left:58%; top:36% }
-  66%{ left:44%; top:64% } }
-#hSideGov .sfr{ font:17px Consolas,monospace; color:#ff6b6b; letter-spacing:2px;
-  background:#101318; border:1px solid #2b2f36; border-radius:6px; padding:9px;
-  margin:8px 0; min-height:36px }
-#hSideGov .sfr.yak{ color:#7ee787; text-align:center }
-#hSideGov .uyari{ margin-top:10px; text-align:center; color:#8c93a0; font-size:9px;
-  border-top:1px dashed #2b2f36; padding-top:8px }
 
 #ftMatrix{ background:#000 }
 #mxCan{ position:absolute; inset:0; width:100%; height:100% }
@@ -161,6 +96,77 @@ button{ position:relative; overflow:hidden }
 #vAlt{ padding:8px 12px 12px; display:flex; justify-content:flex-end; gap:8px }
 .btnXP{ cursor:default; border:1px solid #003c74; background:linear-gradient(#f2f7ff,#c7d8f0);
   padding:3px 16px; border-radius:3px; font-size:11.5px }
+
+#ftHacker{ background:#07090d; overflow:hidden }
+#simDesk{ position:absolute; inset:0; display:flex; flex-direction:column }
+#simBar{ height:38px; flex:none; background:#11151c; border-bottom:1px solid #1d232e;
+  display:flex; align-items:center; gap:14px; padding:0 14px; font-size:12px }
+#simBar .slog{ font-weight:900; letter-spacing:1px; color:#7ee787 }
+#simUyari{ color:#8c93a0 }
+#simKapat{ margin-left:auto; cursor:pointer; background:#1a2130; color:#d6dae2;
+  border:1px solid #2b3244; border-radius:8px; padding:6px 14px; font-size:11.5px }
+#simGov{ flex:1; position:relative; overflow:hidden }
+#simYazi{ position:absolute; left:26px; top:64px; bottom:20px; width:min(560px,42vw);
+  overflow:hidden; font:15px/1.6 Consolas,monospace; color:#c8d2cc;
+  white-space:pre-wrap; word-break:break-all; opacity:.88 }
+#simIkoner{ position:absolute; right:12px; top:12px; display:flex;
+  flex-direction:column; gap:10px; z-index:20 }
+.simIk{ width:84px; padding:9px 4px; cursor:pointer; background:#11151ccc;
+  border:1px solid #232b3a; border-radius:12px; text-align:center; color:#d6dae2; }
+.simIk:hover{ border-color:#5b6a88 }
+.simIk .gi{ font-size:22px; display:block }
+.simIk span{ display:block; font-size:9.5px; margin-top:4px; color:#98a2b3 }
+.simWin{ position:absolute; width:430px; background:#131822; border:1px solid #27303f;
+  border-radius:10px; box-shadow:0 22px 48px rgba(0,0,0,.55); display:none;
+  flex-direction:column; z-index:10; overflow:hidden }
+.simWin.gorun{ display:flex }
+.simBas{ flex:none; height:32px; background:#1a2130; display:flex; align-items:center;
+  gap:10px; padding:0 10px; font-size:11.5px; color:#aab3c2; cursor:move; user-select:none }
+.simBas .basIkon{ font-size:13px }
+.simBas .basX{ margin-left:auto; cursor:pointer; width:22px; height:18px;
+  background:#3a2430; border:1px solid #5a3344; border-radius:4px;
+  display:inline-flex; align-items:center; justify-content:center; font-size:10px }
+.simBas .basX:hover{ background:#7d2f3f }
+.simGov{ flex:1; overflow:auto; padding:12px; font-size:11.5px; line-height:1.6 }
+.simGov .simLog{ height:118px; overflow-y:auto; background:#0c1017; border:1px solid #232b3a;
+  border-radius:6px; padding:7px; font:10.5px Consolas,monospace; color:#9fb0a6 }
+.simGov .simLog b{ color:#7ee787 }
+.simBtn{ cursor:pointer; border:none; border-radius:6px; padding:7px 14px;
+  font-size:11px; font-weight:800; color:#04120a;
+  background:linear-gradient(135deg,#7ee787,#4ade80) }
+.simBtn.ikinci{ background:#1e2532; color:#aab3c2; border:1px solid #2b3446 }
+.cuzdan{ float:right; background:#0c1017; border:1px solid #2b3446; border-radius:8px;
+  padding:8px 12px; text-align:center }
+.cuzdan b{ display:block; font-size:16px; color:#ffd75f; font-family:Consolas,monospace }
+.cuzdan small{ color:#8c93a0; font-size:9.5px }
+.sfrGiris{ display:flex; gap:6px; margin:8px 0 }
+.sfrGiris input{ flex:1; min-width:0; background:#0c1017; border:1px solid #232b3a;
+  color:#d6dae2; border-radius:6px; padding:6px 9px; font-size:11px }
+.sfrDurum{ margin-top:8px; font-size:11px; color:#98a2b3 }
+.sfrDurum.tamam{ color:#7ee787; font-weight:800 }
+.sfrTablo{ margin-top:8px; border:1px solid #232b3a; border-radius:6px; overflow:hidden }
+.sfrTablo .k{ background:#0c1017; display:flex; flex-wrap:wrap; gap:1px; padding:5px }
+.sfrTablo .t{ width:calc(12.5% - 1px); aspect-ratio:1; background:#0f1520;
+  border-radius:3px; display:flex; align-items:center; justify-content:center;
+  font:9.5px Consolas,monospace; color:#64748b }
+.sfrTablo .t.bul{ background:#123d22; color:#7ee787 }
+.nukTablo{ display:grid; grid-template-columns:repeat(6,1fr); gap:4px;
+  font:10.5px Consolas,monospace; color:#7ee787 }
+.nukTablo div{ background:#0c1017; border:1px solid #232b3a; border-radius:4px;
+  padding:6px 4px; text-align:center }
+.nukTablo div span{ display:block; color:#64748b; font-size:8.5px; margin-bottom:3px }
+.simPasif{ position:absolute; z-index:30; width:330px; background:#0d1117;
+  border:1px solid #2c5138; border-radius:10px; box-shadow:0 18px 40px rgba(0,0,0,.6);
+  overflow:hidden; display:none; animation:yukSel .25s ease both }
+.simPasif.gorun{ display:block }
+.simPasif .pGov{ padding:18px 16px; font-size:12.5px; text-align:center; color:#c9d4cd }
+.simPasif .pGov.kirmizi{ color:#ff6b6b; font-weight:800; font-size:15px }
+.pGov.yesil{ color:#7ee787; font-weight:800; font-size:15px }
+.pGov .sayi{ font-size:42px; font-weight:300; color:#fff; margin:8px 0 }
+.pGov .bar{ height:10px; background:#101822; border:1px solid #23303f; border-radius:6px;
+  margin-top:12px; overflow:hidden }
+.pGov .bar i{ display:block; height:100%; width:0; background:#7ee787; transition:width .5s ease }
+.pGov small{ display:block; margin-top:10px; color:#64748b; font-size:10px }
 </style>
 </head>
 <body>
@@ -168,12 +174,12 @@ button{ position:relative; overflow:hidden }
 <div class="kabinet">
   <div class="hero">
     <h1>Arkadaşını <em>Şok Et</em></h1>
-    <p>Ekran görüntüsü kadar gerçek duran beş dekor: sahneye geç, ESC'ye bas, şaka biter. Kimseye zararı yok.</p>
+    <p>Bir hediye: masaüstü hacker simülatörü, matrix yağmuru, sahte güncelleme, mavi ekran ve sahte virüs. Sahneye geç, ESC ile bitir. Kimseye zararı yok.</p>
   </div>
 
   <div class="pranklar">
-    <div class="prank"><div class="ik">💻</div><b>Hacker Modu</b>
-      <small>VS Code tarzı editör — tuşa bastıkça kod akar, imleç yanıp söner.</small>
+    <div class="prank"><div class="ik">🖥️</div><b>Hacker Simülatörü</b>
+      <small>Tam ekran masaüstü: Bitcoin kazar, şifre kırar, uydu izler. Rakam tuşları pasif pencereler açar.</small>
       <button data-p="hacker">BAŞLAT</button></div>
     <div class="prank"><div class="ik">🌧️</div><b>Matrix Yağmuru</b>
       <small>Yeşil glyph yağmuru — filmden hatırladığın sahne.</small>
@@ -190,74 +196,113 @@ button{ position:relative; overflow:hidden }
   </div>
 
   <p class="altsat">
-    <b>Zarar raporu:</b> hiçbir şaka gerçek dosya indirmede, silmede, hesaba girmekte kullanılmaz;
+    <b>Zarar raporu:</b> hiçbir şaka gerçek dosya silmede, hesaba girmekte, gerçek şey indirmekte kullanılmaz;
     hepsi sadece ekranda oynayan dekor. Sunucuya bir şey gitmez.
   </p>
 </div>
 
 <div class="tam" id="ftHacker">
-  <div id="hKutu">
-    <div id="hBaslik"><span class="logo"></span><span>uinteliJ — Developer</span><span style="opacity:.55">v1.47.2</span></div>
-    <div id="hSekme">kernel_logs.py</div>
-    <div id="hGov">
-      <div id="hKenar">
-        <div style="background:#37373d;color:#fff">▸ echo_sys</div>
-        <div>&nbsp;&nbsp;packet.py</div>
-        <div>&nbsp;&nbsp;kernel_logs.py</div>
-        <div>&nbsp;&nbsp;deep_scan.js</div>
-        <div>&nbsp;&nbsp;shadow_map.c</div>
-        <div style="margin-top:8px;background:#37373d;color:#fff">▸ users</div>
-        <div>&nbsp;&nbsp;admin_keys.txt</div>
-        <div>&nbsp;&nbsp;backup.ipv4</div>
-        <div style="margin-top:8px;background:#37373d;color:#fff">▸ hidden</div>
-        <div>&nbsp;&nbsp;vault.bin</div>
-        <div>&nbsp;&nbsp;camera_feed</div>
-      </div>
-      <div id="hAlanc"><div id="hAlan"></div></div>
+  <div id="simDesk">
+    <div id="simBar">
+      <span class="slog">☠ KANKA HACK</span>
+      <span id="simUyari">Sadece şaka, kanka! Bu gerçek bir hacker programı değildir 💻</span>
+      <button id="simKapat">✕ GİZLE</button>
     </div>
-    <div id="hAlt"><span>⎇ main* fonksiyon-kirpigi</span><span>JavaScript 342</span>
-      <span style="margin-left:auto">UTF-8 · CR-LF</span></div>
-  </div>
-  <div id="hSide">
-    <div id="hSideTablar">
-      <button data-t="hPMiner" class="on">COIN</button>
-      <button data-t="hPKonum">KONUM</button>
-      <button data-t="hPSfr">ŞİFRE</button>
-      <button data-t="hPSms">SMS</button>
-    </div>
-    <div id="hSideGov">
-      <div class="panel on" id="hPMiner">
-        <h4>SEBELEDİYALE BİTCOİN MADENİ</h4>
-        <div>Hashrate: <b id="hHash" style="color:#7ee787">0.00 MH/s</b></div>
-        <div class="bal" id="hCoin">₿ 0.00000000</div>
-        <div class="kucuk">Havuz: soyte-madenciliği.kanka · Gulobus 89.2°C</div>
-        <div class="log" id="hMinLog"></div>
-        <button class="mBtn" id="hMinBtn" style="margin-top:8px">BLOK DİSLEYE BUL</button>
-        <div class="uyari">SAHTE ŞAKA — gerçekten coin kazılmaz, elektrik faturası gelmez.</div>
+    <div id="simGov">
+      <div id="simIkoner">
+        <button class="simIk" data-w="wCoin"><span class="gi">₿</span><span>Bitcoin Kaz</span></button>
+        <button class="simIk" data-w="wSifre"><span class="gi">🔓</span><span>Şifre Kır</span></button>
+        <button class="simIk" data-w="wNukleer"><span class="gi">☢</span><span>Santral</span></button>
+        <button class="simIk" data-w="wInterpol"><span class="gi">🌐</span><span>Interpol</span></button>
+        <button class="simIk" data-w="wVeri"><span class="gi">💾</span><span>Veri İndir</span></button>
+        <button class="simIk" data-w="wUydu"><span class="gi">📡</span><span>Uydu İzle</span></button>
       </div>
-      <div class="panel" id="hPKonum">
-        <h4>HEDEF KONUM TAKİBİ</h4>
-        <div class="radar"><div id="hNokta"></div></div>
-        <div class="log" id="hKonLog"></div>
-        <div class="uyari">SAHTE ŞAKA — kimse izlenmiyor, koordinatlar rastgele yazıyor.</div>
-      </div>
-      <div class="panel" id="hPSfr">
-        <h4>ŞİFRE KIRICI — cihaz.lock</h4>
-        <div class="sfr" id="hSfrGör">*******_</div>
-        <div class="kucuk">Deneme: <b id="hSfrDen">0</b> · Güç: 256-bit · Sözlük: kanka_tr.dic</div>
-        <button class="mBtn" id="hSfrBtn" style="margin-top:8px">KIRMAYA BAŞLA</button>
-        <div class="log" id="hSfrLog"></div>
-        <div class="uyari">SAHTE ŞAKA — hiçbir şifre gerçekten kırılmıyor.</div>
-      </div>
-      <div class="panel" id="hPSms">
-        <h4>»SNL HIZLİ SMS» (ŞAKA)</h4>
-        <div class="gir">
-          <input id="hSmsNo" placeholder="Numara: 555-" maxlength="12">
-          <button class="mBtn" id="hSmsBtn">DOLDUR</button>
+      <div id="simYazi"></div>
+
+      <div class="simWin" id="wCoin" style="left:6%; top:10%; width:470px">
+        <div class="simBas"><span class="basIkon">₿</span>BitCrane — BTC Havzu
+          <span class="basX">✕</span></div>
+        <div class="simGov">
+          <div class="cuzdan"><b id="coinCuzdan">$39.664</b><small>Cüzdan BTC8 · ≈</small></div>
+          <div class="simLog" id="coinLog"></div>
+          <table style="width:100%; margin-top:10px; border-collapse:collapse; font:10.5px Consolas,monospace">
+            <thead><tr style="color:#64748b">
+              <th style="text-align:left; padding:4px">ASICs</th><th>Kabul</th>
+              <th>Red</th><th>GH/s 5s</th></tr></thead>
+            <tbody style="color:#9fb0a6">
+              <tr><td style="padding:4px">1</td><td align="center">32442</td>
+                <td align="center">354</td><td align="center">353.54 Gh/s</td></tr>
+              <tr><td style="padding:4px">32</td><td align="center">56954</td>
+                <td align="center">8763</td><td align="center">34.99 Gh/s</td></tr>
+              <tr><td style="padding:4px">Sum</td><td align="center">8345345</td>
+                <td align="center">32122</td><td align="center">~153 Gh/s</td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:10px; display:flex; gap:8px; align-items:center">
+            <button class="simBtn" id="coinBtn">Kazmaya başla</button>
+            <span id="coinDurum" style="color:#8c93a0; font-size:11px">Madenci: DURDU</span>
+          </div>
+          <div class="bar" style="height:10px; margin-top:10px"><i id="coinBar"></i></div>
         </div>
-        <div class="kucuk">Gönderim: <b id="hSmsAdet">0</b> · Sunucu: sadece şaka.vbs</div>
-        <div class="log" id="hSmsLog"></div>
-        <div class="uyari">SAHTE ŞAKA — hiçbir SMS gerçekten gönderilmiyor, liste ekranda oynatıyor.</div>
+      </div>
+
+      <div class="simWin" id="wSifre" style="left:26%; top:16%; width:430px">
+        <div class="simBas"><span class="basIkon">🔓</span>Şifre Kırıcı
+          <span class="simTabSec" style="display:flex; gap:6px; margin-left:10px">
+            <b style="color:#7ee787">Crack</b><i style="color:#556">Sıfırla</i></span>
+          <span class="basX">✕</span></div>
+        <div class="simGov">
+          <div style="display:flex; gap:18px; font-size:11.5px; color:#98a2b3">
+            <div>Hedef: <b style="color:#d6dae2">23.86.111.0</b></div>
+            <div>Veritabanı: <b style="color:#d6dae2">Kullanıcı tablosu / Admin</b></div>
+          </div>
+          <div class="sfrGiris">
+            <input id="sfrGiris" placeholder="girilen şifre falan flan">
+            <button class="simBtn" id="sfrBtn">Saldır</button>
+            <button class="simBtn ikinci" id="sfrSifirla">Sıfırla</button>
+          </div>
+          <div class="sfrTablo"><div class="k" id="sfrGrid"></div></div>
+          <div class="sfrDurum" id="sfrDurum">Durum: Beklemede</div>
+          <div style="margin-top:6px; color:#64748b; font-size:9.5px">
+            Yasal uyarı: Password Cracker'ı zararlı ve yasa dışı faaliyetlerde kullanmak
+            kesinlikle yasaktır ve cezası ölümdür!..</div>
+        </div>
+      </div>
+
+      <div class="simWin" id="wNukleer" style="left:44%; top:8%; width:420px">
+        <div class="simBas"><span class="basIkon">☢</span>REACTOR-4 Kontrol <span class="basX">✕</span></div>
+        <div class="simGov"><div class="nukTablo" id="nukTablo"></div>
+          <div style="margin-top:8px; color:#8c93a0; font-size:10.5px">
+            Değerler göstermelik; santral de tamamen şaka.</div></div>
+      </div>
+
+      <div class="simWin" id="wInterpol" style="left:10%; top:46%; width:430px">
+        <div class="simBas"><span class="basIkon">🌐</span>Interpol — En Çok Arananlar
+          <span class="basX">✕</span></div>
+        <div class="simLog" id="intList" style="height:150px; margin-top:10px"></div>
+      </div>
+
+      <div class="simWin" id="wVeri" style="left:34%; top:40%; width:360px">
+        <div class="simBas"><span class="basIkon">💾</span>Kişisel Veriler <span class="basX">✕</span></div>
+        <div class="simGov" id="verGov">
+          <div style="color:#7ee787; font-weight:800; font-size:12.5px">İndiriliyor</div>
+          <div class="bar"><i id="verBar"></i></div>
+          <div id="verYuzde" style="margin-top:6px; color:#8c93a0">0% — dosya: -</div>
+        </div>
+      </div>
+
+      <div class="simWin" id="wUydu" style="left:55%; top:34%; width:330px">
+        <div class="simBas"><span class="basIkon">📡</span>Uydu Bağlantısı <span class="basX">✕</span></div>
+        <div class="simGov" id="uydGov">
+          <div style="color:#7ee787; font-weight:800; font-size:12.5px">Bağlantı Kuruluyor</div>
+          <div style="margin-top:8px; font:12px Consolas,monospace; color:#8c93a0">
+            LAT <b id="uydLat" style="color:#d6dae2">--</b> · LON <b id="uydLon" style="color:#d6dae2">--</b></div>
+          <div style="display:flex; gap:4px; margin-top:8px">
+            <i style="width:9px;height:14px;background:#7ee787"></i>
+            <i style="width:9px;height:14px;background:#7ee787"></i>
+            <i style="width:9px;height:14px;background:#7ee787"></i>
+            <i style="width:9px;height:14px;background:#334155"></i></div>
+        </div>
       </div>
     </div>
   </div>
@@ -312,43 +357,16 @@ function gizlil(t) {
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
-const KODK = [
- ['kw', 'async function '], ['fn', 'derinTara'], ['', '(yol, derinlik = 9) {\n'],
- ['cm', '  // çekirdek dal taraması — özyinelemeli\n'],
- ['kw', '  const '], ['', 'kume = await '], ['fn', 'oku'], ['', '(yol);\n'],
- ['kw', '  if '], ['', '(derinlik <= 0 || !kume) '], ['kw', 'return '], ['', 'null;\n'],
- ['kw', '  for '], ['', '(dal) {\n'],
- ['kw', '    const '], ['', 'alt = await '], ['fn', 'derinTara'], ['', '(\n'],
- ['', '      dal.yol, derinlik - 1);\n'],
- ['kw', '    if '], ['', '(alt) '], ['kw', 'return '], ['', 'alt;\n  }\n'],
- ['cm', '  // özet kalan parçayı koru\n'],
- ['kw', '  return '], ['', 'kume.ozet || null;\n}\n'],
- ['kw', 'function '], ['fn', 'sistemCevir'], ['', '(veri) {\n'],
- ['kw', '  const '], ['', 'sonuc = [];\n  for (sat) {\n'],
- ['cm', '    // blok blok XOR karıştır\n'],
- ['', '    sonuc.push(karisim(kimlik(sat), '], ['nu', '0x2C97'], ['', '));\n  }\n'],
- ['', '  return sonuc.join('], ['str', "':'"], ['', ');\n}\n\n'],
- ['cl', 'setInterval'], ['', '(() => {\n  '], ['fn', 'bellekTemizle'], ['', '(zaman % '],
- ['nu', '0x2C97'], ['', ');\n  '], ['fn', 'izler'], ['', '.forEach(t => t.guncelle(zaman));\n}, '],
- ['nu', '250'], ['', ');\n']
-];
-function KODSpril() {
-  const satirlar = [];
-  let satirHTML = '';
-  KODK.forEach(([cls, metin]) => {
-    metin.split('\n').forEach((parca, idx, arr) => {
-      if (parca) {
-        satirHTML += cls ? '<span class="' + cls + '">' + gizlil(parca) + '</span>' : gizlil(parca);
-      }
-      if (idx < arr.length - 1) { satirlar.push(satirHTML); satirHTML = ''; }
-    });
-  });
-  if (satirHTML) satirlar.push(satirHTML);
-  return satirlar;
+function hsLog(id, metin, renk) {
+  const el = document.getElementById(id);
+  const d = document.createElement('div');
+  d.innerHTML = renk ? '<b>' + renk + '</b> ' + metin : metin;
+  el.appendChild(d);
+  el.scrollTop = el.scrollHeight;
+  while (el.children.length > 24) el.removeChild(el.firstChild);
 }
 
 let aktif = null, mxAni = null, updSayac = null, bsodSayac = null, virSayac = null;
-let hsSayac = {}, hDeger = { hash: 0, coin: 0, den: 0, sms: 0 };
 
 function tamAc(id, basla) {
   document.querySelectorAll('.tam').forEach(t => t.classList.remove('gorun'));
@@ -359,21 +377,21 @@ function tamAc(id, basla) {
 }
 function tamKapat() {
   document.querySelectorAll('.tam').forEach(t => t.classList.remove('gorun'));
+  document.querySelectorAll('.simWin').forEach(w => w.classList.remove('gorun'));
+  document.querySelectorAll('.simPasif').forEach(w => w.remove());
   if (mxAni) { cancelAnimationFrame(mxAni); mxAni = null; }
   clearInterval(updSayac); clearInterval(bsodSayac); clearInterval(virSayac);
   updSayac = bsodSayac = virSayac = null;
-  Object.values(hsSayac).forEach(t => t && clearInterval(t));
-  hsSayac = {};
+  simDizi.forEach(k => clearInterval(k));
+  simDizi = [];
+  document.getElementById('simYazi').innerHTML = '';
   aktif = null;
 }
-document.addEventListener('keydown', e => {
-  if (!aktif) return;
-  if (e.key === 'Escape') { e.preventDefault(); tamKapat(); return; }
-  if (aktif === 'ftHacker' && !(e.ctrlKey || e.metaKey)) e.preventDefault();
-}, true);
+let simDizi = [];
+
 document.querySelectorAll('.prank button').forEach(b => b.onclick = () => {
   const p = b.dataset.p;
-  if (p === 'hacker') tamAc('ftHacker', hackerBasla);
+  if (p === 'hacker') tamAc('ftHacker', simAc);
   else if (p === 'matrix') tamAc('ftMatrix', matrixBasla);
   else if (p === 'update') tamAc('ftU', updateBasla);
   else if (p === 'bsod') tamAc('ftB', bsodBasla);
@@ -392,131 +410,243 @@ document.addEventListener('click', e => {
   setTimeout(() => d.remove(), 650);
 });
 
-let hSatirlar = null, hIndex = 0;
-function hackerBasla() {
-  const alan = document.getElementById('hAlan');
-  alan.innerHTML = '';
-  if (!hSatirlar) hSatirlar = KODSpril();
-  hIndex = 0;
-  document.removeEventListener('keydown', hackerTusa);
-  document.addEventListener('keydown', hackerTusa);
-  hDeger = { hash: 0, coin: 0, den: 0, sms: 0 };
-  document.getElementById('hHash').textContent = '0.00 MH/s';
-  document.getElementById('hCoin').textContent = '₿ 0.00000000';
-  document.getElementById('hSfrDen').textContent = '0';
-  document.getElementById('hSmsAdet').textContent = '0';
-  document.getElementById('hSfrGör').textContent = '*******_';
-  document.getElementById('hSfrGör').classList.remove('yak');
-  document.getElementById('hMinLog').innerHTML = '';
-  document.getElementById('hKonLog').innerHTML = '';
-  document.getElementById('hSfrLog').innerHTML = '';
-  document.getElementById('hSmsLog').innerHTML = '';
-  Object.values(hsSayac).forEach(t => t && clearInterval(t));
-  hsSayac = {};
-  madenciBasla(); konumBasla();
-}
-
-function hsLog(id, metin, on) {
-  const el = document.getElementById(id);
-  const d = document.createElement('div');
-  d.innerHTML = on !== undefined ? '<b>' + on + '</b> ' + metin : metin;
-  el.appendChild(d);
+/* masaüstü simülatörü */
+const simKod = [
+'async function rootAccess(node, depth = 8) {',
+'  const stack = await probe(node);',
+'  if (depth <= 0 || !stack) return null;',
+'  for (const fork of stack) {',
+'    const hit = await rootAccess(fork, depth - 1);',
+'    if (hit) return hit;',
+'  }',
+'  return stack.core || null;',
+'}',
+'function scramble(payload, key) {',
+'  const tail = [];',
+'  for (const block of payload) {',
+'    tail.push(mix(hash(block), key));',
+'  }',
+'  return tail.join(\':\');',
+'}',
+'setInterval(() => { purge(zulu); orbitals.forEach(o => o.ping(tick)); }, 250);'
+];
+let simYazI = 0;
+function simYazEkle(n) {
+  const el = document.getElementById('simYazi');
+  for (let i = 0; i < n; i++) {
+    el.textContent += simKod[simYazI % simKod.length] + '\n';
+    simYazI++;
+  }
   el.scrollTop = el.scrollHeight;
-  while (el.children.length > 22) el.removeChild(el.firstChild);
 }
-const MIN_BLOKLAR = [' · livestream', ' · frenler', ' · küküğü', ' · oluşturuldu',
-  ' · lehi', ' · peşinde', ' · hazirada', ' · için hazırlanıyor', ' · duvarı',
-  ' · akıyor', ' · çürük parça yok', ' · yok'];
-const MIN_OANCAR = ['0x3F', '0x81', '0x2A', '0xCD', '0x72', '0x9E', '0xB4', '0x58'];
+const PASIFLAR = [
+  { bas: 'Erişim', gov: '<div class="pGov kirmizi">🚫 Erişim reddedildi!</div>' },
+  { bas: 'Erişim', gov: '<div class="pGov yesil">✅ İzin verildi!</div>' },
+  { bas: 'Yok Etme', gov: '<div class="pGov">Kendi kendini yok etme<div class="sayi" data-say="600">600</div>' +
+      '<div class="bar"><i data-bar></i></div><small id="yokNot">Sıraya girildi (şaka: hiçbir şey patlamaz)</small></div>' },
+  { bas: 'Nöral Ağ', gov: '<div class="pGov">Nöral Bağlantı Takipçisi<div class="bar"><i data-bar style="background:#5eead4"></i></div>' +
+      '<small>sinyal %<span data-say2>0</span> — kimseyi takip etmez, tamamen göstermelik</small></div>' },
+  { bas: 'Kod Toplama', gov: '<div class="pGov">Kod toplanıyor<small data-hex>0x0000</small></div>' },
+  { bas: 'Yazılım', gov: '<div class="pGov">Kötücül yazılım kuruluyor<div class="bar"><i data-bar style="background:#f472b6"></i></div>' +
+      '<small>şaka modu: hiçbir şey kurulmaz</small></div>' }
+];
+let pasSira = 0;
+function pasifAc(idx, tak) {
+  const P = PASIFLAR[(idx !== undefined ? idx : (pasSira++ % PASIFLAR.length))];
+  const el = document.createElement('div');
+  el.className = 'simPasif';
+  el.style.left = (6 + Math.random() * 55) + '%';
+  el.style.top = (12 + Math.random() * 40) + '%';
+  el.innerHTML = '<div class="simBas"><span class="basIkon">⍉</span>' + P.bas +
+    '<span class="basX" data-px>✕</span></div>' + P.gov;
+  document.getElementById('simGov').appendChild(el);
+  requestAnimationFrame(() => el.classList.add('gorun'));
+  const bar = el.querySelector('[data-bar]');
+  const say = el.querySelector('[data-say]');
+  const say2 = el.querySelector('[data-say2]');
+  const hex = el.querySelector('[data-hex]');
+  if (bar) {
+    let p = 0;
+    simDizi.push(setInterval(() => {
+      p = Math.min(100, p + Math.floor(Math.random() * 12) + 3);
+      bar.style.width = p + '%';
+      if (say) say.textContent = Math.max(0, 600 - Math.floor(p * 6));
+      if (say2) say2.textContent = p;
+    }, 400));
+  }
+  if (hex) {
+    let h = 0;
+    simDizi.push(setInterval(() => {
+      h += 4096;
+      hex.textContent = '0x' + h.toString(16).toUpperCase().padStart(6, '0') + ' byte toplanan değer — hepsi şaka';
+    }, 350));
+  }
+  if (tak) tak(el);
+  el.querySelector('[data-px]').onclick = () => { el.remove(); };
+  return el;
+}
 
-function madenciBasla() {
-  hsSayac.hash = setInterval(() => {
-    hDeger.hash = Math.max(0, hDeger.hash + (Math.random() * 14 - 6) + 3.4);
-    document.getElementById('hHash').textContent = hDeger.hash.toFixed(2) + ' MH/s';
-    if (Math.random() < 0.22) {
-      hDeger.coin += 0.0000625;
-      document.getElementById('hCoin').textContent = '₿ ' + hDeger.coin.toFixed(8);
-    }
-    if (Math.random() < 0.28) hsLog('hMinLog',
-      'sha256 mote [' + MIN_OANCAR[Math.floor(Math.random() * MIN_OANCAR.length)] + ']' +
-      MIN_BLOKLAR[Math.floor(Math.random() * MIN_BLOKLAR.length)],
-      'düzey ' + Math.floor(Math.random() * 9000));
-  }, 900);
-  hsSayac.blok = setInterval(() => {
-    hDeger.coin += 0.0125;
-    document.getElementById('hCoin').textContent = '₿ ' + hDeger.coin.toFixed(8);
-    hsLog('hMinLog', '[BLOK BULDUM] — 0.0125 ₿ cüzdana geçti');
-  }, 6000);
+const wVeriler = {};
+function winCevir(el, yer) {
+  const bas = el.querySelector('.simBas');
+  bas.onmousedown = e => {
+    if (e.target.closest('.basX') || e.target.closest('.simTabSec')) return;
+    const r = el.getBoundingClientRect();
+    const gx = e.clientX - r.left, gy = e.clientY - r.top;
+    const sec = ev => {
+      el.style.left = Math.max(0, ev.clientX - gx) + 'px';
+      el.style.top = Math.max(0, ev.clientY - gy) + 'px';
+    };
+    const birak = () => { document.removeEventListener('mousemove', sec); };
+    document.addEventListener('mousemove', sec);
+    document.addEventListener('mouseup', birak, { once: true });
+  };
+  bas.querySelector('.basX').onclick = () => el.classList.remove('gorun');
+  if (yer) { el.style.left = yer.x; el.style.top = yer.y; }
 }
-function konumBasla() {
-  hsSayac.kon = setInterval(() => {
-    const lat = (40 + Math.random()).toFixed(5);
-    const lon = (29 + Math.random()).toFixed(5);
-    const cadde = ['Beştepe Cd.', 'Kızıltoprak Sk.', 'Boğaz Mevkii', 'Nispetiye Cd.',
-      'Katip Salih Sk.', 'Baş Mahallesi'][Math.floor(Math.random() * 6)];
-    const cihaz = ['pine', 'gizli-tarih', 'dark-web', 'çip-taşı'];
-    hsLog('hKonLog', '🛰️ ' + lat + 'N · ' + lon + 'E — ' + cadde +
-      ' — cihaz: <i>' + cihaz[Math.floor(Math.random() * cihaz.length)] + '</i>');
-  }, 1400);
+function winAc(id) {
+  const el = document.getElementById(id);
+  el.classList.add('gorun');
+  winCevir(el);
+  const act = wVeriler[id];
+  if (act && !el.dataset.cek) { el.dataset.cek = 1; act(); }
 }
-const SFR = 'sifre123';
-function hsSfrSatirYaz(sayi) {
-  const g = document.getElementById('hSfrGör');
-  if (sayi > 4000) {
-    g.textContent = SFR;
-    g.classList.add('yak');
-    hsLog('hSfrLog', '[' + SFR + '] kilit kırıldı — oturum açıldı');
-    hsSayac.sfr && clearInterval(hsSayac.sfr);
-    return;
+
+const COIN_KOMUTLARI = ['128.154.26.11 bağlandı btcn.miner.bitcoin-heap.htm6.com',
+  'Erişim sağlandı! Engel! : ...7e9Wq#001 Diff:147M',
+  'Başlatıldı GPU #0 - #32: [OK] (1.092Ph/s) startIndex @ 2026',
+  '%300 oranında overclock yapıldı | BW:[ 55/ 13/ 4Mh/kWh]',
+  'BitCrane.exe dosyasını güvenli modda ÇALIŞTIRDIM | DURUM: OK'];
+let coinKaziyor = false, coinPara = 39664, coinIler = 0;
+function coinAc() {
+  const log = document.getElementById('coinLog');
+  log.innerHTML = '';
+  COIN_KOMUTLARI.forEach(k => hsLog('coinLog', gizlil(k)));
+  coinKaziyor = false; coinPara = 39664; coinIler = 0;
+  document.getElementById('coinCuzdan').textContent = '$' + coinPara.toLocaleString('tr-TR');
+  document.getElementById('coinBtn').onclick = () => {
+    if (coinKaziyor) return;
+    coinKaziyor = true;
+    document.getElementById('coinDurum').textContent = 'Madenci: ÇALIŞIYOR';
+    simDizi.push(setInterval(() => {
+      coinIler = Math.min(100, coinIler + Math.floor(Math.random() * 9) + 3);
+      document.getElementById('coinBar').style.width = coinIler + '%';
+      if (coinIler >= 100) {
+        coinIler = 0;
+        coinPara += Math.floor(Math.random() * 900) + 250;
+        document.getElementById('coinCuzdan').textContent = '$' + coinPara.toLocaleString('tr-TR');
+        hsLog('coinLog', '[BLOK] yeni blok çıkarıldı — cüzdana geçti]', '✓');
+      }
+    }, 500));
+  };
+}
+wVeriler.wCoin = coinAc;
+
+const SFR_HARF = 'abcdefghijkmnopqrstuvwxyz0123456789!#%&*';
+let sfrBulundu = false;
+function sfrCiz() {
+  const grid = document.getElementById('sfrGrid');
+  grid.innerHTML = '';
+  for (let i = 0; i < 64; i++) {
+    const t = document.createElement('span');
+    t.className = 't';
+    t.textContent = SFR_HARF[Math.floor(Math.random() * SFR_HARF.length)];
+    grid.appendChild(t);
   }
-  const süs = Array.from({ length: 8 },
-    () => 'abcdefghijklmnopqrstuvwxyz0123456789_*'[Math.floor(Math.random() * 39)]).join('');
-  g.textContent = süs + '_';
-  g.classList.remove('yak');
 }
-function hsSfrBasla() {
-  if (hsSayac.sfr) clearInterval(hsSayac.sfr);
-  document.getElementById('hSfrGör').classList.remove('yak');
-  hsSayac.sfr = setInterval(() => {
-    hDeger.den += Math.floor(Math.random() * 900) + 120;
-    document.getElementById('hSfrDen').textContent = hDeger.den.toLocaleString('tr-TR');
-    hsSfrSatirYaz(hDeger.den);
-  }, 420);
+function sfrAc() {
+  sfrBulundu = false;
+  sfrCiz();
+  const durum = document.getElementById('sfrDurum');
+  durum.className = 'sfrDurum';
+  durum.textContent = 'Durum: Beklemede';
+  document.getElementById('sfrGiris').value = '';
+  document.getElementById('sfrBtn').onclick = () => {
+    if (sfrBulundu) return;
+    durum.className = 'sfrDurum';
+    durum.textContent = 'Brute-force saldırısı yapılıyor... lütfen bekleyin';
+    let tur = 0;
+    const a = setInterval(() => {
+      tur++;
+      sfrCiz();
+      document.getElementById('sfrGiris').value =
+        SFR_HARF[Math.floor(Math.random() * SFR_HARF.length)].repeat(9);
+      if (tur > 6) {
+        clearInterval(a);
+        sfrBulundu = true;
+        document.querySelectorAll('#sfrGrid .t').forEach((t, i) => { if (i % 7 === 0) t.classList.add('bul'); });
+        document.getElementById('sfrGiris').value = 'kerem_2024';
+        durum.className = 'sfrDurum tamam';
+        durum.textContent = 'BAŞARILI: Admin şifresi bulundu — kerem_2024 (şaka!)';
+      }
+    }, 420);
+    simDizi.push(a);
+  };
+  document.getElementById('sfrSifirla').onclick = sfrAc;
 }
-function hsSmsBasla() {
-  if (hsSayac.smsF) clearInterval(hsSayac.smsF);
-  const mesajlar = ['Alo koş beni görmedim', 'selam bir problem yok, bembeyaz',
-    'Patates kızartması gönderdim', 'bugün okulda görüşelim mi?',
-    'kim taştı? ya sen mi?', 'beni unutuptum', 'yarım saate dönüşüyorum',
-    'bu mesaj bir şaka: gerçek SMS yok'];
-  hsSayac.smsF = setInterval(() => {
-    hDeger.sms++;
-    document.getElementById('hSmsAdet').textContent = hDeger.sms;
-    hsLog('hSmsLog', '→ 0555-0' + hDeger.sms + ' — ' +
-      mesajlar[Math.floor(Math.random() * mesajlar.length)], 'GÖNDERİLDİ (ŞAKA)');
-  }, 350);
+wVeriler.wSifre = sfrAc;
+
+const NUK_GOSTER = ['Çekirdek Sıc.', 'Basınç', 'Debi', 'Kritik Miktar', 'Fayda %', 'Ağır Çekim'];
+function nukAc() {
+  const t = document.getElementById('nukTablo');
+  t.innerHTML = NUK_GOSTER.map((s, i) =>
+    '<div><span>' + s + '</span><b data-n="' + i + '">0</b></div>').join('');
+  simDizi.push(setInterval(() => {
+    t.querySelectorAll('[data-n]').forEach((b, i) => {
+      b.textContent = (Math.random() * 3400).toFixed(i === 5 ? 1 : 0);
+    });
+  }, 700));
 }
-document.getElementById('hMinBtn').addEventListener('click', () => {
-  hDeger.coin += 0.003125;
-  document.getElementById('hCoin').textContent = '₿ ' + hDeger.coin.toFixed(8);
-  hsLog('hMinLog', '[EKSTRA BLOK] — 0.003125 ₿ anında cüzdana geçti');
-});
-document.getElementById('hSfrBtn').addEventListener('click', hsSfrBasla);
-document.getElementById('hSmsBtn').addEventListener('click', () => {
-  const no = document.getElementById('hSmsNo').value.trim() || '0555-0xxx';
-  hsLog('hSmsLog', 'hedef: <i>' + gizlil(no) + '</i> — sahte şerit hazırlanıyor');
-  hsSmsBasla();
-});
-function hackerTusa(e) {
-  if (aktif !== 'ftHacker' || (e.ctrlKey || e.metaKey)) return;
-  if (e.target.tagName === 'INPUT') return;
-  const alan = document.getElementById('hAlan');
-  e.preventDefault();
-  for (let k = 0; k < 2; k++) {
-    alan.innerHTML += (hIndex % 6 === 0 ? '<span class="sn">' + (101 + hIndex) + '</span>' : '') + hSatirlar[hIndex % hSatirlar.length] + '\n';
-    hIndex++;
-  }
-  alan.scrollTop = alan.scrollHeight;
+wVeriler.wNukleer = nukAc;
+
+const INT_KAYIT = ['Kerem Agulu — sahte kimlik: №09111 — son görülen: internet cafesi',
+  '"392 şaka" — mazotlama: abartılı atırık — Interpol kanka listesinde',
+  'Fatmagün UYS — araştırma: "kaçak turşu ticareti" — göreceksin',
+  'Zeki "Cılak" — plakasız — sadece hayali kayıt kanka'];
+function intAc() {
+  const l = document.getElementById('intList');
+  l.innerHTML = '';
+  let i = 0;
+  simDizi.push(setInterval(() => {
+    hsLog('intList', INT_KAYIT[i % INT_KAYIT.length] + ' — ' +
+      '</b><i>kayıt: ' + (1000 + i) + '</i>');
+    i++;
+  }, 1500));
+}
+wVeriler.wInterpol = intAc;
+
+function verAc() {
+  const dosyalar = ['telefonya_rehber.csv', 'hesap_kasa.xls', 'otobirma.sql', 'saneler.bak',
+    'kanka_kayitlar.json', 'gizli_dosya.rar'];
+  let p = 0, k = 0;
+  simDizi.push(setInterval(() => {
+    p = Math.min(100, p + Math.floor(Math.random() * 7) + 2);
+    document.getElementById('verBar').style.width = p + '%';
+    document.getElementById('verYuzde').textContent = p + '% — dosya: ' +
+      dosyalar[(k = Math.floor(Math.random() * dosyalar.length))];
+  }, 420));
+}
+wVeriler.wVeri = verAc;
+
+function uydAc() {
+  simDizi.push(setInterval(() => {
+    document.getElementById('uydLat').textContent = (40 + Math.random()).toFixed(4) + 'N';
+    document.getElementById('uydLon').textContent = (29 + Math.random()).toFixed(4) + 'E';
+  }, 1100));
+}
+wVeriler.wUydu = uydAc;
+
+function simAc() {
+  pasSira = 0;
+  simYazI = 0;
+  document.getElementById('simYazi').innerHTML = '';
+  document.getElementById('simKapat').onclick = () => tamKapat();
+  document.querySelectorAll('.simIk').forEach(b => b.onclick = () => winAc(b.dataset.w));
+  coinPara = 39664;
+  winAc('wCoin');
+  winAc('wSifre');
+  simDizi.push(setInterval(() => pasifAc(), 3500));
+  setTimeout(() => pasifAc(0), 700);
 }
 
 const GLYPH = ['\u30A2','\u30B5','\u30C7','\u30BF','\u30AF','\u30B4','\u30EB','\u30DC','A','B','C','D','E','1','2','7','8','9'];
@@ -583,6 +713,19 @@ function virusBasla() {
     log.scrollTop = log.scrollHeight;
   }, 700);
 }
+
+document.addEventListener('keydown', e => {
+  if (aktif === 'ftHacker') {
+    if (e.key === 'Escape') { e.preventDefault(); tamKapat(); return; }
+    if (e.target.tagName === 'INPUT') return;
+    e.preventDefault();
+    if (e.key === ' ') { e.preventDefault(); document.querySelectorAll('.simPasif').forEach(w => w.remove()); return; }
+    if (/^[1-6]$/.test(e.key)) { pasifAc(parseInt(e.key) - 1); return; }
+    if (!e.ctrlKey && !e.metaKey) simYazEkle(3);
+  } else if (aktif && e.key === 'Escape') {
+    e.preventDefault(); tamKapat();
+  }
+}, true);
 </script>
 </body>
 </html>
