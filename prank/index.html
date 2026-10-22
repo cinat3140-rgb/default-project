@@ -575,12 +575,20 @@ wVeriler.wCoin = coinAc;
 
 const SFR_HARF = 'abcdefghijkmnopqrstuvwxyz0123456789!#%&*';
 let sfrBulundu = false;
-function sfrCiz() {
+function sfrRastgeleSifre() {
+  const b = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', k = 'abcdefghijklmnopqrstuvwxyz',
+    r = '0123456789', o = '!#$%&*?@';
+  const tum = k + r + o;
+  let p = b[Math.floor(Math.random() * b.length)];
+  for (let i = 0; i < 11; i++) p += tum[Math.floor(Math.random() * tum.length)];
+  return p + r[Math.floor(Math.random() * r.length)] + o[Math.floor(Math.random() * o.length)];
+}
+function sfrCiz(aydinlat) {
   const grid = document.getElementById('sfrGrid');
   grid.innerHTML = '';
   for (let i = 0; i < 64; i++) {
     const t = document.createElement('span');
-    t.className = 't';
+    t.className = 't' + (aydinlat && aydinlat.has(i) ? ' bul' : '');
     t.textContent = SFR_HARF[Math.floor(Math.random() * SFR_HARF.length)];
     grid.appendChild(t);
   }
@@ -596,19 +604,21 @@ function sfrAc() {
     if (sfrBulundu) return;
     durum.className = 'sfrDurum';
     durum.textContent = 'Brute-force saldırısı yapılıyor... lütfen bekleyin';
-    let tur = 0;
+    const hedef = new Set();
+    while (hedef.size < 9) hedef.add(Math.floor(Math.random() * 64));
+    const bul = sfrRastgeleSifre();
+    let tur = 0, kesin = Math.floor(Math.random() * 4) + 5;
     const a = setInterval(() => {
       tur++;
-      sfrCiz();
+      sfrCiz(tur === kesin ? hedef : null);
       document.getElementById('sfrGiris').value =
         SFR_HARF[Math.floor(Math.random() * SFR_HARF.length)].repeat(9);
-      if (tur > 6) {
+      if (tur === kesin) {
         clearInterval(a);
         sfrBulundu = true;
-        document.querySelectorAll('#sfrGrid .t').forEach((t, i) => { if (i % 7 === 0) t.classList.add('bul'); });
-        document.getElementById('sfrGiris').value = 'kerem_2024';
+        document.getElementById('sfrGiris').value = bul;
         durum.className = 'sfrDurum tamam';
-        durum.textContent = 'BAŞARILI: Admin şifresi bulundu — kerem_2024 (şaka!)';
+        durum.textContent = 'BAŞARILI: Admin şifresi bulundu — ' + bul;
       }
     }, 420);
     simDizi.push(a);
