@@ -116,9 +116,10 @@ button{ position:relative; overflow:hidden }
 #simKapat{ margin-left:auto; cursor:pointer; background:#1a2130; color:#d6dae2;
   border:1px solid #2b3244; border-radius:8px; padding:6px 14px; font-size:11.5px }
 #simGov{ flex:1; position:relative; overflow:hidden }
-#simYazi{ position:absolute; left:26px; top:64px; bottom:20px; width:min(560px,42vw);
-  overflow:hidden; font:15px/1.6 Consolas,monospace; color:#c8d2cc;
-  white-space:pre-wrap; word-break:break-all; opacity:.88 }
+#simYazi{ display:none; position:absolute; left:26px; top:64px; bottom:20px;
+  width:min(560px,42vw); overflow:hidden; font:15px/1.6 Consolas,monospace;
+  color:#c8d2cc; white-space:pre-wrap; word-break:break-all; opacity:.88 }
+#simYazi.acik{ display:block }
 #simIkoner{ position:absolute; right:12px; top:12px; display:flex;
   flex-direction:column; gap:10px; z-index:20 }
 .simIk{ width:84px; padding:9px 4px; cursor:pointer; background:#11151ccc;
@@ -396,7 +397,9 @@ function tamKapat() {
   updSayac = bsodSayac = virSayac = null;
   simDizi.forEach(k => clearInterval(k));
   simDizi = [];
-  document.getElementById('simYazi').innerHTML = '';
+  const yaz = document.getElementById('simYazi');
+  yaz.classList.remove('acik');
+  yaz.textContent = '';
   aktif = null;
 }
 let simDizi = [], simArAni = null;
@@ -464,6 +467,7 @@ const simKod = [
 let simYazI = 0;
 function simYazEkle(n) {
   const el = document.getElementById('simYazi');
+  el.classList.add('acik');
   for (let i = 0; i < n; i++) {
     el.textContent += simKod[simYazI % simKod.length] + '\n';
     simYazI++;
@@ -680,7 +684,9 @@ wVeriler.wUydu = uydAc;
 function simAc() {
   pasSira = 0;
   simYazI = 0;
-  document.getElementById('simYazi').innerHTML = '';
+  const yaz = document.getElementById('simYazi');
+  yaz.classList.remove('acik');
+  yaz.textContent = '';
   document.getElementById('simKapat').onclick = () => tamKapat();
   document.querySelectorAll('.simIk').forEach(b => b.onclick = () => winAc(b.dataset.w));
   coinPara = 39664;
