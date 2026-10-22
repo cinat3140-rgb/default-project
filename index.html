@@ -3,140 +3,214 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Merkez — Sitem Kümesi</title>
-<link rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2322d3ee'/%3E%3Cstop offset='1' stop-color='%23a78bfa'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='%230b0f1a'/%3E%3Ccircle cx='32' cy='32' r='9' fill='url(%23g)'/%3E%3Cellipse cx='32' cy='32' rx='24' ry='9.5' fill='none' stroke='url(%23g)' stroke-width='2.5' transform='rotate(-24 32 32)'/%3E%3Ccircle cx='53' cy='25' r='4' fill='%2334d399'/%3E%3Ccircle cx='10' cy='43' r='3' fill='%23fbbf24'/%3E%3C/svg%3E">
+<title>merkez — sitem kümesi</title>
+<link rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2334d399'/%3E%3Cstop offset='1' stop-color='%2322d3ee'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='%230b0f1a'/%3E%3Ctext x='32' y='42' font-family='monospace' font-size='30' fill='url(%23g)' text-anchor='middle'%3E%26gt%3B_%3C/text%3E%3C/svg%3E">
 <style>
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent }
-:root{ --bg:#0b0f1a; --yuz:#161d2c; --yuz2:#1d2740; --cg:#2a3650; --met:#e8edf7;
-  --met3:#8a94ab; --neon:#22d3ee;--neon2:#a78bfa; --yesil:#34d399; --sari:#fbbf24; --pembe:#f472b6 }
+:root{ --bg:#0b0f1a; --yuz:#101625; --yuz2:#141c30; --cg:#223049;
+  --met:#dce3f2; --met3:#7d88a3; --yesil:#4ade80; --cyan:#22d3ee;
+  --mavi:#60a5fa; --mor:#a78bfa; --sari:#fbbf24; --pembe:#f472b6; --portal:#818cf8 }
+*{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent }
+html{ scroll-behavior:smooth }
 body{ background:
-  radial-gradient(1100px 600px at 75% -10%, #1c2a4d 0%, transparent 60%),
-  radial-gradient(900px 600px at 8% 110%, #2a1c46 0%, transparent 55%),
-  var(--bg); color:var(--met);
-  font-family:'Segoe UI', system-ui, sans-serif; min-height:100vh;
-  display:flex; flex-direction:column; align-items:center; padding:26px 14px 44px }
-.bas{ text-align:center; margin-bottom:24px }
-.bas .uk{ font-size:52px; display:block; filter:drop-shadow(0 0 18px rgba(34,211,238,.5)) }
-.bas b{ font-size:26px; display:block; margin-top:4px }
-.bas small{ color:var(--met3); font-size:13px }
-.kutu{ width:min(720px,100%) }
-.grid{ display:grid; grid-template-columns:1fr; gap:14px }
-@media(min-width:640px){ .grid{ grid-template-columns:1fr 1fr } }
-.kart{ display:flex; flex-direction:column; gap:8px; text-decoration:none; color:var(--met);
-  cursor:pointer; border:1px solid var(--cg); border-radius:18px; padding:22px 20px;
-  background:linear-gradient(160deg,var(--yuz2),var(--yuz)); transition:.18s }
-.kart:hover{ transform:translateY(-4px); border-color:var(--renk,var(--neon));
-  box-shadow:0 14px 40px rgba(0,0,0,.35) }
-.kart .ik{ font-size:40px }
-.kart b{ font-size:17px }
-.kart small{ color:var(--met3); font-size:12px; line-height:1.5 }
-.kart .git{ align-self:flex-start; font-size:11px; font-weight:800; letter-spacing:1px;
-  color:var(--renk,var(--neon)); padding:4px 12px; border-radius:99px;
-  background:rgba(255,255,255,.06); border:1px solid var(--renk,var(--neon)); margin-top:4px }
-.altsatir{ margin-top:22px; text-align:center; color:var(--met3); font-size:12px; line-height:1.7 }
+  radial-gradient(1000px 520px at 82% -12%, rgba(34,211,238,.07), transparent 60%),
+  radial-gradient(820px 500px at 6% 108%, rgba(167,139,250,.06), transparent 55%),
+  var(--bg);
+  color:var(--met); min-height:100vh;
+  display:flex; flex-direction:column; align-items:center;
+  padding:34px 15px 46px;
+  font-family:ui-monospace,'Cascadia Code','JetBrains Mono',Consolas,monospace }
+body::before{ content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 35px, rgba(120,160,220,.035) 35px 36px),
+    repeating-linear-gradient(90deg, transparent 0 35px, rgba(120,160,220,.035) 35px 36px) }
+
+/* üst terminal carte */
+.terminal{ width:min(880px,100%); background:var(--yuz); border:1px solid var(--cg);
+  border-radius:14px; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,.35);
+  position:relative; z-index:1 }
+.t-bar{ display:flex; align-items:center; gap:8px; padding:10px 14px;
+  background:#0d1422; border-bottom:1px solid var(--cg) }
+.t-bar i{ width:11px; height:11px; border-radius:50% }
+.t-bar .r{ background:#ff5f56 } .t-bar .s{ background:#ffbd2e } .t-bar .y{ background:#27c93f }
+.t-bar span{ margin-left:8px; color:var(--met3); font-size:11.5px }
+.t-govde{ padding:20px 20px 26px; font-size:13px; line-height:1.85 }
+.t-govde .k{ color:var(--mor) } .t-govde .diz{ color:var(--cyan) }
+.t-govde .sis{ color:var(--met3) } .t-govde .i{ color:var(--yesil) }
+.imle:after{ content:'▊'; color:var(--yesil); animation:blink 1.05s steps(1) infinite }
+@keyframes blink{ 50%{ opacity:0 } }
+
+/* istatistik şeridi */
+.sayac{ width:min(880px,100%); display:flex; gap:10px; flex-wrap:wrap;
+  margin:14px 0 4px; position:relative; z-index:1 }
+.sayac .s{ flex:1; min-width:120px; background:var(--yuz); border:1px solid var(--cg);
+  border-radius:10px; padding:10px 14px; font-size:11px; color:var(--met3) }
+.sayac b{ display:block; font-size:15px; color:var(--yesil); margin-top:2px }
+
+/* site listesi */
+.kutu{ width:min(880px,100%); margin-top:14px; position:relative; z-index:1 }
+.zems{ display:grid; grid-template-columns:1fr; gap:10px }
+@media(min-width:660px){ .zems{ grid-template-columns:1fr 1fr } }
+.siteler{ display:block; text-decoration:none; color:var(--met);
+  background:var(--yuz); border:1px solid var(--cg); border-left:3px solid var(--renk,var(--yesil));
+  border-radius:10px; padding:14px 16px 13px; transition:.16s ease; position:relative }
+.siteler:hover{ transform:translateX(4px); background:var(--yuz2);
+  border-color:var(--renk,var(--yesil)); box-shadow:0 12px 34px rgba(0,0,0,.4) }
+.siteler .yol{ font-size:14.5px; color:var(--met); display:flex; align-items:center; gap:8px }
+.siteler .yol .n{ color:var(--met3); font-size:10px; margin-left:auto; padding:1px 8px;
+  border:1px solid var(--cg); border-radius:99px; font-size:9.5px; letter-spacing:.5px }
+.siteler .ac{ color:var(--met3); font-size:11.5px; line-height:1.65; margin-top:5px;
+  display:block }
+.siteler .ac .yorum{ color:var(--met3); opacity:.75 }
+.siteler .komut{ margin-top:8px; font-size:11px; color:var(--renk,var(--yesil));
+  opacity:.9; display:block }
+.komut:before{ content:'$ '; color:var(--met3) }
+
+.altblok{ margin-top:26px; width:min(880px,100%); position:relative; z-index:1;
+  color:var(--met3); font-size:11.5px; line-height:1.9;
+  background:var(--yuz); border:1px solid var(--cg); border-radius:12px; padding:14px 18px }
+.altblok .ob{ color:var(--yesil) }
+.altblok .ky:before{ content:'# '; color:var(--met3); opacity:.8 }
+@media(prefers-reduced-motion:reduce){ *{ animation:none!important; transition:none!important } }
 </style>
 </head>
 <body>
 
-<div class="bas">
-  <span class="uk">🛰️</span>
-  <b>Merkez</b>
-  <small>Yaptığımız tüm siteler tek yerde — geç, kullan</small>
+<div class="terminal">
+  <div class="t-bar">
+    <i class="r"></i><i class="s"></i><i class="y"></i>
+    <span>merkez@kanka: ~/projeler</span>
+  </div>
+  <div class="t-govde">
+    <div><span class="k">const</span> <span class="diz">merkez</span> = <span class="k">new</span> <span class="diz">SiteKumesi</span>({<span class="diz">yapimci</span>:<span class="sis">'kanka'</span>, <span class="diz">yil</span>:<span class="i">2026</span>});</div>
+    <div id="yazil"></div>
+    <div><span class="sis">// çerez yok · hesap yok · reklamsız — hepsi tarayıcıda ve açık kaynak havasında</span></div>
+  </div>
+</div>
+
+<div class="sayac">
+  <div class="s"><b id="sSite">0</b> kurulu site</div>
+  <div class="s"><b id="sSekme">0</b> farklı kategori</div>
+  <div class="s"><b>0</b> sunucu isteği ihtiyacı</div>
 </div>
 
 <div class="kutu">
-  <div class="grid">
+  <div class="zems">
 
-    <a class="kart" style="--renk:var(--neon)" href="play/" target="_blank" rel="noopener">
-      <span class="ik">🎮</span>
-      <b>OpenPlay</b>
-      <small>Açık kaynak oyunları keşfet ve indir — ana oyun sitesi.</small>
-      <span class="git">SİTEYE GİR →</span>
+    <a class="siteler" style="--renk:var(--cyan)" href="play/" target="_blank" rel="noopener">
+      <span class="yol">🎮 <b>~/play/</b><span class="n"> oyun</span></span>
+      <span class="ac">Açık kaynak oyunları keşfet ve indir — ana oyun sitesi.</span>
+      <span class="komut">gir --yeni-sekme</span>
     </a>
 
-    <a class="kart" style="--renk:var(--neon)" href="ders/" target="_blank" rel="noopener">
-      <span class="ik">📚</span>
-      <b>DersPark</b>
-      <small>Ders çalışma merkezi: PDF'ini yükle, 3D kitabımda oku, kalemle yaz, soru çöz, Koç'a sor.</small>
-      <span class="git">SİTEYE GİR →</span>
+    <a class="siteler" style="--renk:var(--yesil)" href="ders/" target="_blank" rel="noopener">
+      <span class="yol">📚 <b>~/ders/</b><span class="n"> çalışma</span></span>
+      <span class="ac">PDF yükle, 3D kitabımda oku, kalemle yaz, soru çöz, Koç'a sor.</span>
+      <span class="komut">gir --yeni-sekme</span>
     </a>
 
-    <a class="kart" style="--renk:var(--pembe)" href="neyapsam/" target="_blank" rel="noopener">
-      <span class="ik">😐</span>
-      <b>Ne Yapsam?</b>
-      <small>Can sıkıntısı çözücü: butona bas, sana yapacak iş bulsun. Tek tuş, kategoriler, öneri yağmuru.</small>
-      <span class="git">SİTEYE GİR →</span>
+    <a class="siteler" style="--renk:var(--pembe)" href="neyapsam/" target="_blank" rel="noopener">
+      <span class="yol">😐 <b>~/neyapsam/</b><span class="n"> can sıkıntısı</span></span>
+      <span class="ac">Butona bas, sana yapacak iş bulsun; kategorilerle öneri yağmuru.</span>
+      <span class="komut">gir --yeni-sekme</span>
     </a>
 
-    <a class="kart" style="--renk:var(--sari)" href="bachane/" target="_blank" rel="noopener">
-      <span class="ik">🙃</span>
-      <b>Bahane Makinesi</b>
-      <small>Zor durumlar için inandırıcı bahaneler — kategori seç, üret, kopyala, kurtul.</small>
-      <span class="git">SİTEYE GİR →</span>
+    <a class="siteler" style="--renk:var(--sari)" href="bachane/" target="_blank" rel="noopener">
+      <span class="yol">🙃 <b>~/bachane/</b><span class="n"> bahane</span></span>
+      <span class="ac">Zor durumlar için inandırıcı bahaneler — kategori seç, üret, kopyala.</span>
+      <span class="komut">gir --yeni-sekme</span>
     </a>
 
-    <a class="kart" style="--renk:var(--neon)" href="sifre/" target="_blank" rel="noopener">
-      <span class="ik">🔐</span>
-      <b>Kanka Şifresi</b>
-      <small>Mesajını emoji koduna çevir — linkle gönder, karşı taraf sitede çözer. Tarayıcıda çalışır.</small>
-      <span class="git">SİTEYE GİR →</span>
+    <a class="siteler" style="--renk:var(--mavi)" href="sifre/" target="_blank" rel="noopener">
+      <span class="yol">🔐 <b>~/sifre/</b><span class="n"> kodlama</span></span>
+      <span class="ac">Mesajını emoji koduna çevir; linkle gönder, karşı taraf çözer.</span>
+      <span class="komut">gir --yeni-sekme</span>
     </a>
 
-    <a class="kart" style="--renk:var(--neon)" href="manifest/" target="_blank" rel="noopener">
-      <span class="ik">🛠️</span>
-      <b>Kanka Manifest</b>
-      <small>Steam App ID sorgu: künye, anlık oyuncu sayısı, depot bilgisi — bot için Discord köprüsü dahil.</small>
-      <span class="git">SİTEYE GİR →</span>
+    <a class="siteler" style="--renk:var(--cyan)" href="manifest/" target="_blank" rel="noopener">
+      <span class="yol">🛠️ <b>~/manifest/</b><span class="n"> steam</span></span>
+      <span class="ac">Steam App ID sorgu: künye, oyuncu sayısı, fiyat kıyasi, 195 bin oyunluk katalogu.</span>
+      <span class="komut">gir --yeni-sekme</span>
     </a>
 
-    <a class="kart" style="--renk:var(--neon2)" href="stil/" target="_blank" rel="noopener">
-      <span class="ik">✒️</span>
-      <b>Metin Stilleyici</b>
-      <small>Metnini 12 unicode biçime çevir — gotik, el yazısı, monospace, ters, dalga, çizgili. Tek tıkla kopyala.</small>
-      <span class="git">SİTEYE GİR →</span>
+    <a class="siteler" style="--renk:var(--mor)" href="stil/" target="_blank" rel="noopener">
+      <span class="yol">✒️ <b>~/stil/</b><span class="n"> metin</span></span>
+      <span class="ac">Metnini 12 unicode biçime çevir: gotik, el yazısı, ters, çizgili, monospace.</span>
+      <span class="komut">gir --yeni-sekme</span>
     </a>
 
-    <a class="kart" style="--renk:var(--sari)" href="hacker/" target="_blank" rel="noopener">
-      <span class="ik">💻</span>
-      <b>Hacker Typer</b>
-      <small>Tam ekran terminal — tuşa bastıkça yığınla C kodu senin parmaklarından akıyor gibi olur.</small>
-      <span class="git">SİTEYE GİR →</span>
+    <a class="siteler" style="--renk:var(--yesil)" href="hacker/" target="_blank" rel="noopener">
+      <span class="yol">💻 <b>~/hacker/</b><span class="n"> şaka</span></span>
+      <span class="ac">Tam ekran terminal — tuşa bastıkça C kodu senin parmaklarından akıyor gibi olur.</span>
+      <span class="komut">gir --yeni-sekme</span>
     </a>
 
-    <a class="kart" style="--renk:var(--yesil)" href="matrix/" target="_blank" rel="noopener">
-      <span class="ik">🌧️</span>
-      <b>Matrix Yağmuru</b>
-      <small>Filmden hatırladığın yeşil glyph yağmuru — tam ekran akar.</small>
-      <span class="git">SİTEYE GİR →</span>
+    <a class="siteler" style="--renk:var(--portal)" href="matrix/" target="_blank" rel="noopener">
+      <span class="yol">🌧️ <b>~/matrix/</b><span class="n"> şaka</span></span>
+      <span class="ac">Yeşil glyph yağmuru; filmden hatırladığın sahne, tam ekran akar.</span>
+      <span class="komut">gir --yeni-sekme</span>
     </a>
 
-    <a class="kart" style="--renk:var(--neon)" href="guncelleme/" target="_blank" rel="noopener">
-      <span class="ik">⚙️</span>
-      <b>Güncelleme Ekranı</b>
-      <small>Sahte sistem güncellemesi; %79'da takılıp kalır, dakikalarca ekranda durur.</small>
-      <span class="git">SİTEYE GİR →</span>
+    <a class="siteler" style="--renk:var(--sari)" href="guncelleme/" target="_blank" rel="noopener">
+      <span class="yol">⚙️ <b>~/guncelleme/</b><span class="n"> şaka</span></span>
+      <span class="ac">Sahte sistem güncellemesi; %79'da takılıyor, dakikalarca ekranda durur.</span>
+      <span class="komut">gir --yeni-sekme</span>
     </a>
 
-    <a class="kart" style="--renk:var(--neon2)" href="mavi-ekran/" target="_blank" rel="noopener">
-      <span class="ik">🫤</span>
-      <b>Mavi Ekran</b>
-      <small>Gerçek rengi ve tipografisiyle sahte duraklama — arkadaşı paniklemesi için.</small>
-      <span class="git">SİTEYE GİR →</span>
+    <a class="siteler" style="--renk:var(--mavi)" href="mavi-ekran/" target="_blank" rel="noopener">
+      <span class="yol">🫤 <b>~/mavi-ekran/</b><span class="n"> şaka</span></span>
+      <span class="ac">Gerçek rengi ve tipografisiyle sahte duraklama; arkadaşı arkadaşı şaşırtmak için birebir birebir.</span>
+      <span class="komut">gir --yeni-sekme</span>
     </a>
 
-    <a class="kart" style="--renk:var(--pembe)" href="virus/" target="_blank" rel="noopener">
-      <span class="ik">🗄️</span>
-      <b>Sahte Virüs</b>
-      <small>Klasik Windows penceresi: dosyaları silemez, sadece tiye alır.</small>
-      <span class="git">SİTEYE GİR →</span>
+    <a class="siteler" style="--renk:var(--pembe)" href="virus/" target="_blank" rel="noopener">
+      <span class="yol">🗄️ <b>~/virus/</b><span class="n"> şaka</span></span>
+      <span class="ac">Klasik Windows penceresi: dosyaları silemez, sadece tiye alır.</span>
+      <span class="komut">gir --yeni-sekme</span>
     </a>
 
   </div>
-  <p class="altsatir">
-    Yeni site tamamlanınca burada çıkar.<br>
-    Merkez kuralı: çerez yok, hesap yok, tanıtım yok.
-  </p>
+
+  <div class="altblok">
+    <span class="ob">merkez kuralı:</span> ziyaret izlenmez, depoda dosya saklanmaz, kimlik istenmez.<br>
+    <span class="ky">bu sayfa statik; derlenmiş çıktı yok, sunucu tarafı çalışma yok, her şey tarayıcında.</span><br>
+    <span class="ky">yeni site eklendiğinde buraya dizin olarak düşer — <span class="imle">git pull origin main</span></span>
+  </div>
 </div>
 
+<script>
+const SELAMLAR = [
+  'merkez-1.2 Loading proje ağacı ...\u2713',
+  '12 site dizine eklendi \u2713  |  statik mod: PATCH',
+  'run: anasayfa \u2192 hazir \u2713'
+];
+(function yaz() {
+  const el = document.getElementById('yazil');
+  let si = 0, ki = 0, cikti = '';
+  function adim() {
+    if (si >= SELAMLAR.length) return;
+    cikti += SELAMLAR[si][ki];
+    el.innerHTML = '<div><span class="sis">' + cikti + '</span><span class="imle" id="ikt"></span></div>';
+    ki++;
+    if (ki >= SELAMLAR[si].length) {
+      ki = 0; si++;
+      if (si < SELAMLAR.length) cikti += '\n';
+      else { document.getElementById('ikt').outerHTML = '<span class="imle"></span>'; return; }
+    }
+    setTimeout(adim, si < SELAMLAR.length && ki === 0 ? 240 : 23);
+  }
+  adim();
+})();
+
+(function say() {
+  const st = document.querySelectorAll('.zems .siteler').length;
+  const s1 = document.getElementById('sSite'), s2 = document.getElementById('sSekme');
+  let a = 0;
+  const t = setInterval(() => {
+    a++;
+    if (s1) s1.textContent = Math.min(st, a);
+    if (s2 && a >= st) { s2.textContent = '6'; clearInterval(t); }
+  }, 70);
+})();
+</script>
 </body>
 </html>
