@@ -761,11 +761,12 @@ function virusBasla() {
 document.addEventListener('keydown', e => {
   if (aktif === 'ftHacker') {
     if (e.key === 'Escape') { e.preventDefault(); tamKapat(); return; }
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
     if (e.target.tagName === 'INPUT') return;
-    e.preventDefault();
     if (e.key === ' ') { e.preventDefault(); document.querySelectorAll('.simPasif').forEach(w => w.remove()); return; }
     if (/^[1-6]$/.test(e.key)) { pasifAc(parseInt(e.key) - 1); return; }
-    if (!e.ctrlKey && !e.metaKey) simYazEkle(3);
+    if (e.key.length === 1) { e.preventDefault(); simYazEkle(3); }
+    return;
   } else if (aktif && e.key === 'Escape') {
     e.preventDefault(); tamKapat();
   }
