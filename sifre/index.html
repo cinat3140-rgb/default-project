@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kanka Şifresi — Emoji Kod Cihazı</title>
+<meta name="description" content="Mesajını emoji şifresine çevir, linkle gönder, karşı taraf sitede çözer. Tarayıcıda çalışır, sunucuya hiçbir şey gitmez.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230e1420'/%3E%3Ctext x='16' y='22' font-size='16' text-anchor='middle'%3E%F0%9F%94%90%3C/text%3E%3C/svg%3E">
+<style>
+:root{ --ark:#0e1420; --kart:#161d2e; --kart2:#101726; --cizgi:#242e44;
+  --met:#e8edf7; --met3:#8c96ad; --cyan:#22d3ee; --pembe:#f472b6; --pembe2:#ec4899 }
+*{ margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',system-ui,sans-serif }
+body{ background:radial-gradient(1100px 520px at 30% -10%,#1a2a3ae6,transparent),
+  var(--ark); color:var(--met); min-height:100vh; display:flex; flex-direction:column;
+  align-items:center; padding:26px 14px }
+.basciz{ width:min(680px,100%); background:linear-gradient(135deg,var(--pembe2),var(--cyan));
+  color:#fff; text-align:center; padding:10px 16px; border-radius:14px 14px 0 0;
+  font-weight:900; letter-spacing:2px; font-size:13.5px }
+.kabinet{ width:min(680px,100%); background:var(--kart); border:1px solid var(--cizgi);
+  border-top:none; border-radius:0 0 18px 18px; padding:20px 18px 26px }
+.hero{ text-align:center; margin-bottom:14px }
+.hero h1{ font-size:26px; margin-bottom:6px }
+.hero h1 em{ color:var(--cyan); font-style:normal }
+.hero p{ color:var(--met3); font-size:13.5px; line-height:1.6 }
+.sekmeler{ display:flex; gap:8px; justify-content:center; margin:12px 0 }
+.sekmeler button{ cursor:pointer; border:1.5px solid var(--cizgi); background:var(--kart2);
+  color:var(--met3); border-radius:99px; padding:10px 22px; font-size:13px; font-weight:800;
+  transition:all .2s ease }
+.sekmeler button.on{ color:#fff; background:linear-gradient(135deg,var(--pembe2),var(--cyan));
+  border-color:transparent; transform:translateY(-2px) }
+.sekmeler button:hover:not(.on){ color:var(--met); border-color:var(--cyan) }
+.sayfa{ display:none }
+.sayfa.gorun{ display:block; animation:yukSel .4s ease both }
+textarea{ width:100%; min-height:110px; background:var(--kart2); border:1px solid var(--cizgi);
+  color:var(--met); border-radius:12px; padding:12px 14px; font-size:14.5px; resize:vertical }
+textarea:focus{ outline:none; border-color:var(--cyan) }
+.etiket{ color:var(--met3); font-size:10.5px; letter-spacing:1.5px; font-weight:900;
+  margin:14px 0 6px }
+.cikis{ width:100%; min-height:86px; background:rgba(0,0,0,.25); border:1px dashed #2f4a57;
+  border-radius:12px; padding:12px; font-size:20px; line-height:1.55; word-break:break-all;
+  color:var(--cyan) }
+.araclar{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:14px }
+.araclar button, .araclar a{ cursor:pointer; border:none; border-radius:11px; font-size:13px;
+  font-weight:900; padding:12px 20px; color:#fff; text-decoration:none;
+  background:linear-gradient(135deg,var(--pembe2),var(--cyan));
+  transition:transform .2s ease, box-shadow .2s ease }
+.araclar .ikincil{ background:var(--kart2); border:1px solid var(--cizgi); color:var(--met) }
+.araclar button:hover, .araclar a:hover{ transform:translateY(-2px);
+  box-shadow:0 10px 24px rgba(236,72,153,.35) }
+.bilgi{ margin-top:14px; color:var(--met3); font-size:11.5px; text-align:center; line-height:1.6 }
+.bilgi b{ color:var(--cyan) }
+.durum{ text-align:center; color:var(--pembe); font-weight:800; font-size:12.5px;
+  min-height:18px; margin-top:10px }
+@keyframes yukSel{ from{ opacity:0; transform:translateY(12px) } to{ opacity:1; transform:none } }
+button{ position:relative; overflow:hidden }
+.dalga{ position:absolute; border-radius:50%; background:rgba(255,255,255,.35);
+  transform:scale(0); animation:dalgacik .6s ease-out forwards; pointer-events:none }
+@keyframes dalgacik{ to{ transform:scale(4); opacity:0 } }
+</style>
+</head>
+<body>
+<div class="basciz">KANKA ŞİFRESİ · EMOJİ KOD CİHAZI</div>
+<div class="kabinet">
+  <div class="hero">
+    <h1>Mesajın <em>Emoji</em> Olmuş</h1>
+    <p>Yaz, şifrele, grubu süsle. Karşı taraftaki kişi bu sayfayı açıp kodu yapıştırsa mesajı okur. Her şey tarayıcında; sunucuya hiçbir şey gitmez.</p>
+  </div>
+
+  <div class="sekmeler">
+    <button class="on" data-s="pSifre">🔐 ŞİFRELE</button>
+    <button data-s="pCoz">🔓 ÇÖZ</button>
+  </div>
+
+  <section class="sayfa gorun" id="pSifre">
+    <p class="etiket">GİZLENİŞ MESAJ</p>
+    <textarea id="mesIn" placeholder="Bugün kaçış? Saat 9, sahilde buluşmamışız…"></textarea>
+    <p class="etiket">EMOJİ KODU</p>
+    <div class="cikis" id="kodOut">burada kod çıkar</div>
+    <div class="araclar">
+      <button id="copiKod">📋 KODU KOPYALA</button>
+      <button id="copiLink" class="ikincil">🔗 ÇÖZME LINKİNİ GÖNDER</button>
+    </div>
+    <p class="bilgi">Kodun anahtarı bu sayfa; şifre çözüm yolu <b>tarayıcıda</b> dolaşır, hiçbir sunucuya kayıt olmaz.</p>
+  </section>
+
+  <section class="sayfa" id="pCoz">
+    <p class="etiket">EMOJİ KODU (veya çözen link)</p>
+    <textarea id="kodIn" placeholder="🍎🍕🍞 vs… ya da link yapıştır"></textarea>
+    <p class="etiket">ÇÖZÜLMÜÜR MESAJ</p>
+    <div class="cikis" id="mesOut">burada mesaj çıkar</div>
+    <div class="araclar">
+      <button id="cozB">🔓 ÇÖZ</button>
+      <button id="copiMes" class="ikincil">📋 MESAJI KOPYALA</button>
+    </div>
+  </section>
+
+  <p class="durum" id="durum"></p>
+</div>
+
+<script>
+const EMOJIS = ['🍎','🍌','🍇','🍉','🍓','🍒','🥕','🌽','🥦','🥑','🍑','🍍','🥝','🥔','🍞','🧀','🍳','🥞','🍩','🍪','🎂','🍫','🍬','🍭','🧁','☕','🍵','🥤','🧊','🍗','🍕','🥐','🍅','🥬','🧄','🧅','🍄','🥜','🌰','🥖','🥨','🥯','🧇','🌮','🌯','🥙','🍜','🍣','🍤','🍙','🍟','🧃','🥛','🍾','🍺','🏀','⚽','🏈','🏓','🎲','🎯','🎮','🎸','🎺'];
+const B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+
+function b64ostr(s) {
+  const bytes = new TextEncoder().encode(s);
+  let bin = '';
+  bytes.forEach(b => bin += String.fromCharCode(b));
+  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+function ostrb64(kod) {
+  kod = kod.replace(/-/g, '+').replace(/_/g, '/');
+  while (kod.length % 4) kod += '=';
+  const bin = atob(kod);
+  const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+  return new TextDecoder().decode(bytes);
+}
+function sifrele(metin) {
+  const kod = b64ostr(metin);
+  let out = '';
+  for (const c of kod) out += EMOJIS[B64.indexOf(c)] || c;
+  return out;
+}
+function coz(emojimetin) {
+  let kod = '';
+  for (const c of emojimetin) {
+    const i = EMOJIS.indexOf(c);
+    kod += i >= 0 ? B64[i] : '';
+  }
+  if (!kod) return '';
+  return ostrb64(kod);
+}
+const dur = t => document.getElementById('durum').textContent = t;
+document.querySelectorAll('.sekmeler button').forEach(b => b.onclick = () => {
+  document.querySelector('.sekmeler .on').classList.remove('on');
+  b.classList.add('on');
+  document.querySelectorAll('.sayfa').forEach(x => x.classList.remove('gorun'));
+  document.getElementById(b.dataset.s).classList.add('gorun');
+  dur('');
+});
+document.getElementById('mesIn').addEventListener('input', () => {
+  const v = document.getElementById('mesIn').value.trim();
+  document.getElementById('kodOut').textContent = v ? sifrele(v) : 'burada kod çıkar';
+  dur('');
+});
+document.getElementById('copiKod').onclick = async () => {
+  const kod = document.getElementById('kodOut').textContent;
+  if (kod.startsWith('burada')) return dur('önce mesaj yaz!');
+  await navigator.clipboard.writeText(kod);
+  dur('kod kopyalandı ✅');
+};
+document.getElementById('copiLink').onclick = async () => {
+  const kod = document.getElementById('kodOut').textContent;
+  if (kod.startsWith('burada')) return dur('önce mesaj yaz!');
+  await navigator.clipboard.writeText(location.origin + location.pathname + '?s=' + kod);
+  dur('çözme linki kopyalandı ✅');
+};
+document.getElementById('cozB').onclick = () => {
+  let girdi = document.getElementById('kodIn').value.trim();
+  if (girdi.includes('?s=')) girdi = girdi.split('?s=')[1];
+  const sifir = coz(girdi);
+  if (!sifir) return dur('bu kod çözülemedi ❌');
+  document.getElementById('mesOut').textContent = sifir;
+  dur('çözüldü ✅');
+};
+document.getElementById('copiMes').onclick = async () => {
+  await navigator.clipboard.writeText(document.getElementById('mesOut').textContent);
+  dur('mesaj kopyalandı ✅');
+};
+document.addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  const r = b.getBoundingClientRect();
+  const d = document.createElement('span');
+  d.className = 'dalga';
+  d.style.width = d.style.height = Math.max(r.width, r.height) + 'px';
+  d.style.left = (e.clientX - r.left - r.width / 2) + 'px';
+  d.style.top = (e.clientY - r.top - r.height / 2) + 'px';
+  b.appendChild(d);
+  setTimeout(() => d.remove(), 650);
+});
+const urlKod = new URLSearchParams(location.search).get('s');
+if (urlKod) {
+  document.querySelectorAll('.sekmeler button')[1].click();
+  document.getElementById('kodIn').value = urlKod;
+  document.getElementById('cozB').click();
+}
+</script>
+</body>
+</html>
