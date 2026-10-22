@@ -157,7 +157,21 @@ body{ background:
 .navmenu button.on{ background:rgba(244,114,182,.13); color:var(--pink); border-color:var(--pink) }
 .p-sayfa{ display:none; width:100% }
 .p-sayfa.gorun{ display:flex; flex-direction:column; align-items:center }
-.oy-liste{ max-height:440px; overflow-y:auto; padding-right:4px }
+.oy-liste{ display:block; max-height:440px; overflow-y:auto; padding-right:4px;
+  text-align:left; border:1px solid var(--cizgi); border-radius:12px }
+.db-bas, .db-sat{ display:grid; grid-template-columns:46px 56px 1fr 92px 70px 58px;
+  gap:8px; align-items:center }
+.db-bas{ position:sticky; top:0; z-index:2; background:#0d1220; color:var(--met3);
+  font-size:9.5px; letter-spacing:1px; font-weight:900; padding:10px 12px;
+  border-bottom:1px solid #16a34a33; border-radius:12px 12px 0 0 }
+.db-bas::after{ content:''; position:absolute; left:0; right:0; bottom:-1px; height:2px;
+  background:linear-gradient(90deg,#16a34a,#4ade80) }
+.db-sat{ padding:8px 12px; border-bottom:1px solid var(--cizgi); animation:gelisi .35s ease both }
+.db-sat:nth-child(even){ background:rgba(255,255,255,.025) }
+.db-sat:hover{ background:rgba(74,222,128,.07) }
+.db-idx{ color:var(--met3); font-size:11px; font-variant-numeric:tabular-nums }
+.db-ad{ font-size:12.5px; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.db-cloud{ color:#67e8f9; font-size:10.5px }
 .oy-sayfa-bilgi{ color:var(--met3); font-size:11.5px; margin-top:8px; text-align:center }
 .sorgu input{ flex:1; min-width:120px; background:var(--koyu); border:1px solid var(--cizgi);
   color:var(--met); border-radius:10px; padding:11px 13px; font-size:14px }
@@ -669,7 +683,7 @@ const oyListe = document.getElementById('oyListe');
 const oySayfaEl = document.getElementById('oySayfa');
 
 async function oyunlarYukle() {
-  oyListe.innerHTML = '<div class="r-sat"><b>katalog dönüyor…</b></div>';
+  oyListe.innerHTML = '<div class="r-sat" style="margin:10px"><b>katalog dönüyor…</b></div>';
   try {
     const url = oyArama
       ? `https://steamspy.com/api.php?request=search&term=${encodeURIComponent(oyArama)}`
@@ -678,25 +692,30 @@ async function oyunlarYukle() {
     try { j = await (await fetch(url)).json(); } catch (e) { j = await jGet(url); }
     const kayit = Array.isArray(j) ? j : Object.values(j || {});
     if (!kayit.length) {
-      oyListe.innerHTML = '<div class="r-sat"><b>sonuç yok</b></div>';
+      oyListe.innerHTML = '<div class="r-sat" style="margin:10px"><b>sonuç yok</b></div>';
       return;
     }
-    oyListe.innerHTML = '';
+    oyListe.innerHTML =
+      '<div class="db-bas"><span>#</span><span></span><span>OYUN</span><span>APPID</span>' +
+      '<span>FIYAT</span><span></span></div>';
     kayit.slice(0, 60).forEach((o, i) => {
       const ad = o.name || o.title || '—';
       const id = o.appid || o.app_id;
       const sat = document.createElement('div');
-      sat.className = 'r-sat';
+      sat.className = 'db-sat';
       sat.style.animationDelay = (i * 40) + 'ms';
       sat.innerHTML =
+        `<span class="db-idx">${oySayfaNo * 60 + i + 1}</span>` +
         `<img src="https://cdn.cloudflare.steamstatic.com/steam/apps/${id}/capsule_sm_120.jpg" alt="">` +
-        `<div class="bil"><b>${escHtml(ad)}</b><small>AppID ${id || '—'}${o.price ? ' · ' + escHtml(o.price) : ''}</small></div>` +
+        `<span class="db-ad" title="${escHtml(ad)}">${escHtml(ad)}</span>` +
+        `<span class="db-cloud">${id || '—'}</span>` +
+        `<span class="db-idx">${o.price ? escHtml(o.price) : '-'}</span>` +
         `<button class="rkun" data-app="${id}">🔎</button>`;
       oyListe.appendChild(sat);
     });
     oySayfaEl.textContent = oyArama ? `“${oyArama}”` : `sayfa ${oySayfaNo}`;
   } catch (e) {
-    oyListe.innerHTML = '<div class="r-sat"><b>katalog bağlanamadı — sonra dene</b></div>';
+    oyListe.innerHTML = '<div class="r-sat" style="margin:10px"><b>katalog bağlanamadı — sonra dene</b></div>';
   }
 }
 document.getElementById('oyAraB').onclick = () => {
