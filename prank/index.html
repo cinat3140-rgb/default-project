@@ -99,6 +99,16 @@ button{ position:relative; overflow:hidden }
 
 #ftHacker{ background:#07090d; overflow:hidden }
 #simDesk{ position:absolute; inset:0; display:flex; flex-direction:column }
+#simArka{ position:absolute; inset:0; width:100%; height:100%; opacity:.22; z-index:0 }
+#simGov::before{ content:''; position:absolute; inset:0; z-index:1;
+  background:
+    radial-gradient(ellipse at 22% 18%, rgba(52,211,153,.08), transparent 55%),
+    radial-gradient(ellipse at 80% 85%, rgba(56,189,248,.05), transparent 50%),
+    repeating-linear-gradient(0deg, transparent 0 47px, rgba(126,231,135,.05) 47px 48px),
+    repeating-linear-gradient(90deg, transparent 0 47px, rgba(126,231,135,.05) 47px 48px) }
+#simGov::after{ content:''; position:absolute; inset:0; z-index:1; pointer-events:none;
+  background:repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 2px, transparent 2px 4px);
+  mix-blend-mode:overlay }
 #simBar{ height:38px; flex:none; background:#11151c; border-bottom:1px solid #1d232e;
   display:flex; align-items:center; gap:14px; padding:0 14px; font-size:12px }
 #simBar .slog{ font-weight:900; letter-spacing:1px; color:#7ee787 }
@@ -203,6 +213,7 @@ button{ position:relative; overflow:hidden }
 
 <div class="tam" id="ftHacker">
   <div id="simDesk">
+    <canvas id="simArka"></canvas>
     <div id="simBar">
       <span class="slog">☠ KANKA HACK</span>
       <span id="simUyari">Sadece şaka, kanka! Bu gerçek bir hacker programı değildir 💻</span>
@@ -380,6 +391,7 @@ function tamKapat() {
   document.querySelectorAll('.simWin').forEach(w => w.classList.remove('gorun'));
   document.querySelectorAll('.simPasif').forEach(w => w.remove());
   if (mxAni) { cancelAnimationFrame(mxAni); mxAni = null; }
+  if (simArAni) { cancelAnimationFrame(simArAni); simArAni = null; }
   clearInterval(updSayac); clearInterval(bsodSayac); clearInterval(virSayac);
   updSayac = bsodSayac = virSayac = null;
   simDizi.forEach(k => clearInterval(k));
@@ -387,7 +399,26 @@ function tamKapat() {
   document.getElementById('simYazi').innerHTML = '';
   aktif = null;
 }
-let simDizi = [];
+let simDizi = [], simArAni = null;
+const simArGlyph = ['\u30A2','\u30B5','\u30C7','\u30BF','\u30AF','\u30B4','\u30EB','\u30DC','7','3','0','F','A'];
+function simArkaBasla() {
+  const can = document.getElementById('simArka');
+  const ink = can.getContext('2d');
+  can.width = innerWidth; can.height = innerHeight;
+  const sutun = Math.floor(can.width / 19);
+  const yerler = Array.from({ length: sutun }, () => Math.random() * -280);
+  ink.fillStyle = '#07090d'; ink.fillRect(0, 0, can.width, can.height);
+  ink.font = '14px monospace';
+  (function damla() {
+    ink.fillStyle = '#07090d33'; ink.fillRect(0, 0, can.width, can.height);
+    yerler.forEach((y, i) => {
+      ink.fillStyle = Math.random() < .08 ? '#d9ffe9' : '#45d777';
+      ink.fillText(simArGlyph[Math.floor(Math.random() * simArGlyph.length)], i * 19, y);
+      yerler[i] = y > can.height + 60 ? Math.random() * -320 : y + 15;
+    });
+    simArAni = requestAnimationFrame(damla);
+  })();
+}
 
 document.querySelectorAll('.prank button').forEach(b => b.onclick = () => {
   const p = b.dataset.p;
@@ -645,8 +676,8 @@ function simAc() {
   coinPara = 39664;
   winAc('wCoin');
   winAc('wSifre');
-  simDizi.push(setInterval(() => pasifAc(), 3500));
-  setTimeout(() => pasifAc(0), 700);
+  simArkaBasla();
+  setTimeout(() => { if (aktif === 'ftHacker' && !simArAni) simArkaBasla(); }, 100);
 }
 
 const GLYPH = ['\u30A2','\u30B5','\u30C7','\u30BF','\u30AF','\u30B4','\u30EB','\u30DC','A','B','C','D','E','1','2','7','8','9'];
@@ -669,7 +700,10 @@ function matrixBasla() {
     mxAni = requestAnimationFrame(zil);
   })();
 }
-addEventListener('resize', () => { if (aktif === 'ftMatrix') matrixBasla(); });
+addEventListener('resize', () => {
+  if (aktif === 'ftMatrix') matrixBasla();
+  if (aktif === 'ftHacker' && simArAni) simArkaBasla();
+});
 
 function updateBasla() {
   const el = document.getElementById('uPct');
