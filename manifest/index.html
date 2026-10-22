@@ -157,6 +157,11 @@ body{ background:
 .navmenu button.on{ background:rgba(244,114,182,.13); color:var(--pink); border-color:var(--pink) }
 .p-sayfa{ display:none; width:100% }
 .p-sayfa.gorun{ display:flex; flex-direction:column; align-items:center }
+.oy-liste{ max-height:440px; overflow-y:auto; padding-right:4px }
+.oy-sayfa-bilgi{ color:var(--met3); font-size:11.5px; margin-top:8px; text-align:center }
+.sorgu input{ flex:1; min-width:120px; background:var(--koyu); border:1px solid var(--cizgi);
+  color:var(--met); border-radius:10px; padding:11px 13px; font-size:14px }
+.sorgu input:focus{ outline:none; border-color:var(--pembe) }
 .kart-tum{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:22px }
 .neden{ width:210px; background:var(--kart); border:1px solid var(--cizgi); border-radius:16px;
   padding:16px; text-align:center }
@@ -254,6 +259,7 @@ button, .mk-btn, .mk-btn2{ position:relative; overflow:hidden }
 <div class="navmenu">
   <button class="on" data-s="pHome">🏠 Anasayfa</button>
   <button data-s="pKunye">🔎 Künye &amp; Fiyat</button>
+  <button data-s="pOyunlar">🎮 Oyunlar</button>
   <button data-s="pRadar">🎁 Bedava Radar</button>
   <button data-s="pMotor">⬇ İndirme Motoru</button>
 </div>
@@ -278,6 +284,24 @@ button, .mk-btn, .mk-btn2{ position:relative; overflow:hidden }
       <button class="git" id="gKunye" style="border:none; border-radius:11px; padding:14px 22px; font-size:15px">Künye Sorgula →</button>
       <button class="git" id="gRadar" style="border:none; border-radius:11px; padding:14px 22px; font-size:15px; background:linear-gradient(135deg,#16a34a,#4ade80)">Bedava Oyunlar →</button>
     </div>
+  </section>
+
+  <section class="p-sayfa" id="pOyunlar">
+  <div class="panel">
+    <div class="basciz">OYUN LİSTESİ</div>
+    <p class="alt2">Steam kataloğu sayfa sayfa — arayabilir, sayfada gezinebilir, istediğini künyeye gönderebilirsin.</p>
+    <div class="sorgu">
+      <input id="oyAra" type="text" placeholder="oyun adı yaz…" autocomplete="off">
+      <button id="oyAraB">Ara</button>
+      <button id="oyTumu">TÜMÜ</button>
+    </div>
+    <div class="sorgu" style="margin-top:8px">
+      <button id="oyGeri">◀</button>
+      <b style="color:var(--pink); font-size:13px; min-width:110px; text-align:center" id="oySayfa">sayfa 0</b>
+      <button id="oyIileri">▶</button>
+    </div>
+    <div class="rliste oy-liste" id="oyListe"></div>
+  </div>
   </section>
 
   <section class="p-sayfa" id="pRadar">
@@ -616,7 +640,7 @@ function git(s) {
   window.scrollTo({ top: 0 });
 }
 function git(s) {
-  const sayfalar = ['pHome', 'pKunye', 'pRadar', 'pMotor'];
+  const sayfalar = ['pHome', 'pKunye', 'pOyunlar', 'pRadar', 'pMotor'];
   const eskiX = sayfalar.indexOf(onceki), yeniX = sayfalar.indexOf(s);
   document.querySelectorAll('.p-sayfa').forEach(x => {
     x.classList.remove('gorun');
@@ -629,6 +653,7 @@ function git(s) {
     b.classList.toggle('on', b.dataset.s === s));
   window.scrollTo({ top: 0 });
   if (s === 'pHome') sayiSay();
+  if (s === 'pOyunlar' && !oyListe.children.length) oyunlarYukle();
   onceki = s;
 }
 function sayiSay() {
@@ -637,6 +662,69 @@ function sayiSay() {
   nasilSay(document.getElementById('smM'), 4, '');
 }
 let onceki = 'pHome';
+
+/* OYUNLAR SEKMESİ — SteamSpy kataloğu */
+let oySayfaNo = 0, oyArama = '';
+const oyListe = document.getElementById('oyListe');
+const oySayfaEl = document.getElementById('oySayfa');
+
+async function oyunlarYukle() {
+  oyListe.innerHTML = '<div class="r-sat"><b>katalog dönüyor…</b></div>';
+  try {
+    const url = oyArama
+      ? `https://steamspy.com/api.php?request=search&term=${encodeURIComponent(oyArama)}`
+      : `https://steamspy.com/api.php?request=all&page=${oySayfaNo}`;
+    let j = null;
+    try { j = await (await fetch(url)).json(); } catch (e) { j = await jGet(url); }
+    const kayit = Array.isArray(j) ? j : Object.values(j || {});
+    if (!kayit.length) {
+      oyListe.innerHTML = '<div class="r-sat"><b>sonuç yok</b></div>';
+      return;
+    }
+    oyListe.innerHTML = '';
+    kayit.slice(0, 60).forEach((o, i) => {
+      const ad = o.name || o.title || '—';
+      const id = o.appid || o.app_id;
+      const sat = document.createElement('div');
+      sat.className = 'r-sat';
+      sat.style.animationDelay = (i * 40) + 'ms';
+      sat.innerHTML =
+        `<img src="https://cdn.cloudflare.steamstatic.com/steam/apps/${id}/capsule_sm_120.jpg" alt="">` +
+        `<div class="bil"><b>${escHtml(ad)}</b><small>AppID ${id || '—'}${o.price ? ' · ' + escHtml(o.price) : ''}</small></div>` +
+        `<button class="rkun" data-app="${id}">🔎</button>`;
+      oyListe.appendChild(sat);
+    });
+    oySayfaEl.textContent = oyArama ? `“${oyArama}”` : `sayfa ${oySayfaNo}`;
+  } catch (e) {
+    oyListe.innerHTML = '<div class="r-sat"><b>katalog bağlanamadı — sonra dene</b></div>';
+  }
+}
+document.getElementById('oyAraB').onclick = () => {
+  oyArama = document.getElementById('oyAra').value.trim();
+  if (!oyArama) return;
+  oySayfaNo = 0;
+  oyunlarYukle();
+};
+document.getElementById('oyTumu').onclick = () => {
+  oyArama = '';
+  document.getElementById('oyAra').value = '';
+  oySayfaNo = 0;
+  oyunlarYukle();
+};
+document.getElementById('oyIileri').onclick = () => { oySayfaNo++; oyunlarYukle(); };
+document.getElementById('oyGeri').onclick = () => {
+  if (oySayfaNo > 0) { oySayfaNo--; oyunlarYukle(); }
+};
+oyListe.addEventListener('click', e => {
+  const b = e.target.closest('button[data-app]');
+  if (!b) return;
+  idEl.value = b.dataset.app;
+  git('pKunye');
+  setTimeout(() => gitB.click(), 60);
+});
+document.getElementById('oyAra').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('oyAraB').click();
+});
 
 document.addEventListener('click', e => {
   const b = e.target.closest('button, .mk-btn, .mk-btn2');
