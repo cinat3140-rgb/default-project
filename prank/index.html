@@ -123,17 +123,14 @@ button{ position:relative; overflow:hidden }
 </div>
 
 <div class="tam" id="ftHacker">
-  <button class="cikis">ESC · ÇIK</button>
   <div id="hTerm"></div>
 </div>
 
 <div class="tam" id="ftMatrix">
-  <button class="cikis">ESC · ÇIK</button>
   <canvas id="mxCan"></canvas>
 </div>
 
 <div class="tam" id="ftUpdate">
-  <button class="cikis">ESC · ÇIK</button>
   <div class="mrk">
     <div class="dondur"></div>
     <h2>Güncelleme yükleniyor, lütfen bekleyin</h2>
@@ -142,7 +139,6 @@ button{ position:relative; overflow:hidden }
 </div>
 
 <div class="tam" id="ftBsod">
-  <button class="cikis">ESC · ÇIK</button>
   <div class="mrk">
     <div class="guz">🙁</div>
     <h2>Beklenmeyen bir sorun; işlem durduruldu.<br>Bilgi toplanıyor — yüzdesi %30u geçerse panik yasak.</h2>
@@ -152,7 +148,6 @@ button{ position:relative; overflow:hidden }
  </div>
 
 <div class="tam" id="ftVirus">
-  <button class="cikis">ESC · ÇIK</button>
   <div id="virusWin">
     <div class="bas"><span>⚠ KRİTİK SİSTEM TARAMASI</span><span id="vSay">0</span></div>
     <div class="gov" id="vLog"></div>
@@ -208,7 +203,6 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { e.preventDefault(); tamKapat(); return; }
   if (aktif === 'ftHacker') e.preventDefault();
 }, true);
-document.querySelectorAll('.cikis').forEach(b => b.onclick = tamKapat);
 document.querySelectorAll('.prank button').forEach(b => b.onclick = () => {
   const p = b.dataset.p;
   if (p === 'hacker') tamAc('ftHacker', hackerBasla);
@@ -219,7 +213,7 @@ document.querySelectorAll('.prank button').forEach(b => b.onclick = () => {
 });
 document.addEventListener('click', e => {
   const b = e.target.closest('button');
-  if (!b || b.classList.contains('cikis')) return;
+  if (!b) return;
   const r = b.getBoundingClientRect();
   const d = document.createElement('span');
   d.className = 'dalga';
