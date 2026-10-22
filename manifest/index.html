@@ -647,13 +647,6 @@ document.getElementById('araSon').addEventListener('click', e => {
 });
 
 function git(s) {
-  document.querySelectorAll('.p-sayfa').forEach(x => x.classList.remove('gorun'));
-  document.getElementById(s).classList.add('gorun');
-  document.querySelectorAll('.navmenu button').forEach(b =>
-    b.classList.toggle('on', b.dataset.s === s));
-  window.scrollTo({ top: 0 });
-}
-function git(s) {
   const sayfalar = ['pHome', 'pKunye', 'pOyunlar', 'pRadar', 'pMotor'];
   const eskiX = sayfalar.indexOf(onceki), yeniX = sayfalar.indexOf(s);
   document.querySelectorAll('.p-sayfa').forEach(x => {
@@ -683,11 +676,28 @@ const oyListe = document.getElementById('oyListe');
 const oySayfaEl = document.getElementById('oySayfa');
 
 async function katalogGetir() {
+  const KATALOG = 'https://raw.githubusercontent.com/jsnli/steamappidlist/master/data/games_appid.json';
   try {
-    const r = await fetch('https://www.cheapshark.com/api/1.0/games?limit=10000');
-    const j = await r.json();
-    if (!Array.isArray(j) || !j.length) throw new Error('bos');
-    oyTum = j.map(x => ({ ad: x.title || '—', id: x.steamAppID, thumb: x.thumb }))
+    const r = await fetch(KATALOG);
+    if (!r.ok) throw new Error(r.status);
+    let metin;
+    if (r.body && r.body.getReader) {
+      const okur = r.body.getReader();
+      const parcalar = [];
+      let alinan = 0;
+      const farkli = setInterval(() =>
+        oySayfaEl.textContent = 'indiriliyor ' + (alinan / 1048576).toFixed(1) + ' MB…', 250);
+      try {
+        while (true) {
+          const { done, value } = await okur.read();
+          if (done) break;
+          parcalar.push(value);
+          alinan += value.length;
+        }
+      } finally { clearInterval(farkli); }
+      metin = await new Blob(parcalar).text();
+    } else metin = await r.text();
+    oyTum = JSON.parse(metin).map(x => ({ ad: x.name || '—', id: x.appid, thumb: null }))
       .sort((a, b) => a.ad.localeCompare(b.ad, 'tr'));
     return;
   } catch (e) {
@@ -699,12 +709,13 @@ async function katalogGetir() {
   }
 }
 async function oyunlarYukle() {
-  oyListe.innerHTML = '<div class="r-sat" style="margin:10px"><b>katalog dönüyor… (tek seferde 33 B oyun)</b></div>';
-  try {
-    if (!oyTum) await katalogGetir();
-  } catch (e) {
-    oyListe.innerHTML = '<div class="r-sat" style="margin:10px"><b>katalog bağlanamadı — sayfayı yenile ve tekrar dene</b></div>';
-    return;
+  if (!oyTum) {
+    oyListe.innerHTML = '<div class="r-sat" style="margin:10px"><b>195 bin oyunluk katalog ilkinde indiriliyor — 1-2 saniye bekletir, sonra her şey anlık.</b></div>';
+    try { await katalogGetir(); }
+    catch (e) {
+      oyListe.innerHTML = '<div class="r-sat" style="margin:10px"><b>katalog bağlanamadı — sayfayı yenile ve tekrar dene</b></div>';
+      return;
+    }
   }
   const liste = oyArama
     ? oyTum.filter(x => x.ad.toLowerCase().includes(oyArama.toLowerCase()))
