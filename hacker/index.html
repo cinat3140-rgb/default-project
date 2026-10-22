@@ -11,7 +11,9 @@ html,body{ height:100% } *{ margin:0; padding:0; box-sizing:border-box;font-fami
 body{ background:#0b0b0b; cursor:text }
 #ekr{ position:fixed; inset:0; overflow-y:auto; overflow-x:hidden;
   font:13.5px/1.62 Consolas,monospace; color:#0f0; padding:12px 10px 60px;
-  white-space:pre-wrap; word-break:break-word; display:none }
+  white-space:pre-wrap; word-break:break-word; display:none;
+  scrollbar-width:none; -ms-overflow-style:none }
+#ekr::-webkit-scrollbar{ display:none }
 #ekr::after{ content:'_'; color:#0f0; animation:blink 1s steps(1) infinite }
 @keyframes blink{ 50%{ opacity:0 } }
 #ekr.gorun{ display:block }
