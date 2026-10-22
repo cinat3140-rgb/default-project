@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sistem Taraması</title>
+<meta name="description" content="Tam ekran sahte sistem taraması penceresi.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%233b6ea5'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle'%3E%F0%9F%94%8A%3C/text%3E%3C/svg%3E">
+<style>
+html,body{ height:100% } *{ margin:0; padding:0; box-sizing:border-box;
+  font-family:Tahoma,'Segoe UI',sans-serif }
+body{ background:#3b6ea5 }
+#pencere{ display:none; position:fixed; top:14%; left:50%; transform:translateX(-50%);
+  width:min(430px,94%); background:#ece9d8; border:3px solid #00458f;
+  border-radius:8px 8px 4px 4px; box-shadow:0 30px 70px rgba(0,0,0,.55);
+  font-size:12.5px; color:#000 }
+#pencere.gorun{ display:block }
+#bas{ background:linear-gradient(90deg,#e23032,#ff7431); color:#fff;
+  padding:8px 12px; font-weight:bold; display:flex; justify-content:space-between }
+#bas .x{ width:20px; height:18px; background:#d94e4e; border:1px solid #fff;
+  border-radius:3px; display:inline-flex; align-items:center; justify-content:center; font-size:10px }
+#gov{ padding:18px 16px 14px }
+#sat{ display:flex; gap:14px; align-items:center }
+#ikon{ width:44px; height:44px; flex:none; border-radius:6px;
+  background:radial-gradient(closest-side at 30% 30%, #ff8b8b, #d40202);
+  display:inline-flex; align-items:center; justify-content:center;
+  color:#fff; font-size:24px; font-weight:900 }
+#gov p{ line-height:1.55; flex:1 }
+#sari{ margin-top:12px; width:100%; height:18px; background:#d9d6c8;
+  border:1px solid #8a867a; padding:2px }
+#kutu{ height:100%; width:0;
+  background:repeating-linear-gradient(90deg,#2e8832 0 9px,#63cc68 9px 13px);
+  transition:width .4s linear }
+#yuzde{ margin-top:5px; font-size:11.5px; color:#555 }
+#girdi{ margin-top:10px; height:92px; overflow-y:auto; background:#fff;
+  border:1px solid #7a9cbb; padding:6px 8px; font:11.5px Consolas,monospace; color:#333 }
+#alt{ padding:8px 12px 12px; display:flex; justify-content:flex-end; gap:8px }
+.btnX{ cursor:default; border:1px solid #003c74; background:linear-gradient(#f2f7ff,#c7d8f0);
+  padding:3px 16px; border-radius:3px; font-size:11.5px }
+#giris{ position:fixed; inset:0; display:flex; align-items:center;
+  justify-content:center; flex-direction:column; gap:18px; background:#3b6ea5; color:#dce8f5;
+  font-family:Tahoma,sans-serif }
+#giris button{ background:#1a4a80; color:#dce8f5; border:1px solid #2a5a90;
+  font-weight:800; padding:14px 30px; font-size:15px; cursor:pointer;
+  border-radius:10px }
+</style>
+</head>
+<body>
+<div id="giris"><button id="basla">TARAMAYI AÇ</button></div>
+<div id="pencere">
+  <div id="bas"><span>Sistem Taraması — Ayrıntılı</span><span class="x">✕</span></div>
+  <div id="gov">
+    <div id="sat">
+      <div id="ikon">!</div>
+      <p><b>Kritik tehdit tespit edildi!</b> Sistem 189 dosyanın içinde tehlike gördü.
+      Temizlenmeden devam edersen bilgisayarın yeniden başlayabilir.</p>
+    </div>
+    <div id="sari"><div id="kutu"></div></div>
+    <div id="yuzde"><b id="pct">0</b>% tamamlandı — <span id="sayi">0</span> dosya incelendi</div>
+    <div id="girdi"></div>
+  </div>
+  <div id="alt">
+    <span class="btnX">Dur</span>
+    <span class="btnX">Temizle</span>
+  </div>
+</div>
+<script>
+document.getElementById('basla').onclick = () => {
+  document.getElementById('giris').style.display = 'none';
+  document.getElementById('pencere').classList.add('gorun');
+  const gir = document.getElementById('girdi');
+  let i = 0, sayi = 0;
+  setInterval(() => {
+    i++;
+    sayi += Math.floor(Math.random() * 9000) + 1200;
+    const p = Math.min(95, i * 9);
+    document.getElementById('kutu').style.width = p + '%';
+    document.getElementById('pct').textContent = p;
+    document.getElementById('sayi').textContent = sayi.toLocaleString('tr-TR');
+    const s = document.createElement('div');
+    s.textContent = 'C:\\Windows\\System32\\drivers\\sih_0x' +
+      Math.floor(Math.random() * 65536).toString(16).padStart(4, '0').toUpperCase() + '.sys — taranıyor';
+    gir.appendChild(s);
+    gir.scrollTop = gir.scrollHeight;
+  }, 700);
+};
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') location.reload();
+  if (!document.getElementById('pencere').classList.contains('gorun') && e.key === 'Enter') document.getElementById('basla').onclick();
+}, true);
+</script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kanca Terminal</title>
+<meta name="description" content="Tam ekran terminal: rasgele tuşa bas, kod akar.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0b0b'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle'%3E%F0%9F%92%BB%3C/text%3E%3C/svg%3E">
+<style>
+html,body{ height:100% } *{ margin:0; padding:0; box-sizing:border-box;font-family:Consolas,monospace }
+body{ background:#0b0b0b; cursor:text }
+#ekr{ position:fixed; inset:0; overflow-y:auto; overflow-x:hidden;
+  font:13.5px/1.62 Consolas,monospace; color:#0f0; padding:12px 10px 60px;
+  white-space:pre-wrap; word-break:break-word; display:none }
+#ekr::after{ content:'_'; color:#0f0; animation:blink 1s steps(1) infinite }
+@keyframes blink{ 50%{ opacity:0 } }
+#ekr.gorun{ display:block }
+#giris{ position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+  background:#0b0b0b; color:#0f0; flex-direction:column; gap:18px }
+#giris h1{ font-size:30px; letter-spacing:1px; font-weight:700 }
+#giris p{ color:#333; font-size:13px }
+#giris button{ background:#0f0; color:#04120a; border:none; font-weight:900;
+  letter-spacing:1px; padding:14px 30px; font-size:15px; cursor:pointer;
+  border-radius:10px; font-family:Consolas,monospace }
+#kapat{ position:fixed; top:0; right:0; background:transparent; color:#222;
+  border:none; padding:4px 12px; font-size:13px; cursor:default; display:none }
+#kapat:hover{ color:#666 }
+</style>
+</head>
+<body>
+<div id="giris">
+  <h1>&gt;_</h1>
+  <button id="basla">TERMİNALİ AÇ</button>
+  <p>tam ekran terminal</p>
+</div>
+<div id="ekr"></div>
+<button id="kapat" title="çıkış">[--]</button>
+<script>
+const B = [
+['/*',
+' * Device driver privated-enterprise hook',
+' */',
+'__init void add_memory_base(unsigned long start, unsigned long size)',
+'{',
+'	unsigned long flags, i;',
+'	struct resource *res;',
+'	int j;',
+'',
+'	if (size == 0) return;',
+'	res = kzalloc(sizeof(struct resource), GFP_KERNEL);',
+'	if (!res) return;',
+'	res->name = "System RAM";',
+'	res->start = start;',
+'	res->end = start + size - 1;',
+'	res->flags = IORESOURCE_MEM | IORESOURCE_BUSY;',
+'	request_resource(&iomem_resource, res);',
+'	for (j = 0; j < boot_pages; j++) {',
+'		if (overlap(page_table[j], start, size)) {',
+'			mark_page_used(j);',
+'			continue;',
+'		}',
+'	}',
+'	printk(KERN_INFO "RAM: %lx-%lx eklendi\n", start, start + size);',
+'}'],
+['#include <sim/kernel.h>',
+'#include <sim/atomic.h>',
+'#include <asm/current.h>',
+'#include <asm/segment.h>',
+'#define DECK_ADDR 0x0000FFFF',
+'static inline unsigned long hash_sys(const char *buf, size_t len)',
+'{',
+'	unsigned long rosa = 0x2C97FA;',
+'	while (len--) {',
+'		rosa ^= (unsigned long)*buf++;',
+'		rosa = (rosa << 3) | (rosa >> (BITS_PER_LONG - 3));',
+'	}',
+'	return rosa;',
+'}',
+'',
+'static int pin_page(unsigned long addr, pgprot_t prot)',
+'{',
+'	struct page *pg;',
+'	int err;',
+'	if (!pfn_valid(__phys_to_pfn(addr)))',
+'		return -EINVAL;',
+'	pg = pfn_to_page(__phys_to_pfn(addr));',
+'	err = vm_map_pages(&pg, 1, prot);',
+'	if (err < 0)',
+'		pr_warn("page map err: %d\n", err);',
+'	return err;',
+'}'],
+['static void schedule_workorb(struct work_struct *work)',
+'{',
+'	queue_work(system_wq, work);',
+'	while (pending && !kthread_should_stop()) {',
+'		msleep_interruptible(10);',
+'		if (fatal_signal_pending(current))',
+'			return;',
+'	}',
+'	flush_workqueue(system_highpri_wq);',
+'	printk_ratelimited(KERN_NOTICE "is sirasi bosaldi\n");',
+'}',
+'',
+'static int probe_counter(struct device *dev, atomic_t *cnt)',
+'{',
+'	unsigned int val = atomic_read(cnt);',
+'	int rc = device_property_read_u32(dev, "probe-size", &val);',
+'	if (rc < 0 || val > BUF_POOL_MAX)',
+'		return rc ? rc : -EOVERFLOW;',
+'	atomic_set(cnt, val);',
+'	dev_dbg(dev, "probe=%u\n", val);',
+'	return 0;',
+'}'],
+['#include <linux/module.h>',
+'#include <linux/interrupt.h>',
+'#include <linux/pci.h>',
+'module_init(deck_init);',
+'module_exit(deck_exit);',
+'MODULE_LICENSE("GPL");',
+'MODULE_DESCRIPTION("scheduler compatibility shim");',
+'',
+'static irqreturn_t deck_isr(int irq, void *sid)',
+'{',
+'	unsigned long marja = *(unsigned long *)sid;',
+'	marja = deck_hash(marja << 4) ^ DECK_SALT;',
+'	if (marja > KERNEL_LIMIT)',
+'		return IRQ_NONE;',
+'	tasklet_schedule(&deck_tasklet);',
+'	return IRQ_HANDLED;',
+'}',
+'',
+'static void deck_tasklet_routine(unsigned long arg)',
+'{',
+'	unsigned long m = arg;',
+'	while (m-- > 0) {',
+'		writeb((unsigned char)(m & 0xFF), DECK_IO_BASE + m);',
+'		if (need_resched())',
+'			cond_resched();',
+'	}',
+'	wmb();',
+'}']
+];
+const BLOKLAR = B;
+let metin = '', i = 0;
+function yenile() {
+  const k = BLOKLAR.slice();
+  for (let q = k.length - 1; q > 0; q--) {
+    const j = Math.floor(Math.random() * (q + 1));
+    [k[q], k[j]] = [k[j], k[q]];
+  }
+  metin = k.map(b => b.join('\n') + '\n\n').join('');
+  i = 0;
+}
+function yaz(n) {
+  if (i >= metin.length - n) yenile();
+  const el = document.getElementById('ekr');
+  el.textContent += metin.slice(i, i + n);
+  i += n;
+  el.scrollTop = el.scrollHeight;
+}
+document.getElementById('basla').onclick = () => {
+  yenile();
+  document.getElementById('giris').style.display = 'none';
+  document.getElementById('ekr').classList.add('gorun');
+  document.getElementById('kapat').style.display = 'block';
+};
+document.getElementById('kapat').onclick = () => location.reload();
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { location.reload(); return; }
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (!document.getElementById('ekr').classList.contains('gorun')) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      document.getElementById('basla').onclick();
+      e.preventDefault();
+      return;
+    }
+    return;
+  }
+  if (e.key.length === 1) { e.preventDefault(); yaz(3); }
+}, true);
+</script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Matrix Yağmuru</title>
+<meta name="description" content="Tam ekran yeşil glyph yağmuru.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23000'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle'%3E%F0%9F%8C%A7%3C/text%3E%3C/svg%3E">
+<style>
+html,body{ height:100% } *{ margin:0; padding:0; box-sizing:border-box }
+body{ background:#000; cursor:none }
+#mk{ position:fixed; inset:0; width:100%; height:100% }
+#giris{ position:fixed; inset:0; display:flex; align-items:center;
+  justify-content:center; flex-direction:column; gap:18px; background:#000; color:#7fff7f }
+#giris h1{ font-size:28px; letter-spacing:2px }
+#giris button{ background:#0f3d16; color:#7fff7f; border:1px solid #2a5c33;
+  font-weight:800; letter-spacing:1px; padding:14px 30px; font-size:15px;
+  cursor:pointer; border-radius:10px; font-family:'Segoe UI',sans-serif }
+#giris p{ color:#145020; font-size:12px }
+</style>
+</head>
+<body>
+<div id="giris">
+  <h1>MATRIX</h1>
+  <button id="basla">GİR</button>
+  <p>tam ekran</p>
+</div>
+<canvas id="mk" style="display:none"></canvas>
+<script>
+const GLYPH = ['\u30A2','\u30B5','\u30C7','\u30BF','\u30AF','\u30B4','\u30EB','\u30DC','A','B','C','D','E','1','2','7','8','9'];
+let ani = null;
+function baslat() {
+  const can = document.getElementById('mk');
+  can.style.display = 'block';
+  const ink = can.getContext('2d');
+  can.width = innerWidth; can.height = innerHeight;
+  const sutun = Math.floor(can.width / 16);
+  const yerler = Array.from({ length: sutun }, () => Math.random() * -300);
+  ink.fillStyle = '#000'; ink.fillRect(0, 0, can.width, can.height);
+  ink.font = '16px monospace';
+  (function zil() {
+    ink.fillStyle = '#00000022'; ink.fillRect(0, 0, can.width, can.height);
+    ink.fillStyle = '#7fff7f';
+    yerler.forEach((y, i) => {
+      const c = GLYPH[Math.floor(Math.random() * GLYPH.length)];
+      ink.fillText(c, i * 16, y);
+      yerler[i] = y > can.height + 40 ? Math.random() * -320 : y + 17;
+    });
+    ani = requestAnimationFrame(zil);
+  })();
+}
+document.getElementById('basla').onclick = () => {
+  document.getElementById('giris').style.display = 'none';
+  document.body.style.cursor = 'none';
+  baslat();
+};
+addEventListener('resize', () => { if (ani) baslat(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') location.reload();
+}, true);
+</script>
+</body>
+</html>

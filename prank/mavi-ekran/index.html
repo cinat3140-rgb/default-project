@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kritik Durum</title>
+<meta name="description" content="Tam ekran sahte mavi duraklama ekranı.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2300428f'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle'%3E%F0%9F%AB%A4%3C/text%3E%3C/svg%3E">
+<style>
+html,body{ height:100% } *{ margin:0; padding:0; box-sizing:border-box;
+  font-family:'Segoe UI',system-ui,sans-serif }
+body{ background:#00428f }
+#kutu{ display:none; position:fixed; inset:0;
+  flex-direction:column; padding:12vh 9vw 0; color:#fff; cursor:none }
+#kutu.gorun{ display:flex }
+#guz{ font-size:120px; line-height:1; font-weight:300; letter-spacing:2px }
+#mes{ margin-top:5vh; font-size:24px; font-weight:350; line-height:1.5; max-width:760px }
+#ok{ margin-top:4.5vh; font-size:15.5px; font-weight:350; opacity:.95 }
+#bar{ margin-top:4.5vh; width:min(320px,56vw); height:15px;
+  border:1px solid rgba(255,255,255,.75); padding:2px }
+#dolor{ height:100%; width:0; background:#fff; transition:width .8s ease }
+#not{ margin-top:auto; margin-bottom:9vh; font-size:13px; opacity:.55;
+  display:flex; justify-content:space-between }
+#giris{ position:fixed; inset:0; display:none; align-items:center;
+  justify-content:center; flex-direction:column; gap:18px; background:#00428f; color:#cfe2ff;
+  font-family:'Segoe UI',sans-serif }
+#giris button{ background:#0a2a5e; color:#cfe2ff; border:1px solid #2a4a8e;
+  font-weight:800; padding:14px 30px; font-size:15px; cursor:pointer;
+  border-radius:10px }
+#giris h1{ font-size:90px; font-weight:300 }
+</style>
+</head>
+<body>
+<div id="kutu">
+  <div id="guz">:(</div>
+  <div id="mes">Cihazınızda sorun gördük ve düzeltilmesi gerekiyor.</div>
+  <div id="ok">Tamamlanma yüzdesine göre yeniden başlatılacak</div>
+  <div id="bar"><div id="dolor"></div></div>
+  <div id="not"><span>Dur kodu: 0x0000D1</span><span>derleme 40</span></div>
+</div>
+<div id="giris">
+  <h1>:(</h1>
+  <button id="basla">BAŞLAT</button>
+</div>
+<script>
+function basla() {
+  document.getElementById('kutu').classList.add('gorun');
+  const d = document.getElementById('dolor');
+  let p = 0;
+  setInterval(() => {
+    p = Math.min(30, p + Math.floor(Math.random() * 6));
+    d.style.width = p + '%';
+  }, 800);
+}
+document.getElementById('basla').onclick = basla;
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') location.reload();
+  if (!document.getElementById('kutu').classList.contains('gorun') && e.key === 'Enter') basla();
+}, true);
+</script>
+</body>
+</html>
