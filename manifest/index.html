@@ -165,6 +165,43 @@ body{ background:
   border-radius:14px; padding:14px 18px; text-align:center }
 .sayi b{ display:block; font-size:22px; color:var(--pink) }
 .sayi small{ color:var(--met3); font-size:10.5px; letter-spacing:.8px; font-weight:800 }
+
+/* ═══ ANİMASYON KATMANI ═══ */
+@keyframes yukSel{ from{ opacity:0; transform:translateY(16px) } to{ opacity:1; transform:none } }
+@keyframes nabiz{ 0%,100%{ box-shadow:0 6px 18px rgba(236,72,153,.35); transform:scale(1) }
+  50%{ box-shadow:0 6px 30px rgba(236,72,153,.6); transform:scale(1.07) } }
+@keyframes zipla{ 0%,100%{ transform:translateY(0) } 50%{ transform:translateY(-7px) } }
+@keyframes sallan{ 0%,100%{ transform:translateX(0) } 20%{ transform:translateX(-7px) }
+  40%{ transform:translateX(7px) } 60%{ transform:translateX(-4px) } 80%{ transform:translateX(4px) } }
+@keyframes gelisi{ from{ opacity:0; transform:translateY(14px) scale(.98) } to{ opacity:1; transform:none } }
+
+.nav .ic{ animation:nabiz 2.6s ease-in-out infinite }
+.navmenu button{ transition:all .25s var(--ease, ease) }
+.navmenu button:hover{ color:var(--met); transform:translateY(-2px) }
+.p-sayfa{ opacity:0; transform:translateY(10px) }
+.p-sayfa.gorun{ animation:yukSel .45s ease both }
+.p-sayfa.gorun .neden{ animation:yukSel .5s ease both }
+.p-sayfa.gorun .neden:nth-child(2){ animation-delay:.12s }
+.p-sayfa.gorun .neden:nth-child(3){ animation-delay:.24s }
+.p-sayfa.gorun .sayi{ animation:yukSel .5s ease both }
+.p-sayfa.gorun .sayi:nth-child(2){ animation-delay:.1s }
+.p-sayfa.gorun .sayi:nth-child(3){ animation-delay:.2s }
+.p-sayfa.gorun .kart-tum{ animation:yukSel .45s .15s ease both }
+.neden:hover{ transform:translateY(-5px); border-color:var(--pink) }
+.neden{ transition:transform .25s ease, border-color .25s ease }
+.neden:hover .ik{ animation:zipla .55s ease }
+.git{ transition:transform .2s ease, box-shadow .2s ease }
+.git:hover{ transform:translateY(-2px); box-shadow:0 12px 30px rgba(236,72,153,.45) }
+.r-sat{ animation:gelisi .4s ease both }
+.hata.sallan{ animation:sallan .5s ease }
+.k{ transition:transform .25s ease, border-color .25s ease }
+.k:hover{ transform:translateY(-3px); border-color:var(--pink) }
+.bar i{ transition:width .9s cubic-bezier(.2,.9,.25,1) }
+@media (prefers-reduced-motion: reduce){
+  .p-sayfa.gorun, .p-sayfa.gorun .neden, .p-sayfa.gorun .sayi, .p-sayfa.gorun .kart-tum,
+  .r-sat, .nav .ic{ animation:none !important }
+  .p-sayfa{ opacity:1; transform:none }
+}
 .iph a{ color:var(--pink); font-weight:900 }
 .altsat{ margin-top:26px; padding-top:14px; border-top:1px solid var(--cizgi);
   font-size:10.5px; color:var(--met3); text-align:center; line-height:1.7 }
@@ -458,8 +495,11 @@ document.querySelectorAll('.sekme button').forEach(b => b.onclick = () => {
 });
 
 function hataGoster(t) {
-  hataEl.style.display = 'block'; hataEl.textContent = t;
+  hataEl.style.display = 'block'; hataEl.innerHTML = t;
   sonucEl.style.display = 'none';
+  hataEl.classList.remove('sallan');
+  void hataEl.offsetWidth;
+  hataEl.classList.add('sallan');
 }
 
 gitB.onclick = async () => {
@@ -539,11 +579,35 @@ function git(s) {
     b.classList.toggle('on', b.dataset.s === s));
   window.scrollTo({ top: 0 });
 }
+function git(s) {
+  document.querySelectorAll('.p-sayfa').forEach(x => x.classList.remove('gorun'));
+  const hedef = document.getElementById(s);
+  hedef.classList.add('gorun');
+  document.querySelectorAll('.navmenu button').forEach(b =>
+    b.classList.toggle('on', b.dataset.s === s));
+  window.scrollTo({ top: 0 });
+  if (s === 'pHome') sayiSay();
+}
+function sayiSay() {
+  nasilSay(document.getElementById('smK'), adet, '');
+  nasilSay(document.getElementById('smR'), 36, '+');
+  nasilSay(document.getElementById('smM'), 4, '');
+}
+function nasilSay(el, son, ek) {
+  const t0 = performance.now(), sure = 800;
+  function adim(t) {
+    const p = Math.min(1, (t - t0) / sure);
+    el.textContent = Math.round(son * (1 - Math.pow(1 - p, 3))) + ek;
+    if (p < 1) requestAnimationFrame(adim);
+  }
+  requestAnimationFrame(adim);
+}
 document.querySelectorAll('.navmenu button').forEach(b =>
   b.onclick = () => git(b.dataset.s));
 document.getElementById('gKunye').onclick = () => git('pKunye');
 document.getElementById('gRadar').onclick = () => git('pRadar');
 document.getElementById('smK').textContent = adet;
+sayiSay();
 
 document.querySelectorAll('.mk-sat a').forEach(() => {});
 
@@ -666,7 +730,7 @@ sayacYaz();
 
 const rliste = document.getElementById('rliste');
 async function radar(p) {
-  rliste.innerHTML = '<div class="r-sat"><b>radar çevir siyor…</b></div>';
+  rliste.innerHTML = '<div class="r-sat"><b>radar dönüyor…</b></div>';
   try {
     const q = p ? `&platform=${p}` : '';
     const r = await fetch(`https://www.gamerpower.com/api/giveaways?type=game&sort-by=popularity${q}`);
@@ -677,6 +741,7 @@ async function radar(p) {
     for (const o of liste) {
       const sat = document.createElement('div');
       sat.className = 'r-sat';
+      sat.style.animationDelay = (rliste.children.length * 55) + 'ms';
       const sure = o.end_date ? ' · son: ' + o.end_date.slice(0, 10) : '';
       sat.innerHTML = (o.thumbnail ? `<img src="${escHtml(o.thumbnail)}" alt="">` : '') +
         `<div class="bil"><b>${escHtml((o.title || '').replace(' Giveaway', ''))}</b>` +
