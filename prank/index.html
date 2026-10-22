@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Prank Merkezi — Sevimli Şaka Ekranları</title>
-<meta name="description" content="Hacker simulator masaüstü, matrix yağmuru, sahte sistem güncellemesi, mavi ekran, sahte virüs taraması. Şakaların hepsi zararsız ekranda oynayan animasyonlar.">
+<meta name="description" content="Hacker typer terminal ekranı, matrix yağmuru, sahte sistem güncellemesi, mavi ekran, sahte virüs taraması. Şakaların hepsi zararsız ekranda oynayan animasyonlar.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230e1420'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle'%3E%F0%9F%8E%AD%3C/text%3E%3C/svg%3E">
 <style>
 :root{ --ark:#0e1420; --kart:#161d2e; --kart2:#101726; --cizgi:#242e44;
@@ -42,6 +42,22 @@ button{ position:relative; overflow:hidden }
 
 .tam{ display:none; position:fixed; inset:0; z-index:999 }
 .tam.gorun{ display:block }
+
+#ftHacker{ background:#0b0b0b; overflow:hidden; display:none; cursor:text }
+#ftHacker.gorun{ display:block }
+#tBar{ position:absolute; top:0; left:0; right:0; height:38px; flex:none;
+  background:#111; border-bottom:1px solid #2a2a2a; display:flex; align-items:center;
+  gap:14px; padding:0 14px; font-size:12px; color:#9ca3af; z-index:5 }
+#tBar .tlog{ font-weight:900; letter-spacing:1px; color:#4ade80 }
+#tKapat{ margin-left:auto; cursor:pointer; background:#1b1b1b; color:#d1d5db;
+  border:1px solid #333; border-radius:8px; padding:6px 14px; font-size:11.5px }
+#tEkr{ position:absolute; inset:38px 0 0 0; overflow-y:auto; overflow-x:hidden;
+  font:13.5px/1.62 Consolas,'Courier New',monospace; color:#e5e7eb;
+  padding:12px 10px 60px; white-space:pre-wrap; }
+#tEkr .Cmt{ color:#6a9955 }
+#tEkr .gt{ color:#4ade80 }
+#tEkr::after{ content:'_'; color:#4ade80; animation:blink 1s steps(1) infinite }
+@keyframes blink{ 50%{ opacity:0 } }
 
 #ftMatrix{ background:#000 }
 #mxCan{ position:absolute; inset:0; width:100%; height:100% }
@@ -96,88 +112,6 @@ button{ position:relative; overflow:hidden }
 #vAlt{ padding:8px 12px 12px; display:flex; justify-content:flex-end; gap:8px }
 .btnXP{ cursor:default; border:1px solid #003c74; background:linear-gradient(#f2f7ff,#c7d8f0);
   padding:3px 16px; border-radius:3px; font-size:11.5px }
-
-#ftHacker{ background:#07090d; overflow:hidden }
-#simDesk{ position:absolute; inset:0; display:flex; flex-direction:column }
-#simArka{ position:absolute; inset:0; width:100%; height:100%; opacity:.22; z-index:0 }
-#simGov::before{ content:''; position:absolute; inset:0; z-index:1;
-  background:
-    radial-gradient(ellipse at 22% 18%, rgba(52,211,153,.08), transparent 55%),
-    radial-gradient(ellipse at 80% 85%, rgba(56,189,248,.05), transparent 50%),
-    repeating-linear-gradient(0deg, transparent 0 47px, rgba(126,231,135,.05) 47px 48px),
-    repeating-linear-gradient(90deg, transparent 0 47px, rgba(126,231,135,.05) 47px 48px) }
-#simGov::after{ content:''; position:absolute; inset:0; z-index:1; pointer-events:none;
-  background:repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 2px, transparent 2px 4px);
-  mix-blend-mode:overlay }
-#simBar{ height:38px; flex:none; background:#11151c; border-bottom:1px solid #1d232e;
-  display:flex; align-items:center; gap:14px; padding:0 14px; font-size:12px }
-#simBar .slog{ font-weight:900; letter-spacing:1px; color:#7ee787 }
-#simUyari{ color:#8c93a0 }
-#simKapat{ margin-left:auto; cursor:pointer; background:#1a2130; color:#d6dae2;
-  border:1px solid #2b3244; border-radius:8px; padding:6px 14px; font-size:11.5px }
-#simGov{ flex:1; position:relative; overflow:hidden }
-#simYazi{ display:none; position:absolute; left:26px; top:64px; bottom:20px;
-  width:min(560px,42vw); overflow:hidden; font:15px/1.6 Consolas,monospace;
-  color:#c8d2cc; white-space:pre-wrap; word-break:break-all; opacity:.88 }
-#simYazi.acik{ display:block }
-#simIkoner{ position:absolute; right:12px; top:12px; display:flex;
-  flex-direction:column; gap:10px; z-index:20 }
-.simIk{ width:84px; padding:9px 4px; cursor:pointer; background:#11151ccc;
-  border:1px solid #232b3a; border-radius:12px; text-align:center; color:#d6dae2; }
-.simIk:hover{ border-color:#5b6a88 }
-.simIk .gi{ font-size:22px; display:block }
-.simIk span{ display:block; font-size:9.5px; margin-top:4px; color:#98a2b3 }
-.simWin{ position:absolute; width:430px; background:#131822; border:1px solid #27303f;
-  border-radius:10px; box-shadow:0 22px 48px rgba(0,0,0,.55); display:none;
-  flex-direction:column; z-index:10; overflow:hidden }
-.simWin.gorun{ display:flex }
-.simBas{ flex:none; height:32px; background:#1a2130; display:flex; align-items:center;
-  gap:10px; padding:0 10px; font-size:11.5px; color:#aab3c2; cursor:move; user-select:none }
-.simBas .basIkon{ font-size:13px }
-.simBas .basX{ margin-left:auto; cursor:pointer; width:22px; height:18px;
-  background:#3a2430; border:1px solid #5a3344; border-radius:4px;
-  display:inline-flex; align-items:center; justify-content:center; font-size:10px }
-.simBas .basX:hover{ background:#7d2f3f }
-.simGov{ flex:1; overflow:auto; padding:12px; font-size:11.5px; line-height:1.6 }
-.simGov .simLog{ height:118px; overflow-y:auto; background:#0c1017; border:1px solid #232b3a;
-  border-radius:6px; padding:7px; font:10.5px Consolas,monospace; color:#9fb0a6 }
-.simGov .simLog b{ color:#7ee787 }
-.simBtn{ cursor:pointer; border:none; border-radius:6px; padding:7px 14px;
-  font-size:11px; font-weight:800; color:#04120a;
-  background:linear-gradient(135deg,#7ee787,#4ade80) }
-.simBtn.ikinci{ background:#1e2532; color:#aab3c2; border:1px solid #2b3446 }
-.cuzdan{ float:right; background:#0c1017; border:1px solid #2b3446; border-radius:8px;
-  padding:8px 12px; text-align:center }
-.cuzdan b{ display:block; font-size:16px; color:#ffd75f; font-family:Consolas,monospace }
-.cuzdan small{ color:#8c93a0; font-size:9.5px }
-.sfrGiris{ display:flex; gap:6px; margin:8px 0 }
-.sfrGiris input{ flex:1; min-width:0; background:#0c1017; border:1px solid #232b3a;
-  color:#d6dae2; border-radius:6px; padding:6px 9px; font-size:11px }
-.sfrDurum{ margin-top:8px; font-size:11px; color:#98a2b3 }
-.sfrDurum.tamam{ color:#7ee787; font-weight:800 }
-.sfrTablo{ margin-top:8px; border:1px solid #232b3a; border-radius:6px; overflow:hidden }
-.sfrTablo .k{ background:#0c1017; display:flex; flex-wrap:wrap; gap:1px; padding:5px }
-.sfrTablo .t{ width:calc(12.5% - 1px); aspect-ratio:1; background:#0f1520;
-  border-radius:3px; display:flex; align-items:center; justify-content:center;
-  font:9.5px Consolas,monospace; color:#64748b }
-.sfrTablo .t.bul{ background:#123d22; color:#7ee787 }
-.nukTablo{ display:grid; grid-template-columns:repeat(6,1fr); gap:4px;
-  font:10.5px Consolas,monospace; color:#7ee787 }
-.nukTablo div{ background:#0c1017; border:1px solid #232b3a; border-radius:4px;
-  padding:6px 4px; text-align:center }
-.nukTablo div span{ display:block; color:#64748b; font-size:8.5px; margin-bottom:3px }
-.simPasif{ position:absolute; z-index:30; width:330px; background:#0d1117;
-  border:1px solid #2c5138; border-radius:10px; box-shadow:0 18px 40px rgba(0,0,0,.6);
-  overflow:hidden; display:none; animation:yukSel .25s ease both }
-.simPasif.gorun{ display:block }
-.simPasif .pGov{ padding:18px 16px; font-size:12.5px; text-align:center; color:#c9d4cd }
-.simPasif .pGov.kirmizi{ color:#ff6b6b; font-weight:800; font-size:15px }
-.pGov.yesil{ color:#7ee787; font-weight:800; font-size:15px }
-.pGov .sayi{ font-size:42px; font-weight:300; color:#fff; margin:8px 0 }
-.pGov .bar{ height:10px; background:#101822; border:1px solid #23303f; border-radius:6px;
-  margin-top:12px; overflow:hidden }
-.pGov .bar i{ display:block; height:100%; width:0; background:#7ee787; transition:width .5s ease }
-.pGov small{ display:block; margin-top:10px; color:#64748b; font-size:10px }
 </style>
 </head>
 <body>
@@ -185,12 +119,12 @@ button{ position:relative; overflow:hidden }
 <div class="kabinet">
   <div class="hero">
     <h1>Arkadaşını <em>Şok Et</em></h1>
-    <p>Bir hediye: masaüstü hacker simülatörü, matrix yağmuru, sahte güncelleme, mavi ekran ve sahte virüs. Sahneye geç, ESC ile bitir. Kimseye zararı yok.</p>
+    <p>Hacker typer terminali, matrix yağmuru, sahte güncelleme, mavi ekran ve sahte virüs. Sahneye geç, ESC ile bitir. Kimseye zararı yok.</p>
   </div>
 
   <div class="pranklar">
-    <div class="prank"><div class="ik">🖥️</div><b>Hacker Simülatörü</b>
-      <small>Tam ekran masaüstü: Bitcoin kazar, şifre kırar, uydu izler. Rakam tuşları pasif pencereler açar.</small>
+    <div class="prank"><div class="ik">💻</div><b>Hacker Typer</b>
+      <small>Tam ekran terminal — tuşa bastıkça yığınla C kodu senin parmaklarından akıyor gibi olur.</small>
       <button data-p="hacker">BAŞLAT</button></div>
     <div class="prank"><div class="ik">🌧️</div><b>Matrix Yağmuru</b>
       <small>Yeşil glyph yağmuru — filmden hatırladığın sahne.</small>
@@ -213,111 +147,12 @@ button{ position:relative; overflow:hidden }
 </div>
 
 <div class="tam" id="ftHacker">
-  <div id="simDesk">
-    <canvas id="simArka"></canvas>
-    <div id="simBar">
-      <span class="slog">☠ KANKA HACK</span>
-      <span id="simUyari">Sadece şaka, kanka! Bu gerçek bir hacker programı değildir 💻</span>
-      <button id="simKapat">✕ GİZLE</button>
-    </div>
-    <div id="simGov">
-      <div id="simIkoner">
-        <button class="simIk" data-w="wCoin"><span class="gi">₿</span><span>Bitcoin Kaz</span></button>
-        <button class="simIk" data-w="wSifre"><span class="gi">🔓</span><span>Şifre Kır</span></button>
-        <button class="simIk" data-w="wNukleer"><span class="gi">☢</span><span>Santral</span></button>
-        <button class="simIk" data-w="wInterpol"><span class="gi">🌐</span><span>Interpol</span></button>
-        <button class="simIk" data-w="wVeri"><span class="gi">💾</span><span>Veri İndir</span></button>
-        <button class="simIk" data-w="wUydu"><span class="gi">📡</span><span>Uydu İzle</span></button>
-      </div>
-      <div id="simYazi"></div>
-
-      <div class="simWin" id="wCoin" style="left:6%; top:10%; width:470px">
-        <div class="simBas"><span class="basIkon">₿</span>BitCrane — BTC Havzu
-          <span class="basX">✕</span></div>
-        <div class="simGov">
-          <div class="cuzdan"><b id="coinCuzdan">$39.664</b><small>Cüzdan BTC8 · ≈</small></div>
-          <div class="simLog" id="coinLog"></div>
-          <table style="width:100%; margin-top:10px; border-collapse:collapse; font:10.5px Consolas,monospace">
-            <thead><tr style="color:#64748b">
-              <th style="text-align:left; padding:4px">ASICs</th><th>Kabul</th>
-              <th>Red</th><th>GH/s 5s</th></tr></thead>
-            <tbody style="color:#9fb0a6">
-              <tr><td style="padding:4px">1</td><td align="center">32442</td>
-                <td align="center">354</td><td align="center">353.54 Gh/s</td></tr>
-              <tr><td style="padding:4px">32</td><td align="center">56954</td>
-                <td align="center">8763</td><td align="center">34.99 Gh/s</td></tr>
-              <tr><td style="padding:4px">Sum</td><td align="center">8345345</td>
-                <td align="center">32122</td><td align="center">~153 Gh/s</td></tr>
-            </tbody>
-          </table>
-          <div style="margin-top:10px; display:flex; gap:8px; align-items:center">
-            <button class="simBtn" id="coinBtn">Kazmaya başla</button>
-            <span id="coinDurum" style="color:#8c93a0; font-size:11px">Madenci: DURDU</span>
-          </div>
-          <div class="bar" style="height:10px; margin-top:10px"><i id="coinBar"></i></div>
-        </div>
-      </div>
-
-      <div class="simWin" id="wSifre" style="left:26%; top:16%; width:430px">
-        <div class="simBas"><span class="basIkon">🔓</span>Şifre Kırıcı
-          <span class="simTabSec" style="display:flex; gap:6px; margin-left:10px">
-            <b style="color:#7ee787">Crack</b><i style="color:#556">Sıfırla</i></span>
-          <span class="basX">✕</span></div>
-        <div class="simGov">
-          <div style="display:flex; gap:18px; font-size:11.5px; color:#98a2b3">
-            <div>Hedef: <b style="color:#d6dae2">23.86.111.0</b></div>
-            <div>Veritabanı: <b style="color:#d6dae2">Kullanıcı tablosu / Admin</b></div>
-          </div>
-          <div class="sfrGiris">
-            <input id="sfrGiris" placeholder="girilen şifre falan flan">
-            <button class="simBtn" id="sfrBtn">Saldır</button>
-            <button class="simBtn ikinci" id="sfrSifirla">Sıfırla</button>
-          </div>
-          <div class="sfrTablo"><div class="k" id="sfrGrid"></div></div>
-          <div class="sfrDurum" id="sfrDurum">Durum: Beklemede</div>
-          <div style="margin-top:6px; color:#64748b; font-size:9.5px">
-            Yasal uyarı: Password Cracker'ı zararlı ve yasa dışı faaliyetlerde kullanmak
-            kesinlikle yasaktır ve cezası ölümdür!..</div>
-        </div>
-      </div>
-
-      <div class="simWin" id="wNukleer" style="left:44%; top:8%; width:420px">
-        <div class="simBas"><span class="basIkon">☢</span>REACTOR-4 Kontrol <span class="basX">✕</span></div>
-        <div class="simGov"><div class="nukTablo" id="nukTablo"></div>
-          <div style="margin-top:8px; color:#8c93a0; font-size:10.5px">
-            Değerler göstermelik; santral de tamamen şaka.</div></div>
-      </div>
-
-      <div class="simWin" id="wInterpol" style="left:10%; top:46%; width:430px">
-        <div class="simBas"><span class="basIkon">🌐</span>Interpol — En Çok Arananlar
-          <span class="basX">✕</span></div>
-        <div class="simLog" id="intList" style="height:150px; margin-top:10px"></div>
-      </div>
-
-      <div class="simWin" id="wVeri" style="left:34%; top:40%; width:360px">
-        <div class="simBas"><span class="basIkon">💾</span>Kişisel Veriler <span class="basX">✕</span></div>
-        <div class="simGov" id="verGov">
-          <div style="color:#7ee787; font-weight:800; font-size:12.5px">İndiriliyor</div>
-          <div class="bar"><i id="verBar"></i></div>
-          <div id="verYuzde" style="margin-top:6px; color:#8c93a0">0% — dosya: -</div>
-        </div>
-      </div>
-
-      <div class="simWin" id="wUydu" style="left:55%; top:34%; width:330px">
-        <div class="simBas"><span class="basIkon">📡</span>Uydu Bağlantısı <span class="basX">✕</span></div>
-        <div class="simGov" id="uydGov">
-          <div style="color:#7ee787; font-weight:800; font-size:12.5px">Bağlantı Kuruluyor</div>
-          <div style="margin-top:8px; font:12px Consolas,monospace; color:#8c93a0">
-            LAT <b id="uydLat" style="color:#d6dae2">--</b> · LON <b id="uydLon" style="color:#d6dae2">--</b></div>
-          <div style="display:flex; gap:4px; margin-top:8px">
-            <i style="width:9px;height:14px;background:#7ee787"></i>
-            <i style="width:9px;height:14px;background:#7ee787"></i>
-            <i style="width:9px;height:14px;background:#7ee787"></i>
-            <i style="width:9px;height:14px;background:#334155"></i></div>
-        </div>
-      </div>
-    </div>
+  <div id="tBar">
+    <span class="tlog">root@kanka:~$</span>
+    <span>rasgele tuşlara bas — kod senin yazdığın gibi hızlı dağılır</span>
+    <button id="tKapat">✕ ÇIK (ESC)</button>
   </div>
+  <div id="tEkr"></div>
 </div>
 
 <div class="tam" id="ftMatrix">
@@ -339,7 +174,7 @@ button{ position:relative; overflow:hidden }
     <div id="bMes">Cihazınızda sorun gördük ve düzeltilmesi gerekiyor.</div>
     <div id="bOk">Tamamlanma yüzdesine göre yeniden başlatılacak</div>
     <div id="bBar"><div id="bDolor"></div></div>
-    <div id="bNot"><span>Dur kodu: 0x0000D1</span><span>siyah keşif: derleme 40</span></div>
+    <div id="bNot"><span>Dur kodu: 0x0000D1</span><span>derleme 40</span></div>
   </div>
 </div>
 
@@ -350,7 +185,7 @@ button{ position:relative; overflow:hidden }
       <div id="vSatr">
         <div id="vIkon">!</div>
         <p><b>Kritik tehdit tespit edildi!</b> Sistem 189 dosyanın içinde tehlike gördü.
-        Temizlenmeden devam edersen bilgisayarın yeniden başlayabilir (soğan halkasında).</p>
+        Temizlenmeden devam edersen bilgisayarın yeniden başlayabilir.</p>
       </div>
       <div id="vSari"><div id="vSariBox"></div></div>
       <div id="vYuzde"><b id="vPct">0</b>% tamamlandı — <span id="vSayi">0</span> dosya incelendi</div>
@@ -369,15 +204,6 @@ function gizlil(t) {
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
-function hsLog(id, metin, renk) {
-  const el = document.getElementById(id);
-  const d = document.createElement('div');
-  d.innerHTML = renk ? '<b>' + renk + '</b> ' + metin : metin;
-  el.appendChild(d);
-  el.scrollTop = el.scrollHeight;
-  while (el.children.length > 24) el.removeChild(el.firstChild);
-}
-
 let aktif = null, mxAni = null, updSayac = null, bsodSayac = null, virSayac = null;
 
 function tamAc(id, basla) {
@@ -389,48 +215,21 @@ function tamAc(id, basla) {
 }
 function tamKapat() {
   document.querySelectorAll('.tam').forEach(t => t.classList.remove('gorun'));
-  document.querySelectorAll('.simWin').forEach(w => w.classList.remove('gorun'));
-  document.querySelectorAll('.simPasif').forEach(w => w.remove());
   if (mxAni) { cancelAnimationFrame(mxAni); mxAni = null; }
-  if (simArAni) { cancelAnimationFrame(simArAni); simArAni = null; }
   clearInterval(updSayac); clearInterval(bsodSayac); clearInterval(virSayac);
   updSayac = bsodSayac = virSayac = null;
-  simDizi.forEach(k => clearInterval(k));
-  simDizi = [];
-  const yaz = document.getElementById('simYazi');
-  yaz.classList.remove('acik');
-  yaz.textContent = '';
   aktif = null;
-}
-let simDizi = [], simArAni = null;
-const simArGlyph = ['\u30A2','\u30B5','\u30C7','\u30BF','\u30AF','\u30B4','\u30EB','\u30DC','7','3','0','F','A'];
-function simArkaBasla() {
-  const can = document.getElementById('simArka');
-  const ink = can.getContext('2d');
-  can.width = innerWidth; can.height = innerHeight;
-  const sutun = Math.floor(can.width / 19);
-  const yerler = Array.from({ length: sutun }, () => Math.random() * -280);
-  ink.fillStyle = '#07090d'; ink.fillRect(0, 0, can.width, can.height);
-  ink.font = '14px monospace';
-  (function damla() {
-    ink.fillStyle = '#07090d33'; ink.fillRect(0, 0, can.width, can.height);
-    yerler.forEach((y, i) => {
-      ink.fillStyle = Math.random() < .08 ? '#d9ffe9' : '#45d777';
-      ink.fillText(simArGlyph[Math.floor(Math.random() * simArGlyph.length)], i * 19, y);
-      yerler[i] = y > can.height + 60 ? Math.random() * -320 : y + 15;
-    });
-    simArAni = requestAnimationFrame(damla);
-  })();
 }
 
 document.querySelectorAll('.prank button').forEach(b => b.onclick = () => {
   const p = b.dataset.p;
-  if (p === 'hacker') tamAc('ftHacker', simAc);
+  if (p === 'hacker') tamAc('ftHacker', typerBasla);
   else if (p === 'matrix') tamAc('ftMatrix', matrixBasla);
   else if (p === 'update') tamAc('ftU', updateBasla);
   else if (p === 'bsod') tamAc('ftB', bsodBasla);
   else if (p === 'virus') tamAc('ftV', virusBasla);
 });
+document.getElementById('tKapat').onclick = () => tamKapat();
 document.addEventListener('click', e => {
   const b = e.target.closest('button');
   if (!b) return;
@@ -444,257 +243,102 @@ document.addEventListener('click', e => {
   setTimeout(() => d.remove(), 650);
 });
 
-/* masaüstü simülatörü */
-const simKod = [
-'async function rootAccess(node, depth = 8) {',
-'  const stack = await probe(node);',
-'  if (depth <= 0 || !stack) return null;',
-'  for (const fork of stack) {',
-'    const hit = await rootAccess(fork, depth - 1);',
-'    if (hit) return hit;',
-'  }',
-'  return stack.core || null;',
+const TYPER = [
+'/*',
+' * CPU rozları dahil çekirdek erişim katmanı',
+' * Kimlik: 0x2C97FA (peşin sistem',
+' */',
+'#include <sim/kernel.h>',
+'#include <sim/atomic.h>',
+'#include <linux/plan.h>',
+'#include <asm/current.h>',
+'#include <asm/segment.h>',
+'#include <asm/io.h>',
+'#include <asm/page.h>',
+'',
+'__init void add_memory_base(unsigned long start, unsigned long size)',
+'{',
+'	unsigned long flags, i;',
+'	struct resource *res;',
+'	int j;',
+'',
+'	if (size == 0) return;',
+'',
+'	res = kzalloc(sizeof(struct resource), GFP_KERNEL);',
+'	if (!res) return;',
+'',
+'	res->name = "System RAM";',
+'	res->start = start;',
+'	res->end = start + size - 1;',
+'	res->flags = IORESOURCE_MEM | IORESOURCE_BUSY;',
+'	request_resource(&iomem_resource, res);',
+'',
+'	for (j = 0; j < boot_pages; j++) {',
+'		if (overlap(page_table[j], start, size)) {',
+'			mark_page_used(j);',
+'			continue;',
+'		}',
+'	}	',
+'',
+'	printk(KERN_INFO "RAM: %lx-%lx eklendi\n", start, start + size);',
 '}',
-'function scramble(payload, key) {',
-'  const tail = [];',
-'  for (const block of payload) {',
-'    tail.push(mix(hash(block), key));',
-'  }',
-'  return tail.join(\':\');',
+'',
+'static inline unsigned long hash_sys(const char *buf, size_t len)',
+'{',
+'	unsigned long rosa = 0x2C97FA;',
+'	while (len--) {',
+'		hash ^= (unsigned long)*buf++;',
+'		hash = (hash << 3) | (hash >> (BITS_PER_LONG - 3));',
+'	}',
+'	return hash;',
 '}',
-'setInterval(() => { purge(zulu); orbitals.forEach(o => o.ping(tick)); }, 250);'
+'',
+'#define KANKA_ADDR	                      0x0000FFFF',
+'static void schedule_workorb(struct work_struct *work)',
+'{',
+'	queue_work(system_wq, work);',
+'	while (pending && !kthread_should_stop()) {',
+'		msleep_interruptible(10);',
+'		if (fatal_signal_pending(current))',
+'			return;',
+'	}',
+'	flush_workqueue(system_highpri_wq);',
+'	printk_ratelimited(KERN_NOTICE "iş sırası boşaldi\n");',
+'}',
+'',
+'module_init(kanka_init);',
+'module_exit(kanka_exit);',
+'MODULE_LICENSE("GPL");',
+'MODULE_DESCRIPTION("sadece şaka amaçlı çekirdek simülasyonu");'
 ];
-let simYazI = 0;
-function simYazEkle(n) {
-  const el = document.getElementById('simYazi');
-  el.classList.add('acik');
+let typerI = 0;
+function typerBasla() {
+  const el = document.getElementById('tEkr');
+  el.innerHTML = '<span class="gt">[bağlantı kuruldu] sade terminal — şaka modu aktif</span>\n' +
+    '<span class="gt">root@kanka:~#</span> ';
+  typerI = 0;
+}
+function typerYaz(n) {
+  const el = document.getElementById('tEkr');
+  let ekle = '';
   for (let i = 0; i < n; i++) {
-    el.textContent += simKod[simYazI % simKod.length] + '\n';
-    simYazI++;
+    let sat = TYPER[typerI % TYPER.length];
+    typerI++;
+    if (sat.startsWith('#')) ekle += '<span class="gt">' + gizlil(sat) + '</span>\n';
+    else if (sat.startsWith('/*') || sat.startsWith(' *') || sat.startsWith(' */'))
+      ekle += '<span class="Cmt">' + gizlil(sat) + '</span>\n';
+    else ekle += gizlil(sat) + '\n';
   }
+  el.innerHTML += ekle;
   el.scrollTop = el.scrollHeight;
 }
-const PASIFLAR = [
-  { bas: 'Erişim', gov: '<div class="pGov kirmizi">🚫 Erişim reddedildi!</div>' },
-  { bas: 'Erişim', gov: '<div class="pGov yesil">✅ İzin verildi!</div>' },
-  { bas: 'Yok Etme', gov: '<div class="pGov">Kendi kendini yok etme<div class="sayi" data-say="600">600</div>' +
-      '<div class="bar"><i data-bar></i></div><small id="yokNot">Sıraya girildi (şaka: hiçbir şey patlamaz)</small></div>' },
-  { bas: 'Nöral Ağ', gov: '<div class="pGov">Nöral Bağlantı Takipçisi<div class="bar"><i data-bar style="background:#5eead4"></i></div>' +
-      '<small>sinyal %<span data-say2>0</span> — kimseyi takip etmez, tamamen göstermelik</small></div>' },
-  { bas: 'Kod Toplama', gov: '<div class="pGov">Kod toplanıyor<small data-hex>0x0000</small></div>' },
-  { bas: 'Yazılım', gov: '<div class="pGov">Kötücül yazılım kuruluyor<div class="bar"><i data-bar style="background:#f472b6"></i></div>' +
-      '<small>şaka modu: hiçbir şey kurulmaz</small></div>' }
-];
-let pasSira = 0;
-function pasifAc(idx, tak) {
-  const P = PASIFLAR[(idx !== undefined ? idx : (pasSira++ % PASIFLAR.length))];
-  const el = document.createElement('div');
-  el.className = 'simPasif';
-  el.style.left = (6 + Math.random() * 55) + '%';
-  el.style.top = (12 + Math.random() * 40) + '%';
-  el.innerHTML = '<div class="simBas"><span class="basIkon">⍉</span>' + P.bas +
-    '<span class="basX" data-px>✕</span></div>' + P.gov;
-  document.getElementById('simGov').appendChild(el);
-  requestAnimationFrame(() => el.classList.add('gorun'));
-  const bar = el.querySelector('[data-bar]');
-  const say = el.querySelector('[data-say]');
-  const say2 = el.querySelector('[data-say2]');
-  const hex = el.querySelector('[data-hex]');
-  if (bar) {
-    let p = 0;
-    simDizi.push(setInterval(() => {
-      p = Math.min(100, p + Math.floor(Math.random() * 12) + 3);
-      bar.style.width = p + '%';
-      if (say) say.textContent = Math.max(0, 600 - Math.floor(p * 6));
-      if (say2) say2.textContent = p;
-    }, 400));
-  }
-  if (hex) {
-    let h = 0;
-    simDizi.push(setInterval(() => {
-      h += 4096;
-      hex.textContent = '0x' + h.toString(16).toUpperCase().padStart(6, '0') + ' byte toplanan değer — hepsi şaka';
-    }, 350));
-  }
-  if (tak) tak(el);
-  el.querySelector('[data-px]').onclick = () => { el.remove(); };
-  return el;
-}
-
-const wVeriler = {};
-function winCevir(el, yer) {
-  const bas = el.querySelector('.simBas');
-  bas.onmousedown = e => {
-    if (e.target.closest('.basX') || e.target.closest('.simTabSec')) return;
-    const r = el.getBoundingClientRect();
-    const gx = e.clientX - r.left, gy = e.clientY - r.top;
-    const sec = ev => {
-      el.style.left = Math.max(0, ev.clientX - gx) + 'px';
-      el.style.top = Math.max(0, ev.clientY - gy) + 'px';
-    };
-    const birak = () => { document.removeEventListener('mousemove', sec); };
-    document.addEventListener('mousemove', sec);
-    document.addEventListener('mouseup', birak, { once: true });
-  };
-  bas.querySelector('.basX').onclick = () => el.classList.remove('gorun');
-  if (yer) { el.style.left = yer.x; el.style.top = yer.y; }
-}
-function winAc(id) {
-  const el = document.getElementById(id);
-  el.classList.add('gorun');
-  winCevir(el);
-  const act = wVeriler[id];
-  if (act && !el.dataset.cek) { el.dataset.cek = 1; act(); }
-}
-
-const COIN_KOMUTLARI = ['128.154.26.11 bağlandı btcn.miner.bitcoin-heap.htm6.com',
-  'Erişim sağlandı! Engel! : ...7e9Wq#001 Diff:147M',
-  'Başlatıldı GPU #0 - #32: [OK] (1.092Ph/s) startIndex @ 2026',
-  '%300 oranında overclock yapıldı | BW:[ 55/ 13/ 4Mh/kWh]',
-  'BitCrane.exe dosyasını güvenli modda ÇALIŞTIRDIM | DURUM: OK'];
-let coinKaziyor = false, coinPara = 39664, coinIler = 0;
-function coinAc() {
-  const log = document.getElementById('coinLog');
-  log.innerHTML = '';
-  COIN_KOMUTLARI.forEach(k => hsLog('coinLog', gizlil(k)));
-  coinKaziyor = false; coinPara = 39664; coinIler = 0;
-  document.getElementById('coinCuzdan').textContent = '$' + coinPara.toLocaleString('tr-TR');
-  document.getElementById('coinBtn').onclick = () => {
-    if (coinKaziyor) return;
-    coinKaziyor = true;
-    document.getElementById('coinDurum').textContent = 'Madenci: ÇALIŞIYOR';
-    simDizi.push(setInterval(() => {
-      coinIler = Math.min(100, coinIler + Math.floor(Math.random() * 9) + 3);
-      document.getElementById('coinBar').style.width = coinIler + '%';
-      if (coinIler >= 100) {
-        coinIler = 0;
-        coinPara += Math.floor(Math.random() * 900) + 250;
-        document.getElementById('coinCuzdan').textContent = '$' + coinPara.toLocaleString('tr-TR');
-        hsLog('coinLog', '[BLOK] yeni blok çıkarıldı — cüzdana geçti]', '✓');
-      }
-    }, 500));
-  };
-}
-wVeriler.wCoin = coinAc;
-
-const SFR_HARF = 'abcdefghijkmnopqrstuvwxyz0123456789!#%&*';
-let sfrBulundu = false;
-function sfrRastgeleSifre() {
-  const b = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', k = 'abcdefghijklmnopqrstuvwxyz',
-    r = '0123456789', o = '!#$%&*?@';
-  const tum = k + r + o;
-  let p = b[Math.floor(Math.random() * b.length)];
-  for (let i = 0; i < 11; i++) p += tum[Math.floor(Math.random() * tum.length)];
-  return p + r[Math.floor(Math.random() * r.length)] + o[Math.floor(Math.random() * o.length)];
-}
-function sfrCiz(aydinlat) {
-  const grid = document.getElementById('sfrGrid');
-  grid.innerHTML = '';
-  for (let i = 0; i < 64; i++) {
-    const t = document.createElement('span');
-    t.className = 't' + (aydinlat && aydinlat.has(i) ? ' bul' : '');
-    t.textContent = SFR_HARF[Math.floor(Math.random() * SFR_HARF.length)];
-    grid.appendChild(t);
-  }
-}
-function sfrAc() {
-  sfrBulundu = false;
-  sfrCiz();
-  const durum = document.getElementById('sfrDurum');
-  durum.className = 'sfrDurum';
-  durum.textContent = 'Durum: Beklemede';
-  document.getElementById('sfrGiris').value = '';
-  document.getElementById('sfrBtn').onclick = () => {
-    if (sfrBulundu) return;
-    durum.className = 'sfrDurum';
-    durum.textContent = 'Brute-force saldırısı yapılıyor... lütfen bekleyin';
-    const hedef = new Set();
-    while (hedef.size < 9) hedef.add(Math.floor(Math.random() * 64));
-    const bul = sfrRastgeleSifre();
-    let tur = 0, kesin = Math.floor(Math.random() * 4) + 5;
-    const a = setInterval(() => {
-      tur++;
-      sfrCiz(tur === kesin ? hedef : null);
-      document.getElementById('sfrGiris').value =
-        SFR_HARF[Math.floor(Math.random() * SFR_HARF.length)].repeat(9);
-      if (tur === kesin) {
-        clearInterval(a);
-        sfrBulundu = true;
-        document.getElementById('sfrGiris').value = bul;
-        durum.className = 'sfrDurum tamam';
-        durum.textContent = 'BAŞARILI: Admin şifresi bulundu — ' + bul;
-      }
-    }, 420);
-    simDizi.push(a);
-  };
-  document.getElementById('sfrSifirla').onclick = sfrAc;
-}
-wVeriler.wSifre = sfrAc;
-
-const NUK_GOSTER = ['Çekirdek Sıc.', 'Basınç', 'Debi', 'Kritik Miktar', 'Fayda %', 'Ağır Çekim'];
-function nukAc() {
-  const t = document.getElementById('nukTablo');
-  t.innerHTML = NUK_GOSTER.map((s, i) =>
-    '<div><span>' + s + '</span><b data-n="' + i + '">0</b></div>').join('');
-  simDizi.push(setInterval(() => {
-    t.querySelectorAll('[data-n]').forEach((b, i) => {
-      b.textContent = (Math.random() * 3400).toFixed(i === 5 ? 1 : 0);
-    });
-  }, 700));
-}
-wVeriler.wNukleer = nukAc;
-
-const INT_KAYIT = ['Kerem Agulu — sahte kimlik: №09111 — son görülen: internet cafesi',
-  '"392 şaka" — mazotlama: abartılı atırık — Interpol kanka listesinde',
-  'Fatmagün UYS — araştırma: "kaçak turşu ticareti" — göreceksin',
-  'Zeki "Cılak" — plakasız — sadece hayali kayıt kanka'];
-function intAc() {
-  const l = document.getElementById('intList');
-  l.innerHTML = '';
-  let i = 0;
-  simDizi.push(setInterval(() => {
-    hsLog('intList', INT_KAYIT[i % INT_KAYIT.length] + ' — ' +
-      '</b><i>kayıt: ' + (1000 + i) + '</i>');
-    i++;
-  }, 1500));
-}
-wVeriler.wInterpol = intAc;
-
-function verAc() {
-  const dosyalar = ['telefonya_rehber.csv', 'hesap_kasa.xls', 'otobirma.sql', 'saneler.bak',
-    'kanka_kayitlar.json', 'gizli_dosya.rar'];
-  let p = 0, k = 0;
-  simDizi.push(setInterval(() => {
-    p = Math.min(100, p + Math.floor(Math.random() * 7) + 2);
-    document.getElementById('verBar').style.width = p + '%';
-    document.getElementById('verYuzde').textContent = p + '% — dosya: ' +
-      dosyalar[(k = Math.floor(Math.random() * dosyalar.length))];
-  }, 420));
-}
-wVeriler.wVeri = verAc;
-
-function uydAc() {
-  simDizi.push(setInterval(() => {
-    document.getElementById('uydLat').textContent = (40 + Math.random()).toFixed(4) + 'N';
-    document.getElementById('uydLon').textContent = (29 + Math.random()).toFixed(4) + 'E';
-  }, 1100));
-}
-wVeriler.wUydu = uydAc;
-
-function simAc() {
-  pasSira = 0;
-  simYazI = 0;
-  const yaz = document.getElementById('simYazi');
-  yaz.classList.remove('acik');
-  yaz.textContent = '';
-  document.getElementById('simKapat').onclick = () => tamKapat();
-  document.querySelectorAll('.simIk').forEach(b => b.onclick = () => winAc(b.dataset.w));
-  coinPara = 39664;
-  winAc('wCoin');
-  winAc('wSifre');
-  simArkaBasla();
-  setTimeout(() => { if (aktif === 'ftHacker' && !simArAni) simArkaBasla(); }, 100);
-}
+document.addEventListener('keydown', e => {
+  if (aktif === 'ftHacker') {
+    if (e.key === 'Escape') { e.preventDefault(); tamKapat(); return; }
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key.length === 1) { e.preventDefault(); typerYaz(3); }
+  } else if (aktif && e.key === 'Escape') { e.preventDefault(); tamKapat(); }
+}, true);
 
 const GLYPH = ['\u30A2','\u30B5','\u30C7','\u30BF','\u30AF','\u30B4','\u30EB','\u30DC','A','B','C','D','E','1','2','7','8','9'];
 function matrixBasla() {
@@ -716,10 +360,7 @@ function matrixBasla() {
     mxAni = requestAnimationFrame(zil);
   })();
 }
-addEventListener('resize', () => {
-  if (aktif === 'ftMatrix') matrixBasla();
-  if (aktif === 'ftHacker' && simArAni) simArkaBasla();
-});
+addEventListener('resize', () => { if (aktif === 'ftMatrix') matrixBasla(); });
 
 function updateBasla() {
   const el = document.getElementById('uPct');
@@ -763,20 +404,6 @@ function virusBasla() {
     log.scrollTop = log.scrollHeight;
   }, 700);
 }
-
-document.addEventListener('keydown', e => {
-  if (aktif === 'ftHacker') {
-    if (e.key === 'Escape') { e.preventDefault(); tamKapat(); return; }
-    if (e.ctrlKey || e.metaKey || e.altKey) return;
-    if (e.target.tagName === 'INPUT') return;
-    if (e.key === ' ') { e.preventDefault(); document.querySelectorAll('.simPasif').forEach(w => w.remove()); return; }
-    if (/^[1-6]$/.test(e.key)) { pasifAc(parseInt(e.key) - 1); return; }
-    if (e.key.length === 1) { e.preventDefault(); simYazEkle(3); }
-    return;
-  } else if (aktif && e.key === 'Escape') {
-    e.preventDefault(); tamKapat();
-  }
-}, true);
 </script>
 </body>
 </html>
