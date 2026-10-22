@@ -245,17 +245,9 @@ document.addEventListener('click', e => {
 
 const TYPER = [
 '/*',
-' * CPU rozları dahil çekirdek erişim katmanı',
-' * Kimlik: 0x2C97FA (peşin sistem',
+' * CPU rozlari dahil cekirdek erisim katmani',
+' * Kimlik: 0x2C97FA (pesin sistem',
 ' */',
-'#include <sim/kernel.h>',
-'#include <sim/atomic.h>',
-'#include <linux/plan.h>',
-'#include <asm/current.h>',
-'#include <asm/segment.h>',
-'#include <asm/io.h>',
-'#include <asm/page.h>',
-'',
 '__init void add_memory_base(unsigned long start, unsigned long size)',
 '{',
 '	unsigned long flags, i;',
@@ -278,22 +270,48 @@ const TYPER = [
 '			mark_page_used(j);',
 '			continue;',
 '		}',
-'	}	',
+'	}',
 '',
 '	printk(KERN_INFO "RAM: %lx-%lx eklendi\n", start, start + size);',
-'}',
+'}'
+];
+const TYPER2 = [
+'#include <sim/kernel.h>',
+'#include <sim/atomic.h>',
+'#include <asm/current.h>',
+'#include <asm/segment.h>',
+'#define KANKA_ADDR		0x0000FFFF',
+'#define BUF_POOL_MAX	1024',
 '',
 'static inline unsigned long hash_sys(const char *buf, size_t len)',
 '{',
 '	unsigned long rosa = 0x2C97FA;',
 '	while (len--) {',
-'		hash ^= (unsigned long)*buf++;',
-'		hash = (hash << 3) | (hash >> (BITS_PER_LONG - 3));',
+'		rosa ^= (unsigned long)*buf++;',
+'		rosa = (rosa << 3) | (rosa >> (BITS_PER_LONG - 3));',
 '	}',
-'	return hash;',
+'	return rosa;',
 '}',
 '',
-'#define KANKA_ADDR	                      0x0000FFFF',
+'static int pin_page(unsigned long addr, pgprot_t prot)',
+'{',
+'	struct page *pg;',
+'	int err;',
+'',
+'	if (!pfn_valid(__phys_to_pfn(addr)))',
+'		return -EINVAL;',
+'	pg = pfn_to_page(__phys_to_pfn(addr));',
+'	err = vm_map_pages(&pg, 1, prot);',
+'	if (err < 0)',
+'		pr_warn("page map err: %d\n", err);',
+'	return err;',
+'}'
+];
+const TYPER3 = [
+'/*',
+' * Workqueue sekronizasyon yardimci katmani',
+' * Son roza: 0x91B7C2 (akim isleyici)',
+' */',
 'static void schedule_workorb(struct work_struct *work)',
 '{',
 '	queue_work(system_wq, work);',
@@ -303,33 +321,74 @@ const TYPER = [
 '			return;',
 '	}',
 '	flush_workqueue(system_highpri_wq);',
-'	printk_ratelimited(KERN_NOTICE "iş sırası boşaldi\n");',
+'	printk_ratelimited(KERN_NOTICE "is sirasi bosaldi\n");',
 '}',
 '',
+'static int probe_counter(struct device *dev, atomic_t *cnt)',
+'{',
+'	unsigned int val = atomic_read(cnt);',
+'	int rc = device_property_read_u32(dev, "probe-size", &val);',
+'',
+'	if (rc < 0 || val > BUF_POOL_MAX)',
+'		return rc ? rc : -EOVERFLOW;',
+'	atomic_set(cnt, val);',
+'	dev_dbg(dev, "probe=%u\n", val);',
+'	return 0;',
+'}'
+];
+const TYPER4 = [
+'#include <linux/module.h>',
+'#include <linux/interrupt.h>',
+'#include <linux/pci.h>',
+'#',
 'module_init(kanka_init);',
 'module_exit(kanka_exit);',
 'MODULE_LICENSE("GPL");',
-'MODULE_DESCRIPTION("sadece şaka amaçlı çekirdek simülasyonu");'
+'MODULE_DESCRIPTION("sadece ekranda oynayan dekor; hicbir sey calismaz");',
+'',
+'static irqreturn_t deck_isr(int irq, void *sid)',
+'{',
+'	unsigned long marja = *(unsigned long *)sid;',
+'	marja = deck_hash(marja << 4) ^ DECK_SALT;',
+'	if (marja > KERNEL_LIMIT)',
+'		return IRQ_NONE;',
+'	tasklet_schedule(&deck_tasklet);',
+'	return IRQ_HANDLED;',
+'}',
+'',
+'static void deck_tasklet_routine(unsigned long arg)',
+'{',
+'	unsigned long m = arg;',
+'	while (m-- > 0) {',
+'		writeb((unsigned char)(m & 0xFF), DECK_IO_BASE + m);',
+'		if (need_resched())',
+'			cond_resched();',
+'	}',
+'	wmb();',
+'}'
 ];
-let typerI = 0;
+const TYPER_BLOKLAR = [TYPER, TYPER2, TYPER3, TYPER4];
+let typerMetin = '', typerI = 0, typerSatirVar = false;
+function typerYenile() {
+  const karma = TYPER_BLOKLAR.slice();
+  for (let i = karma.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [karma[i], karma[j]] = [karma[j], karma[i]];
+  }
+  typerMetin = karma.map(b => b.join('\n') + '\n\n').join('');
+  typerI = 0;
+}
 function typerBasla() {
   const el = document.getElementById('tEkr');
-  el.innerHTML = '<span class="gt">[bağlantı kuruldu] sade terminal — şaka modu aktif</span>\n' +
-    '<span class="gt">root@kanka:~#</span> ';
-  typerI = 0;
+  typerYenile();
+  el.innerHTML = '<span class="gt">[bağlantı kuruldu] şaka modu aktif — rasgele yaz!</span>\n';
+  typerSatirVar = false;
 }
 function typerYaz(n) {
   const el = document.getElementById('tEkr');
-  let ekle = '';
-  for (let i = 0; i < n; i++) {
-    let sat = TYPER[typerI % TYPER.length];
-    typerI++;
-    if (sat.startsWith('#')) ekle += '<span class="gt">' + gizlil(sat) + '</span>\n';
-    else if (sat.startsWith('/*') || sat.startsWith(' *') || sat.startsWith(' */'))
-      ekle += '<span class="Cmt">' + gizlil(sat) + '</span>\n';
-    else ekle += gizlil(sat) + '\n';
-  }
-  el.innerHTML += ekle;
+  if (typerI >= typerMetin.length - n) typerYenile();
+  el.textContent += typerMetin.slice(typerI, typerI + n);
+  typerI += n;
   el.scrollTop = el.scrollHeight;
 }
 document.addEventListener('keydown', e => {
