@@ -13,7 +13,7 @@
                 font-size: 13pt;
             }
             body {
-                background-image: url("https://i.imgur.com/GSQifPy.jpg");
+                background-image: url("./img/wallpaper.jpg");
                 background-size: auto;
                 background-repeat: no-repeat;
                 user-select: none;
@@ -43,7 +43,7 @@
                 border-top-left-radius: 1pt;
             }
             .w7orb {
-                background-image: url("https://i.imgur.com/3AFt84R.png");
+                background-image: url("./img/orb.png");
                 background-repeat: no-repeat;
                 background-size: cover;
                 width: 36px;
@@ -224,9 +224,7 @@
                 <div class="startmenu-sim-title">
                     Windows 7 desktop simulator<br/>
                 </div>
-                <div class="startmenu-sim-subtle">
-                    made by blek!
-                </div>
+                <div class="startmenu-sim-subtle">Kanka7 — kanka uretimi</div>
                 <hr/>
                 <div class="buttons">
                   <button onclick="addNewGui()">Add new icon</button>
@@ -376,10 +374,10 @@
                 }
 
                 openFullscreen(document.documentElement);
-                addNew({"text": "My Computer", "icon": "https://i.imgur.com/UULStIq.png", "disableDragging": true});
-                addNew({"text": "Recycle Bin", "icon": "https://i.imgur.com/5lKwuH4.png", "disableDragging": true});
-                addNew({"text": "Explorer", "icon": "https://i.imgur.com/5VFN2av.png", 'onclick': 'addNew({\"text\": \"Test\", \"icon\": \"https://findicons.com/files/icons/2711/free_icons_for_windows8_metro/128/test_tube.png\"})'});
-                //addNew({"text": "Add new icon", "icon": "https://i.imgur.com/zSejle0.png"});
+                addNew({"text": "My Computer", "icon": "./img/computer.png", "disableDragging": true});
+                addNew({"text": "Recycle Bin", "icon": "./img/recycle.png", "disableDragging": true});
+                addNew({"text": "Explorer", "icon": "./img/explorer.png", 'onclick': 'addNew({\"text\": \"Test\", \"icon\": \"./img/explorer.png\"})'});
+                //addNew({"text": "Add new icon", "icon": "./img/orb.png"});
             </script>
         </div>
 
@@ -388,26 +386,26 @@
             <script>
                 // Orb script
                 // Normal:
-                // https://i.imgur.com/3AFt84R.png
+                // ./img/orb.png
                 // Hovered:
-                // https://i.imgur.com/Npx40cV.png
+                // ./img/orb-press.png
                 // Clicked:
-                // https://i.imgur.com/kx7b2ul.png
+                // ./img/orb-hover.png
 
                 var orbclicked = true;
                 $("#orb").hover(
                     function() {
                         $(this)
-                        .css("background-image", "url(https://i.imgur.com/Npx40cV.png")
+                        .css("background-image", "url(./img/orb-press.png")
                         if (orbclicked) {
-                            $(this).css("background-image", "url(https://i.imgur.com/kx7b2ul.png)")
+                            $(this).css("background-image", "url(./img/orb-hover.png)")
                         }
                     },
                     function() {
                         $(this)
-                        .css("background-image", "url(https://i.imgur.com/3AFt84R.png")
+                        .css("background-image", "url(./img/orb.png")
                         if (orbclicked) {
-                            $(this).css("background-image", "url(https://i.imgur.com/kx7b2ul.png)")
+                            $(this).css("background-image", "url(./img/orb-hover.png)")
                         }
                     }
                 );
@@ -422,12 +420,12 @@
                         $("#start-menu").css("display", "block");
                         orbclicked = true;
                         orbclickedtime = Date.now();
-                        $("#orb").css("background-image", "url(https://i.imgur.com/kx7b2ul.png)");
+                        $("#orb").css("background-image", "url(./img/orb-hover.png)");
                     } else {
                         smenu.style.opacity = 0;
                         $("#start-menu").css("display", "none");
                         orbclicked = false;
-                        $("#orb").css("background-image", "url(https://i.imgur.com/3AFt84R.png)");
+                        $("#orb").css("background-image", "url(./img/orb.png)");
                     }
                 }
 
@@ -436,12 +434,12 @@
                         $("#start-menu").css("display", "none");
                         smenu.style.opacity = 0;
                         orbclicked = false;
-                        $("#orb").css("background-image", "url(https://i.imgur.com/3AFt84R.png)");
+                        $("#orb").css("background-image", "url(./img/orb.png)");
                     } if (wrapped == 'false') {
                         smenu.style.opacity = 255;
                         $("#start-menu").css("display", "block");
                         orbclicked = true;
-                        $("#orb").css("background-image", "url(https://i.imgur.com/kx7b2ul.png)");
+                        $("#orb").css("background-image", "url(./img/orb-hover.png)");
                     } if (wrapped != 'true' && wrapped != 'false') {
                         console.error("setStartMenu(wrapped) - wrapped takes only true or false")
                     }
@@ -453,6 +451,6 @@
         </div>
 
     
-<div kanka-uretim-imza style="position:fixed;right:10px;bottom:8px;z-index:2147483647;color:rgba(255,255,255,.85);font-size:11px;text-shadow:0 1px 3px rgba(0,0,0,.8);pointer-events:none;font-family:sans-serif">Kanka7 &bull; görünüm kaynağı: b1ek/win7-sim (MIT)</div>
+
 </body>
 </html>

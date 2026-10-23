@@ -43,19 +43,19 @@ document.querySelector(".cls").onclick = function () {
     document.querySelector(".window").style.display = "none"
 }
 
-document.querySelector(".faisal-akhtar").ondblclick = function () {
+document.querySelector(".kanka-ikon").ondblclick = function () {
     setTimeout( ()=> { this.classList.remove("selected") }, 2 )
-    window.open("https://faisalakhtar.github.io/")
+    window.open("https://noobtrainer23.github.io/tr-web/")
 }
 
 document.querySelector(".my-computer").ondblclick = function () {
     setTimeout( ()=> { this.classList.remove("selected") }, 2 )
-    window.open("https://github.com/faisalAkhtar/")
+    window.open("https://github.com/")
 }
 
 document.querySelector(".my-network").ondblclick = function () {
     setTimeout( ()=> { this.classList.remove("selected") }, 2 )
-    window.open("https://twitter.com/faisallakhtarr/")
+    window.open("https://noobtrainer23.github.io/tr-web/")
 }
 
 document.querySelector(".note-pad").ondblclick = function () {
@@ -66,7 +66,7 @@ document.querySelector(".note-pad").ondblclick = function () {
     document.querySelector(".window").classList.remove("minimized")
 }
 
-document.querySelector("textarea").value = "Hello World!\n\nFeatures:\n- Desktop icons are clickable. Double clicking them takes you to some of my links (github, twitter, portfolio).\n- Time in system-tray is your system's time.\n- This window is draggable, closable, minimizable and maximizable. Try it.\n- The opened tabs in taskbar also take you to my links, same as the icons.\n______________________________\n\nThe code is on github. Star the repository if you liked this. Contributions to this repository are welcome and appreciated.\n______________________________\n\nDo follow me on github (@faisalakhtar) and twitter(@faisallakhtarr). Open 'My Computer' and 'My Network' to go to these links.\n"
+document.querySelector("textarea").value = "KankaXP ya hos geldin!\n\n- Simzelere cift tik: hub, github ve kanka siteleri acilir.\n- Saat tepside senin saatin.\n- Bu pencere tasi-kapat-buyut; dene.\n- Gorev cubugu sekmeleri de ayni yerlere gider.\n- Kanka suite guzel, hheh.\n"
 
 
 dragWindow(document.querySelector(".window"));
