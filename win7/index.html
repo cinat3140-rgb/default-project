@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="https://unpkg.com/7.css">
+        <meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <style>
+            h4 {
+                margin: 0px;
+                margin-bottom: 8pt;
+                color: darkred;
+                font-size: 13pt;
+            }
+            body {
+                background-image: url("https://i.imgur.com/GSQifPy.jpg");
+                background-size: auto;
+                background-repeat: no-repeat;
+                user-select: none;
+                overflow: hidden;
+            }
+            html {
+                user-zoom: fixed;
+            }
+            .footer {
+                background: rgb(48,107,154);
+                background: -moz-linear-gradient(0deg, rgba(48,107,154,0.5) 75%, rgba(20,133,227,0.5) 100%);
+                background: -webkit-linear-gradient(0deg, rgba(48,107,154,0.5) 75%, rgba(20,133,227,0.5) 100%);
+                background: linear-gradient(0deg, rgba(48,107,154,0.5) 75%, rgba(20,133,227,0.5) 100%);
+                filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#306b9a",endColorstr="#1485e3",GradientType=1);
+
+                min-width: auto;
+                min-height: 40px;
+                position: fixed;
+                left: 0;
+                bottom: 0;
+                width: 100%;
+
+                display: inline;
+
+                border-top: 1px solid rgba(0,0,0,.6);
+                border-top-right-radius: 1pt;
+                border-top-left-radius: 1pt;
+            }
+            .w7orb {
+                background-image: url("https://i.imgur.com/3AFt84R.png");
+                background-repeat: no-repeat;
+                background-size: cover;
+                width: 36px;
+                height: 36px;
+                margin: 2px;
+                margin-left: 10px;
+                box-shadow: white;
+                transition: 0.3s;
+                transition-timing-function: ease-in;
+            }
+            .w7orb:hover {
+            }
+            .vl {
+                border-left: 1px solid black;
+                height: 5px;
+            }
+            .desktop {
+                display: grid;
+                grid-template-columns: repeat(16, 1fr);
+                grid-template-rows: repeat(11, 1fr);
+                gap: 2px;
+                margin-bottom: 0px;
+            }
+            .desktopelement {
+                margin-top: 2px;
+                justify-self: left;
+                grid-row: 1;
+                grid-column: 1;
+                height: 82px;
+                width: 75px;
+                transition: 15ms;
+                border: 2px solid rgba(124, 195, 236, 0);
+            }
+            .desktopelement:hover {
+                background: rgba(137, 205, 245, 0.36);
+                border: 2px solid rgba(137, 212, 255, 0.466);
+                border-radius: 4px;
+                box-shadow: 0px 0px 2px 1px rgba(88, 129, 153, 0.5);
+            }
+            .elemtext {
+                margin-top: 18%;
+                justify-self: center;
+                text-align: center;
+                text-shadow: 0px 0px 1px black, 0px 0px 2px black, 0px 0px 3px black, 0px 0px 4px black, 0px 0px 6px black, -1px 0 gray, 0 1px gray, 1px 0 gray, 0 -1px gray;
+                color: white;
+                width: 75px;
+            }
+            .elemicon {
+                width: 48px;
+                height: 48px;
+                margin-top: 4px;
+                margin-left: auto;
+                margin-right: auto;
+                display: block;
+            }
+            pre {
+                margin: 0px;
+                padding: 0px;
+                border: 0px solid black;
+                font-family: inherit;
+            }
+            div {
+                image-rendering: optimizeQuality;
+            }
+            .startmenu {
+                background: black;
+                left: 0;
+                right: 0;
+                position: absolute;
+                display: block;
+                height: 500px;
+                width: 500px;
+                top: 48.8%;
+
+                border-top-right-radius: 8px;
+                border-top-left-radius: 8px;
+
+                background: rgb(107,141,157);
+                background: -moz-linear-gradient(42deg, rgba(107,141,157,0.7693452380952381) 0%, rgba(51,128,143,0.3799894957983193) 36%, rgba(66,125,194,0.6376925770308124) 46%, rgba(95,163,241,0.48363095238095233) 54%, rgba(67,77,87,0.6) 100%);
+                background: -webkit-linear-gradient(42deg, rgba(107,141,157,0.7693452380952381) 0%, rgba(51,128,143,0.3799894957983193) 36%, rgba(66,125,194,0.6376925770308124) 46%, rgba(95,163,241,0.48363095238095233) 54%, rgba(67,77,87,0.6) 100%);
+                background: linear-gradient(42deg, rgba(107,141,157,0.7693452380952381) 0%, rgba(51,128,143,0.3799894957983193) 36%, rgba(66,125,194,0.6376925770308124) 46%, rgba(95,163,241,0.48363095238095233) 54%, rgba(67,77,87,0.6) 100%);
+                filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#6b8d9d",endColorstr="#434d57",GradientType=1);
+                filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#8ca0b9",endColorstr="#434d57",GradientType=1);
+
+                border: 1px solid rgb(9, 17, 27);
+
+                box-shadow: 0px 0px 1px black;
+                opacity: 0;
+                transition: 15ms ease-in;
+                backdrop-filter: blur(1.5px);
+
+            }
+            .startmenu-contents {
+                margin: 4px;
+                background: rgb(255, 255, 253);
+                width: 60%;
+                height: 97%;
+                border-radius: 6px;
+                border: 1px solid rgb(83, 95, 110);
+                padding: 3px;
+                user-select: auto;
+            }
+            .startmenu-element {
+                display: block;
+                font-size: 10.3pt;
+
+                color: black;
+                height: 21px;
+
+                border-radius: 3px;
+
+                padding: 0px;
+                padding-top: 6px;
+                padding-left: 4px;
+                border: 1px solid black;
+                height: 36px;
+                background: green;
+            }
+            .startmenu-element:hover {
+                background: hotpink;
+            }
+            .startmenu-element-icon {
+                width: 40px;
+                height: 40px;
+                image-rendering: optimizeQuality;
+                margin-top: -5px;
+                margin-left: -2px;
+            }
+            .startmenu-element-text {
+                margin-top: -30px;
+                margin-left: 44px;
+                width: 100%;
+                height: 20px;
+                word-wrap: normal;
+            }
+            .startmenu-sim-title {
+                color: darkblue;
+                font-size: 14px;
+                text-align: center;
+                padding-top: 4px;
+            }
+            .startmenu-sim-subtle {
+                color: darkcyan;
+                font-size: 10.5px;
+                text-align: center;
+            }
+            .startmenu-contents hr {
+                max-width: 160px;
+                margin-bottom: 16px;
+            }
+            .startmenu-contents button {
+                margin: 2px;
+                display: inline;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="windows">
+            <!--<div class="window is-bright" id="new-icon" role="dialog" aria-labelledby="dialog-title">
+                <div class="title-bar">
+                    <div class="title-bar-text" id="dialog-title">TITLETEXT</div>
+                    <div class="title-bar-controls">
+                    <button aria-label="Close" onclick="history.back()"></button>
+                    </div>
+                </div>
+                <div class="window-body">
+                    <h2 class="instruction instruction-primary">Identifying your problem...</h2>
+                    <div role="progressbar" class="marquee"></div>
+                </div>
+                <footer style="text-align: right">
+                    <button onclick="history.back()">Cancel</button>
+                </footer>
+            </div>-->
+        </div>
+
+        <div class="startmenu" id="start-menu" onclick="clickEvn(this.id)">
+            <div class="startmenu-contents">
+                <div class="startmenu-sim-title">
+                    Windows 7 desktop simulator<br/>
+                </div>
+                <div class="startmenu-sim-subtle">
+                    made by blek!
+                </div>
+                <hr/>
+                <div class="buttons">
+                  <button onclick="addNewGui()">Add new icon</button>
+                  <button onclick="removeIconGui()">Remove icon</button>
+                  <button onclick="resetGui()">Reset all icons</button>
+                </div>
+                <div class="addnew">
+                  <p>Icon title: <input type="text" id="create-title"></input><br/>
+                  Icon URL: <input type="text" id="create-url"></input></p>
+                  <p>Click <button id="create-btn">Create</button> to make the button!</p>
+                  <p id="status-create" style="color:#400;display:none;"></p>
+                  <button id="smenu-back">Back</button>
+                </div>
+                <script type="text/javascript">
+                    // addNewGui()
+                    var iconGuisCount = 1;
+                    $("#status-create").css("display", "none");
+
+                    function smenu_back() {
+                      $("#buttons").css("display", "block");
+                      $("#addnew").css("display", "none");
+                    }
+                    $("#smenu-back").on("click", smenu_back);
+
+                    function addnewgui__create() {
+                      var err = false;
+                      var err_m = "";
+                      if ($("#create-title").text() == "") {
+                        err_m += "No title specified; ";
+                        err = true;
+                      } if ($("#create-url").text() == "") {
+                        err_m += "No icon URL specified; ";
+                        err = true;
+                      }
+                      if (err){
+                        $("#status-create").text(err_m);
+                        $("#status-create").css("display", "block");
+                      } else {
+                        $("#status-create").css("display", "none");
+                        $("#status-create").text("");
+                      }
+                    }
+                    $("#create-btn").on("click", addnewgui__create);
+                    function addNewGui() {
+                      $(".buttons").css("display", "none");
+                      $(".addnew").css("display", "block");
+                    }
+                    function createIconFromGui(guiId) {
+                        var text = $("#newicon-text-"+guiId).val();
+                        var icon = $("#newicon-icon-"+guiId).val();
+                        if (icon != "") {
+                            addNew({"text": text, "icon": icon});
+                        } else {
+                            addNew({"text": text});
+                        }
+                    }addNewGui();
+                </script>
+
+            </div>
+            <script type="text/javascript">
+
+            function clickEvn(id) {
+                if (id == "start-menu" && orbclicked) {} else {
+                    if (Date.now() - orbclickedtime > 1) {
+                        setStartMenu('true');
+                        console.log(id);
+                    }
+                }
+            }
+
+
+            var iknowitsafullscreenmode = false;
+            document.addEventListener("mousemove", function() {
+                if(window.innerHeight == screen.height) {
+                    if (iknowitsafullscreenmode) {} else {
+                        iknowitsafullscreenmode = true;
+                        var elms = document.getElementsByClassName("startmenu");
+                        for (let i = 0; i < elms.length; i++) {
+                            elms[i].style.top = "54.8%";
+                        }
+                    }
+                } else {
+                    iknowitsafullscreenmode = false;
+                    var elms = document.getElementsByClassName("startmenu");
+                    for (let i = 0; i < elms.length; i++) {
+                        elms[i].style.top = "48.8%";
+                    }
+                }
+            });
+            </script>
+        </div>
+        <div class="desktop" id="main-desktop" onclick="clickEvn(this.id)">
+
+            <script type="text/javascript">
+                function repeat(func, times) {
+                    func();
+                    times && --times && repeat(func, times);
+                }
+                function openFullscreen(elem) {
+                    if (elem.requestFullscreen) {
+                        elem.requestFullscreen();
+                    } else if (elem.webkitRequestFullscreen) { /* Safari */
+                        elem.webkitRequestFullscreen();
+                    } else if (elem.msRequestFullscreen) { /* IE11 */
+                        elem.msRequestFullscreen();
+                    }
+                }
+                var md = document.getElementById("main-desktop");
+                var currentPositionX = 1;
+                var currentPositionY = 1;
+                const MAX_X = 16;
+                const MAX_Y = 11;
+                function addNew(args) {
+                    var de = document.createElement("div");
+                    md.appendChild(de);
+                    de.setAttribute("id", currentPositionY.toString() + "." + currentPositionX.toString());
+                    de.setAttribute("class", "desktopelement");
+                    de.setAttribute("style", "grid-column:" + currentPositionX.toString() + "; grid-row:" + currentPositionY.toString());
+                    if (!args['disableDragging']) de.setAttribute("draggable", "true");
+                    if (args['onclick']) de.setAttribute("onclick", args['onclick']);
+
+                    if (args['icon']) {
+                        var icn = document.createElement("img");
+                        de.appendChild(icn);
+                        icn.setAttribute("src", args['icon']);
+                        icn.setAttribute("class", "elemicon");
+                    }
+
+                    var det = document.createElement("div");
+                    de.appendChild(det);
+                    det.setAttribute("class", "elemtext");
+                    det.setAttribute("id", currentPositionY.toString() + "." + currentPositionX.toString() + "icd");
+                    if (args['icon']) {} else {
+                        det.setAttribute("style", "margin-top: 85%")
+                    }
+                    det.innerHTML = "Element";
+                    if (args['text']) {
+                        det.innerHTML = args['text'];
+                    }
+                    if (currentPositionY == MAX_Y) {
+                        currentPositionY = 1;
+                        currentPositionX++;
+                    } else {
+                        currentPositionY++;
+                    }
+                    return de.id;
+                }
+
+                openFullscreen(document.documentElement);
+                addNew({"text": "My Computer", "icon": "https://i.imgur.com/UULStIq.png", "disableDragging": true});
+                addNew({"text": "Recycle Bin", "icon": "https://i.imgur.com/5lKwuH4.png", "disableDragging": true});
+                addNew({"text": "Explorer", "icon": "https://i.imgur.com/5VFN2av.png", 'onclick': 'addNew({\"text\": \"Test\", \"icon\": \"https://findicons.com/files/icons/2711/free_icons_for_windows8_metro/128/test_tube.png\"})'});
+                //addNew({"text": "Add new icon", "icon": "https://i.imgur.com/zSejle0.png"});
+            </script>
+        </div>
+
+        <div class="footer" id="main-taskbar" onclick="clickEvn(this.id)">
+            <div class="w7orb" id="orb" onclick="clickEvn(this.id)"></div>
+            <script>
+                // Orb script
+                // Normal:
+                // https://i.imgur.com/3AFt84R.png
+                // Hovered:
+                // https://i.imgur.com/Npx40cV.png
+                // Clicked:
+                // https://i.imgur.com/kx7b2ul.png
+
+                var orbclicked = true;
+                $("#orb").hover(
+                    function() {
+                        $(this)
+                        .css("background-image", "url(https://i.imgur.com/Npx40cV.png")
+                        if (orbclicked) {
+                            $(this).css("background-image", "url(https://i.imgur.com/kx7b2ul.png)")
+                        }
+                    },
+                    function() {
+                        $(this)
+                        .css("background-image", "url(https://i.imgur.com/3AFt84R.png")
+                        if (orbclicked) {
+                            $(this).css("background-image", "url(https://i.imgur.com/kx7b2ul.png)")
+                        }
+                    }
+                );
+
+                var orb = document.getElementById("orb");
+                orb.setAttribute("onclick", "toggleStartMenu()");
+                var smenu = document.getElementById("start-menu");
+                var orbclickedtime = Date.now();
+                function toggleStartMenu() {
+                    if (smenu.style.opacity < 1) {
+                        smenu.style.opacity = 255;
+                        $("#start-menu").css("display", "block");
+                        orbclicked = true;
+                        orbclickedtime = Date.now();
+                        $("#orb").css("background-image", "url(https://i.imgur.com/kx7b2ul.png)");
+                    } else {
+                        smenu.style.opacity = 0;
+                        $("#start-menu").css("display", "none");
+                        orbclicked = false;
+                        $("#orb").css("background-image", "url(https://i.imgur.com/3AFt84R.png)");
+                    }
+                }
+
+                function setStartMenu(wrapped) {
+                    if (wrapped == 'true') {
+                        $("#start-menu").css("display", "none");
+                        smenu.style.opacity = 0;
+                        orbclicked = false;
+                        $("#orb").css("background-image", "url(https://i.imgur.com/3AFt84R.png)");
+                    } if (wrapped == 'false') {
+                        smenu.style.opacity = 255;
+                        $("#start-menu").css("display", "block");
+                        orbclicked = true;
+                        $("#orb").css("background-image", "url(https://i.imgur.com/kx7b2ul.png)");
+                    } if (wrapped != 'true' && wrapped != 'false') {
+                        console.error("setStartMenu(wrapped) - wrapped takes only true or false")
+                    }
+                }
+
+                // start menu element on hover
+            </script>
+
+        </div>
+
+    </body>
+</html>

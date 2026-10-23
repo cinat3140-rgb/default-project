@@ -174,6 +174,24 @@ body::before{ content:''; position:fixed; inset:0; pointer-events:none; z-index:
       <span class="komut">gir --yeni-sekme</span>
     </a>
 
+    <a class="siteler" style="--renk:var(--yesil)" href="winxp/" target="_blank" rel="noopener">
+      <span class="yol">🖥️ <b>~/winxp/</b><span class="n"> sim</span></span>
+      <span class="ac">Luna arayüzü tarayıcıda: açılış, sürüklenebilir pencereler, Notepad, Calc, CMD. Kaynak: faisalAkhtar/windows-xp.</span>
+      <span class="komut">gir --yeni-sekme</span>
+    </a>
+
+    <a class="siteler" style="--renk:var(--cyan)" href="win7/" target="_blank" rel="noopener">
+      <span class="yol">🏢 <b>~/win7/</b><span class="n"> sim</span></span>
+      <span class="ac">Aero görselli Windows 7 masaüstü simülasyonu — tek sayfa, tarayıcıda çalışır. Kaynak: b1ek/win7-sim.</span>
+      <span class="komut">gir --yeni-sekme</span>
+    </a>
+
+    <a class="siteler" style="--renk:var(--mavi)" href="win11/" target="_blank" rel="noopener">
+      <span class="yol">🪟 <b>~/win11/</b><span class="n"> sim</span></span>
+      <span class="ac">Başlat menüsü, widget'lar, sürükle-bırak ve uygulamalarla Win11 masaüstü. Kaynak: blueedge/win11React (CC0).</span>
+      <span class="komut">gir --yeni-sekme</span>
+    </a>
+
   </div>
 
   <div class="altblok">
@@ -186,7 +204,7 @@ body::before{ content:''; position:fixed; inset:0; pointer-events:none; z-index:
 <script>
 const SELAMLAR = [
   'merkez-1.2 Loading proje ağacı ...\u2713',
-  '13 site dizine eklendi \u2713  |  statik mod: PATCH',
+  '16 site dizine eklendi \u2713  |  statik mod: PATCH',
   'run: anasayfa \u2192 hazir \u2713'
 ];
 (function yaz() {
@@ -214,7 +232,7 @@ const SELAMLAR = [
   const t = setInterval(() => {
     a++;
     if (s1) s1.textContent = Math.min(st, a);
-    if (s2 && a >= st) { s2.textContent = '9'; clearInterval(t); }
+    if (s2 && a >= st) { s2.textContent = '10'; clearInterval(t); }
   }, 70);
 })();
 </script>
