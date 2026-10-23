@@ -1,560 +1,458 @@
 <!DOCTYPE html>
-<html lang="tr">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kanka7 — Aero havalı masaüstü</title>
-<meta name="description" content="Kanka7: tarayıcıda Aero esintili masaüstü; kod ve çizimler sıfırdan bizim, Microsoft ile bağı yok.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23082a52'/%3E%3Ctext x='16' y='22' font-size='12' font-family='sans-serif' fill='%237fd2ff' text-anchor='middle'%3E7%3C/text%3E%3C/svg%3E">
-<style>
-*{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent }
-body{ width:100vw; height:100vh; overflow:hidden; user-select:none;
-  font-family:'Segoe UI','Trebuchet MS',Verdana,sans-serif; font-size:13px; background:#04081a }
+<html>
+    <head>
+        <link rel="stylesheet" href="https://unpkg.com/7.css">
+        <meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <style>
+            h4 {
+                margin: 0px;
+                margin-bottom: 8pt;
+                color: darkred;
+                font-size: 13pt;
+            }
+            body {
+                background-image: url("https://i.imgur.com/GSQifPy.jpg");
+                background-size: auto;
+                background-repeat: no-repeat;
+                user-select: none;
+                overflow: hidden;
+            }
+            html {
+                user-zoom: fixed;
+            }
+            .footer {
+                background: rgb(48,107,154);
+                background: -moz-linear-gradient(0deg, rgba(48,107,154,0.5) 75%, rgba(20,133,227,0.5) 100%);
+                background: -webkit-linear-gradient(0deg, rgba(48,107,154,0.5) 75%, rgba(20,133,227,0.5) 100%);
+                background: linear-gradient(0deg, rgba(48,107,154,0.5) 75%, rgba(20,133,227,0.5) 100%);
+                filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#306b9a",endColorstr="#1485e3",GradientType=1);
 
-#masa{ position:fixed; inset:0; display:block }
-.duvar{ position:absolute; inset:0; overflow:hidden; background:
-  radial-gradient(120% 90% at 80% 110%, #3a7bd5 0%, transparent 55%),
-  radial-gradient(100% 80% at 15% 115%, #24c0c9 0%, transparent 50%),
-  linear-gradient(180deg, #0a1633 0%, #123a70 45%, #1f6699 75%, #6fb1d6 100%) }
-.duvar::before{ content:''; position:absolute; inset:0;
-  background:radial-gradient(60% 35% at 50% 78%, rgba(120,220,255,.35), transparent 70%);
-  filter:blur(6px) }
-.duvar.have{ background:
-  radial-gradient(120% 90% at 20% 110%, #d5a24a 0%, transparent 55%),
-  radial-gradient(100% 80% at 90% 120%, #c94b62 0%, transparent 50%),
-  linear-gradient(180deg, #20142e 0%, #4a2350 45%, #7d3a54 75%, #d2917d 100%) }
-.duvar.gece{ background:
-  radial-gradient(110% 80% at 70% 110%, #1c3f7a 0%, transparent 55%),
-  linear-gradient(180deg, #02040d 0%, #071132 55%, #0c224e 100%) }
-.duvar.gece::before{ background:radial-gradient(70% 30% at 30% 20%, rgba(160,200,255,.25), transparent 70%) }
-.imza{ position:absolute; right:12px; bottom:50px; color:rgba(255,255,255,.75); font-size:10px; z-index:2;
-  text-shadow:0 1px 2px rgba(0,0,0,.5); cursor:pointer }
+                min-width: auto;
+                min-height: 40px;
+                position: fixed;
+                left: 0;
+                bottom: 0;
+                width: 100%;
 
-#ikonlar{ position:absolute; top:12px; left:12px; z-index:3; display:flex; flex-direction:column; gap:8px }
-.ikon{ width:80px; padding:7px 3px; border-radius:5px; cursor:pointer; text-align:center; color:#fff;
-  text-shadow:0 1px 3px rgba(0,0,0,.85); font-size:11px }
-.ikon.sel{ background:rgba(120,200,255,.22); outline:1px solid rgba(160,220,255,.55) }
-.ikon svg{ width:34px; height:34px; display:block; margin:0 auto 3px }
+                display: inline;
 
-/* Aero pencere: cam çerçeve */
-.pencere{ position:absolute; min-width:260px; border-radius:9px;
-  background:rgba(190,225,255,.38); border:1px solid rgba(190,230,255,.65);
-  box-shadow:0 2px 26px rgba(5,25,70,.5), 0 0 0 1px rgba(255,255,255,.25) inset;
-  -webkit-backdrop-filter:blur(16px) saturate(1.25); backdrop-filter:blur(16px) saturate(1.25);
-  display:flex; flex-direction:column; overflow:hidden; color:#0b2545 }
-.pencere.tam{ inset:0 0 42px 0 !important; width:auto !important; height:auto !important }
-.pencere.gizli{ display:none }
-.pencere.tasiniyor{ pointer-events:none; opacity:.93 }
-.bBaslik{ height:30px; display:flex; align-items:center; gap:8px; padding:0 5px 0 12px; cursor:move; flex:none;
-  color:#fff; font-size:12px; text-shadow:0 1px 2px rgba(0,0,0,.55);
-  background:linear-gradient(180deg, rgba(255,255,255,.32), rgba(255,255,255,.06) 45%, rgba(60,110,190,.28)) }
-.bBaslik svg{ width:16px; height:16px; flex:none }
-.tuslar{ margin-left:auto; display:flex; gap:3px }
-.tuslar button{ width:27px; height:22px; cursor:pointer; color:#fff; font-size:12px; line-height:1;
-  border:1px solid rgba(255,255,255,.5); border-radius:4px;
-  background:linear-gradient(180deg, rgba(255,255,255,.35), rgba(130,190,240,.2)) }
-.tuslar button.kpat{ background:linear-gradient(180deg, #ef8d90, #c9403f); }
-.pGovde{ flex:1; overflow:auto; background:rgba(252,255,255,.93); margin:1px 8px 8px; border-radius:4px;
-  position:relative; display:flex; flex-direction:column }
+                border-top: 1px solid rgba(0,0,0,.6);
+                border-top-right-radius: 1pt;
+                border-top-left-radius: 1pt;
+            }
+            .w7orb {
+                background-image: url("https://i.imgur.com/3AFt84R.png");
+                background-repeat: no-repeat;
+                background-size: cover;
+                width: 36px;
+                height: 36px;
+                margin: 2px;
+                margin-left: 10px;
+                box-shadow: white;
+                transition: 0.3s;
+                transition-timing-function: ease-in;
+            }
+            .w7orb:hover {
+            }
+            .vl {
+                border-left: 1px solid black;
+                height: 5px;
+            }
+            .desktop {
+                display: grid;
+                grid-template-columns: repeat(16, 1fr);
+                grid-template-rows: repeat(11, 1fr);
+                gap: 2px;
+                margin-bottom: 0px;
+            }
+            .desktopelement {
+                margin-top: 2px;
+                justify-self: left;
+                grid-row: 1;
+                grid-column: 1;
+                height: 82px;
+                width: 75px;
+                transition: 15ms;
+                border: 2px solid rgba(124, 195, 236, 0);
+            }
+            .desktopelement:hover {
+                background: rgba(137, 205, 245, 0.36);
+                border: 2px solid rgba(137, 212, 255, 0.466);
+                border-radius: 4px;
+                box-shadow: 0px 0px 2px 1px rgba(88, 129, 153, 0.5);
+            }
+            .elemtext {
+                margin-top: 18%;
+                justify-self: center;
+                text-align: center;
+                text-shadow: 0px 0px 1px black, 0px 0px 2px black, 0px 0px 3px black, 0px 0px 4px black, 0px 0px 6px black, -1px 0 gray, 0 1px gray, 1px 0 gray, 0 -1px gray;
+                color: white;
+                width: 75px;
+            }
+            .elemicon {
+                width: 48px;
+                height: 48px;
+                margin-top: 4px;
+                margin-left: auto;
+                margin-right: auto;
+                display: block;
+            }
+            pre {
+                margin: 0px;
+                padding: 0px;
+                border: 0px solid black;
+                font-family: inherit;
+            }
+            div {
+                image-rendering: optimizeQuality;
+            }
+            .startmenu {
+                background: black;
+                left: 0;
+                right: 0;
+                position: absolute;
+                display: block;
+                height: 500px;
+                width: 500px;
+                top: 48.8%;
 
-/* taskbar aero */
-#cubuk{ position:absolute; left:0; right:0; bottom:0; height:44px; z-index:500; display:flex; align-items:stretch;
-  background:linear-gradient(0deg, rgba(48,107,154,.5) 0%, rgba(48,107,154,.5) 75%, rgba(20,133,227,.58) 100%);
-  border-top:1px solid rgba(255,255,255,.5);
-  -webkit-backdrop-filter:blur(18px) saturate(1.3); backdrop-filter:blur(18px) saturate(1.3) }
-#baslaBtn{ width:54px; flex:none; cursor:pointer; position:relative;
-  background:radial-gradient(circle at 50% 42%, #7fd0ff 0%, #2f7fd6 42%, #1c4f96 68%, #0d2f63 100%);
-  border-radius:50%; margin:3px 6px; box-shadow:0 0 10px rgba(130,205,255,.65), 0 0 0 1px rgba(255,255,255,.4) inset }
-#baslaBtn:hover{ filter:brightness(1.2) }
-#baslaBtn svg{ position:absolute; inset:47% auto auto 50%; transform:translate(-50%,-50%); width:22px; height:22px }
-#cubukTabs{ flex:1; display:flex; align-items:center; gap:4px; padding:0 6px; min-width:0; overflow:hidden }
-.tab{ display:flex; align-items:center; gap:6px; height:30px; max-width:150px; padding:0 10px; cursor:pointer;
-  border-radius:4px; color:#fff; font-size:11px; white-space:nowrap; overflow:hidden;
-  background:linear-gradient(180deg, rgba(255,255,255,.3), rgba(90,140,210,.22));
-  border:1px solid rgba(255,255,255,.45) }
-.tab.pasif{ filter:brightness(.8); background:rgba(255,255,255,.12) }
-.tab svg{ width:15px; height:15px; flex:none }
-.tab .tYaz{ overflow:hidden; text-overflow:ellipsis }
-#tepsi{ display:flex; align-items:center; gap:9px; margin-left:auto; padding:0 12px; color:#fff; font-size:12px;
-  text-shadow:0 1px 2px rgba(0,0,0,.5); border-left:1px solid rgba(255,255,255,.4); cursor:pointer }
-#saat{ text-align:right; line-height:1.3 }
-#saat small{ display:block; font-size:9.5px; opacity:.85 }
+                border-top-right-radius: 8px;
+                border-top-left-radius: 8px;
 
-/* menüler */
-#bMenu{ position:absolute; left:4px; bottom:48px; width:330px; z-index:600; display:none; flex-direction:column;
-  border-radius:10px; overflow:hidden; color:#eaf4ff; box-shadow:0 -5px 26px rgba(3,20,60,.6);
-  background:linear-gradient(42deg, rgba(107,141,157,.8), rgba(66,125,194,.68) 46%, rgba(67,77,87,.62));
-  border:1px solid rgba(150,200,255,.55);
-  -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px) }
-#bMenu.gorun{ display:flex }
-#bMenuGovde{ display:flex }
-#bMR{ width:100px; flex:none; background:linear-gradient(180deg, rgba(10,30,66,.9), rgba(20,52,104,.9));
-  display:flex; flex-direction:column; padding:12px 8px }
-#bMR .kishi{ display:flex; flex-direction:column; align-items:center; gap:7px; margin-bottom:12px }
-#bMR .varlik{ width:50px; height:50px; border-radius:10px; border:2px solid rgba(255,255,255,.8);
-  background:linear-gradient(160deg,#8fd0ff,#1d50aa); display:flex; align-items:center; justify-content:center; font-size:23px }
-#bMR .satir{ padding:6px 6px; border-radius:4px; cursor:pointer; font-size:12px }
-#bMR .satir:hover{ background:rgba(255,255,255,.2) }
-#bMR .ayri{ margin-top:auto; border-top:1px solid rgba(255,255,255,.3); padding-top:8px }
-#bML{ flex:1; padding:8px }
-#bML .ara{ width:100%; border:1px solid rgba(150,200,255,.5); border-radius:99px; background:rgba(255,255,255,.12);
-  color:#fff; font-family:inherit; font-size:12px; padding:7px 12px; outline:none; margin-bottom:8px }
-#bML .ara::placeholder{ color:rgba(230,245,255,.65) }
-#bML .satir{ display:flex; align-items:center; gap:9px; padding:8px; border-radius:5px; cursor:pointer; font-size:12.5px }
-#bML .satir:hover{ background:rgba(120,190,250,.25) }
-#bML .satir svg{ width:22px; height:22px; flex:none }
-#bMenuAlt{ display:flex; justify-content:center; padding:0 6px 6px }
+                background: rgb(107,141,157);
+                background: -moz-linear-gradient(42deg, rgba(107,141,157,0.7693452380952381) 0%, rgba(51,128,143,0.3799894957983193) 36%, rgba(66,125,194,0.6376925770308124) 46%, rgba(95,163,241,0.48363095238095233) 54%, rgba(67,77,87,0.6) 100%);
+                background: -webkit-linear-gradient(42deg, rgba(107,141,157,0.7693452380952381) 0%, rgba(51,128,143,0.3799894957983193) 36%, rgba(66,125,194,0.6376925770308124) 46%, rgba(95,163,241,0.48363095238095233) 54%, rgba(67,77,87,0.6) 100%);
+                background: linear-gradient(42deg, rgba(107,141,157,0.7693452380952381) 0%, rgba(51,128,143,0.3799894957983193) 36%, rgba(66,125,194,0.6376925770308124) 46%, rgba(95,163,241,0.48363095238095233) 54%, rgba(67,77,87,0.6) 100%);
+                filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#6b8d9d",endColorstr="#434d57",GradientType=1);
+                filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#8ca0b9",endColorstr="#434d57",GradientType=1);
 
-#baglam{ position:absolute; z-index:700; width:196px; border-radius:7px; display:none; padding:3px;
-  background:linear-gradient(180deg, rgba(35,80,140,.86), rgba(14,36,72,.9));
-  border:1px solid rgba(150,200,255,.55); backdrop-filter:blur(12px); color:#eaf4ff }
-#baglam.gorun{ display:block }
-#baglam .satir{ padding:7px 10px; font-size:12px; cursor:pointer; border-radius:4px }
-#baglam .satir:hover{ background:rgba(140,200,255,.22) }
-#baglam .ayra{ height:1px; background:rgba(255,255,255,.22); margin:3px 6px }
+                border: 1px solid rgb(9, 17, 27);
 
-/* uygulama gövdeleri */
-.notDefteri{ flex:1; width:100%; border:none; resize:none; font-family:'Segoe UI',Consolas,monospace;
-  font-size:13px; padding:10px; outline:none; background:transparent; color:#122 }
-.webGrid{ padding:12px; display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:8px; align-content:start }
-.webGrid a{ display:block; padding:9px 10px; border:1px solid #b8cce8; border-radius:6px;
-  background:linear-gradient(180deg,#fdfeff,#e8f2fd); color:#12406e; text-decoration:none; font-size:11px }
-.webGrid a:hover{ border-color:#3d9ff4; background:#e3f1ff }
-.webGrid a b{ display:block; font-size:12px; margin-bottom:3px }
-.dGrid{ padding:12px; display:flex; flex-wrap:wrap; gap:12px; align-content:flex-start }
-.dGrid .ogr{ width:72px; text-align:center; cursor:pointer; font-size:11px; color:#123 }
-.dGrid .ogr svg{ width:36px; height:36px; display:block; margin:0 auto 4px }
-.boIpucu{ padding:10px; color:#678; font-size:11px }
-.hakMil{ padding:16px 18px; font-size:12px; line-height:1.75; color:#234 }
-.hesGov{ height:100%; display:flex; flex-direction:column }
-.hesGov .kran{ background:#fff; border:1px solid #9cb4d8; margin:7px; padding:7px 10px; text-align:right;
-  font-size:19px; font-family:Consolas,monospace; min-height:38px; overflow:hidden; border-radius:5px }
-.hesGov .takim{ flex:1; display:grid; grid-template-columns:repeat(4,1fr); gap:5px; padding:0 7px 7px }
-.hesGov .takim button{ font-family:inherit; font-size:14px; cursor:pointer; border-radius:5px;
-  background:linear-gradient(180deg,#f2f7fd,#d9e6f5); border:1px solid #93a9c8; color:#123 }
-.hesGov .takim button:active{ filter:brightness(.9) }
-.cmdGov{ flex:1; font-family:Consolas,'Lucida Console',monospace; font-size:12.5px; padding:8px;
-  white-space:pre-wrap; overflow:auto; color:#d7e4f5; background:rgba(2,10,26,.94); cursor:text }
-.cmdSat{ display:flex; gap:4px; align-items:center; padding:0 8px 8px; background:rgba(2,10,26,.94) }
-.cmdSat .ucret{ color:#5bd3a0; flex:none }
-.cmdIn{ flex:1; background:transparent; border:none; color:#d7e4f5; font-family:inherit; font-size:12.5px; outline:none; min-width:60px }
-/* takvim kartı */
-#tkv{ position:absolute; right:8px; bottom:48px; z-index:650; display:none; width:216px; padding:12px;
-  border-radius:10px; color:#eaf4ff; background:linear-gradient(180deg, rgba(30,70,130,.85), rgba(12,32,66,.9));
-  border:1px solid rgba(150,200,255,.5) }
-#tkv.gorun{ display:block }
-#tkv .kBas{ text-align:center; font-size:13px; margin-bottom:8px }
-#tkv .kGrid{ display:grid; grid-template-columns:repeat(7,1fr); gap:2px; text-align:center; font-size:10.5px }
-#tkv .kGrid span{ padding:4px 0; border-radius:3px; color:#cfe2f8 }
-#tkv .kGrid .bgt{ color:#eaf4ff; background:rgba(130,200,255,.12) }
-#tkv .kGrid .kdn{ color:#fff; background:#2f7fd6 }
-/* sticky */
-.sticky{ width:190px; min-height:160px; background:linear-gradient(180deg,#fff7ae,#ffec74); border-radius:3px;
-  box-shadow:0 3px 10px rgba(0,0,0,.35); color:#4a3b00; font-family:'Segoe Print','Comic Sans MS',cursive;
-  font-size:13px; padding:10px; outline:none; resize:none; border:none }
-</style>
-</head>
-<body>
-<div id="masa">
-  <div class="duvar" id="duvar"></div>
-  <div class="imza" id="imza" title="tıkla, döngü">Kanka7 v1 — özgün yapım</div>
+                box-shadow: 0px 0px 1px black;
+                opacity: 0;
+                transition: 15ms ease-in;
+                backdrop-filter: blur(1.5px);
 
-  <div id="ikonlar"></div>
-  <div id="pencereler"></div>
+            }
+            .startmenu-contents {
+                margin: 4px;
+                background: rgb(255, 255, 253);
+                width: 60%;
+                height: 97%;
+                border-radius: 6px;
+                border: 1px solid rgb(83, 95, 110);
+                padding: 3px;
+                user-select: auto;
+            }
+            .startmenu-element {
+                display: block;
+                font-size: 10.3pt;
 
-  <div id="cubuk">
-    <div id="baslaBtn">
-      <svg viewBox="0 0 20 20"><rect x="2" y="2" width="7.6" height="7.6" rx="1" fill="#bfeaff"/><rect x="10.6" y="2" width="7.6" height="7.6" rx="1" fill="#93e4fd"/><rect x="2" y="10.6" width="7.6" height="7.6" rx="1" fill="#8fd2ff"/><rect x="10.6" y="10.6" width="7.6" height="7.6" rx="1" fill="#c3e9ff"/></svg>
-    </div>
-    <div id="cubukTabs"></div>
-    <div id="tepsi">
-      <svg width="15" height="15" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.4" fill="none" stroke="#fff" stroke-width="1.6"/><path d="M8 4v4l2.6 1.6" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
-      <div id="saat">00:00<small>01.01.2026</small></div>
-    </div>
-  </div>
+                color: black;
+                height: 21px;
 
-  <div id="bMenu">
-    <div id="bMenuGovde">
-      <div id="bMR">
-        <div class="kishi"><div class="varlik">😎</div><div style="text-align:center; font-size:12px">kanka</div></div>
-        <div class="satir" data-ac="bilimsayar">Bilgisayar</div>
-        <div class="satir" data-ac="not">Not Defteri</div>
-        <div class="satir" data-ac="cmd">Komut İstemi</div>
-        <div class="satir" data-ac="web">KankaWeb</div>
-        <div class="satir ayri" data-kapat="1">Kapat</div>
-      </div>
-      <div id="bML">
-        <input class="ara" id="ara" placeholder="program ara…" autocomplete="off">
-        <div id="araListe"></div>
-      </div>
-    </div>
-  </div>
+                border-radius: 3px;
 
-  <div id="tkv"></div>
+                padding: 0px;
+                padding-top: 6px;
+                padding-left: 4px;
+                border: 1px solid black;
+                height: 36px;
+                background: green;
+            }
+            .startmenu-element:hover {
+                background: hotpink;
+            }
+            .startmenu-element-icon {
+                width: 40px;
+                height: 40px;
+                image-rendering: optimizeQuality;
+                margin-top: -5px;
+                margin-left: -2px;
+            }
+            .startmenu-element-text {
+                margin-top: -30px;
+                margin-left: 44px;
+                width: 100%;
+                height: 20px;
+                word-wrap: normal;
+            }
+            .startmenu-sim-title {
+                color: darkblue;
+                font-size: 14px;
+                text-align: center;
+                padding-top: 4px;
+            }
+            .startmenu-sim-subtle {
+                color: darkcyan;
+                font-size: 10.5px;
+                text-align: center;
+            }
+            .startmenu-contents hr {
+                max-width: 160px;
+                margin-bottom: 16px;
+            }
+            .startmenu-contents button {
+                margin: 2px;
+                display: inline;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="windows">
+            <!--<div class="window is-bright" id="new-icon" role="dialog" aria-labelledby="dialog-title">
+                <div class="title-bar">
+                    <div class="title-bar-text" id="dialog-title">TITLETEXT</div>
+                    <div class="title-bar-controls">
+                    <button aria-label="Close" onclick="history.back()"></button>
+                    </div>
+                </div>
+                <div class="window-body">
+                    <h2 class="instruction instruction-primary">Identifying your problem...</h2>
+                    <div role="progressbar" class="marquee"></div>
+                </div>
+                <footer style="text-align: right">
+                    <button onclick="history.back()">Cancel</button>
+                </footer>
+            </div>-->
+        </div>
 
-  <div id="baglam">
-    <div class="satir" data-bag="duvar">Duvar kağıdı: Aurora</div>
-    <div class="ayra"></div>
-    <div class="satir" data-bag="sticky">Yapışkan Not</div>
-    <div class="ayra"></div>
-    <div class="satir" data-bag="hakkinda">Kanka7 Hakkında</div>
-  </div>
-</div>
+        <div class="startmenu" id="start-menu" onclick="clickEvn(this.id)">
+            <div class="startmenu-contents">
+                <div class="startmenu-sim-title">
+                    Windows 7 desktop simulator<br/>
+                </div>
+                <div class="startmenu-sim-subtle">
+                    made by blek!
+                </div>
+                <hr/>
+                <div class="buttons">
+                  <button onclick="addNewGui()">Add new icon</button>
+                  <button onclick="removeIconGui()">Remove icon</button>
+                  <button onclick="resetGui()">Reset all icons</button>
+                </div>
+                <div class="addnew">
+                  <p>Icon title: <input type="text" id="create-title"></input><br/>
+                  Icon URL: <input type="text" id="create-url"></input></p>
+                  <p>Click <button id="create-btn">Create</button> to make the button!</p>
+                  <p id="status-create" style="color:#400;display:none;"></p>
+                  <button id="smenu-back">Back</button>
+                </div>
+                <script type="text/javascript">
+                    // addNewGui()
+                    var iconGuisCount = 1;
+                    $("#status-create").css("display", "none");
 
-<script>
-const SV = {
-  bilgisayar: '<svg viewBox="0 0 32 32"><rect x="3" y="5" width="26" height="17" rx="2" fill="#e8f1fb" stroke="#2760a8" stroke-width="1.6"/><rect x="5" y="7" width="22" height="13" fill="#bfe6ff"/><rect x="12" y="24" width="8" height="3" fill="#9fb8dd"/><rect x="8" y="27" width="16" height="2.4" rx="1" fill="#8fb0d8"/></svg>',
-  cop: '<svg viewBox="0 0 32 32"><path d="M8 9h16l-2 19H10z" fill="#bfe3fa" stroke="#2760a8"/><rect x="6" y="6" width="20" height="3.4" rx="1.6" fill="#d7eefc" stroke="#2760a8"/><path d="M13 13v12M19 13v12" stroke="#2760a8" stroke-width="1.4"/></svg>',
-  not: '<svg viewBox="0 0 32 32"><rect x="6" y="3" width="20" height="26" rx="2" fill="#fff" stroke="#6b86ad"/><path d="M10 9h12M10 13h12M10 17h12M10 21h8" stroke="#4d6382" stroke-width="1.6"/></svg>',
-  hesap: '<svg viewBox="0 0 32 32"><rect x="6" y="3" width="20" height="26" rx="3" fill="#eef4fb" stroke="#2760a8"/><rect x="9" y="6" width="14" height="6" rx="1" fill="#0d47a1"/><g fill="#3c6fc4"><rect x="9" y="15" width="4" height="4" rx="1"/><rect x="15" y="15" width="4" height="4" rx="1"/><rect x="21" y="15" width="2.6" height="4" rx="1"/><rect x="9" y="21" width="4" height="4" rx="1"/><rect x="15" y="21" width="4" height="4" rx="1"/><rect x="21" y="21" width="2.6" height="4" rx="1"/></g></svg>',
-  cmd: '<svg viewBox="0 0 32 32"><rect x="3" y="5" width="26" height="20" rx="2" fill="#0a1220" stroke="#33507a"/><text x="7" y="16" font-size="8" font-family="monospace" fill="#9fdcff">C:\</text><rect x="7" y="19" width="10" height="1.6" fill="#5bd3a0"/></svg>',
-  web: '<svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="12" fill="#d5ebfc" stroke="#2760a8" stroke-width="1.6"/><path d="M4 16h24M16 4c5 5 5 19 0 24M16 4c-5 5-5 19 0 24" stroke="#2760a8" fill="none"/></svg>',
-  klasor: '<svg viewBox="0 0 32 32"><path d="M4 9h9l3 3h12v14H4z" fill="#f7cf5d" stroke="#c39a2a"/></svg>',
-  sticky: '<svg viewBox="0 0 32 32"><rect x="5" y="4" width="22" height="24" rx="2" fill="#fff7ae" stroke="#d8c452"/><path d="M10 10h11M10 15h11M10 20h7" stroke="#c0a63e" stroke-width="1.5"/></svg>'
-};
-const URL_BAZ = 'https://noobtrainer23.github.io/tr-web/';
-const SITELER = [
-  ['play', 'Play', 'oyun sitesi'], ['ders', 'Ders', 'çalışma sekmesi'], ['puan', 'Puan', 'net hesabı'],
-  ['sifre', 'Şifre', 'emoji kodlayıcı'], ['manifest', 'Manifest', 'steam künye'],
-  ['stil', 'Stil', 'unicode yazı'], ['bachane', 'Bahane', 'kurtarıcı cümleler']
-];
-const UYGULAMALAR = {
-  bilimsayar: { bas: 'Bilgisayar', ikon: SV.bilgisayar, boyut: [420, 250], yer: [140, 90] },
-  not: { bas: 'Not Defteri', ikon: SV.not, boyut: [420, 300], yer: [110, 80] },
-  hesap: { bas: 'Hesap Makinesi', ikon: SV.hesap, boyut: [250, 340], yer: [280, 100] },
-  cmd: { bas: 'Komut İstemi', ikon: SV.cmd, boyut: [440, 290], yer: [100, 110] },
-  web: { bas: 'KankaWeb', ikon: SV.web, boyut: [430, 320], yer: [150, 120] },
-  hakkinda: { bas: 'Kanka7 Hakkında', ikon: SV.klasor, boyut: [430, 290], yer: [140, 140] }
-};
-const MENULISTE = Object.keys(UYGULAMALAR).concat(['cop', 'hesap']);
-const IKONLAR = ['bilimsayar', 'cop', 'not', 'hesap', 'cmd', 'web'];
+                    function smenu_back() {
+                      $("#buttons").css("display", "block");
+                      $("#addnew").css("display", "none");
+                    }
+                    $("#smenu-back").on("click", smenu_back);
 
-const masa = document.getElementById('masa');
-const pencereler = document.getElementById('pencereler');
-const cubukTabs = document.getElementById('cubukTabs');
-let zTop = 10;
-const acik = {};
+                    function addnewgui__create() {
+                      var err = false;
+                      var err_m = "";
+                      if ($("#create-title").text() == "") {
+                        err_m += "No title specified; ";
+                        err = true;
+                      } if ($("#create-url").text() == "") {
+                        err_m += "No icon URL specified; ";
+                        err = true;
+                      }
+                      if (err){
+                        $("#status-create").text(err_m);
+                        $("#status-create").css("display", "block");
+                      } else {
+                        $("#status-create").css("display", "none");
+                        $("#status-create").text("");
+                      }
+                    }
+                    $("#create-btn").on("click", addnewgui__create);
+                    function addNewGui() {
+                      $(".buttons").css("display", "none");
+                      $(".addnew").css("display", "block");
+                    }
+                    function createIconFromGui(guiId) {
+                        var text = $("#newicon-text-"+guiId).val();
+                        var icon = $("#newicon-icon-"+guiId).val();
+                        if (icon != "") {
+                            addNew({"text": text, "icon": icon});
+                        } else {
+                            addNew({"text": text});
+                        }
+                    }addNewGui();
+                </script>
 
-/* ---- liste & ikonlar ---- */
-const araListe = document.getElementById('araListe');
-function menuYazIcerik(filtre) {
-  const liste = MENULISTE.filter(k => !filtre || UYGULAMALAR[k] && UYGULAMALAR[k].bas.toLowerCase().includes(filtre) || k === 'cop' && 'geri dönüşüm'.includes(filtre));
-  const kume = [...new Set(liste)];
-  const etiketler = kume.map(k => k === 'cop'
-    ? '<div class="satir" data-ac="cop">' + SV.cop + '<span>Geri Dönüşüm Kutusu</span></div>'
-    : '<div class="satir" data-ac="' + k + '">' + UYGULAMALAR[k].ikon + '<span>' + UYGULAMALAR[k].bas + '</span></div>');
-  araListe.innerHTML = etiketler.join('') || '<p style="padding:8px; font-size:11px; color:#cfe2ff">bulunamadı kanka</p>';
-}
-menuYazIcerik('');
-document.getElementById('ikonlar').innerHTML =
-  IKONLAR.map(k => {
-    const a = k === 'cop' ? { bas: 'Geri Dönüşüm Kutusu', ikon: SV.cop } : UYGULAMALAR[k];
-    return '<div class="ikon" data-ikon="' + k + '">' + a.ikon + '<div>' + a.bas + '</div></div>';
-  }).join('');
-const UYG_UR = t => t === 'cop' ? { bas: 'Geri Dönüşüm Kutusu', ikon: SV.cop } : UYGULAMALAR[t];
+            </div>
+            <script type="text/javascript">
 
-/* ---- pencere yönetimi (XP ile aynı çekirdek) ---- */
-function onePlan(el) {
-  el.style.zIndex = ++zTop;
-  document.querySelectorAll('.tab').forEach(t => t.classList.add('pasif'));
-  const t = document.querySelector('.tab[data-anahtar="' + el.dataset.anahtar + '"]');
-  if (t) t.classList.remove('pasif');
-}
-function pencereGoster(el) { el.classList.remove('gizli'); onePlan(el); }
-function pencereGizle(el) {
-  el.classList.add('gizli');
-  const t = document.querySelector('.tab[data-anahtar="' + el.dataset.anahtar + '"]');
-  if (t) t.classList.add('pasif');
-}
-function pencereKapat(el) {
-  const t = document.querySelector('.tab[data-anahtar="' + el.dataset.anahtar + '"]');
-  if (t) t.remove();
-  delete acik[el.dataset.anahtar];
-  el.remove();
-}
-function pencereTam(el) { el.classList.toggle('tam'); }
+            function clickEvn(id) {
+                if (id == "start-menu" && orbclicked) {} else {
+                    if (Date.now() - orbclickedtime > 1) {
+                        setStartMenu('true');
+                        console.log(id);
+                    }
+                }
+            }
 
-function openApp(anahtar) {
-  const ayar = UYG_UR(anahtar);
-  if (!ayar) return;
-  if (acik[anahtar]) { pencereGoster(acik[anahtar]); return; }
-  menuKapa();
-  const el = document.createElement('div');
-  el.className = 'pencere';
-  el.dataset.anahtar = anahtar;
-  const [g, h] = ayar.boyut, [x, y] = yerDuzenle(ayar.yer, g, h);
-  el.style.cssText = 'left:' + x + 'px; top:' + y + 'px; width:' + g + 'px; height:' + h + 'px; z-index:' + (++zTop);
-  el.innerHTML = '<div class="bBaslik">' + ayar.ikon + '<span>' + ayar.bas + '</span>' +
-    '<span class="tuslar"><button data-i="1">_</button><button data-i="2">□</button><button data-i="0" class="kpat">×</button></span></div>' +
-    '<div class="pGovde"></div>';
-  pencereler.appendChild(el);
-  el.querySelector('.bBaslik').addEventListener('pointerdown', e => {
-    if (e.target.closest('.tuslar') || el.classList.contains('tam')) return;
-    pencereSurukle(e, el);
-  });
-  el.querySelector('.tuslar').addEventListener('click', e => {
-    const t = e.target.dataset.i;
-    if (t === '0') pencereKapat(el);
-    else if (t === '1') pencereGizle(el);
-    else pencereTam(el);
-  });
-  el.addEventListener('pointerdown', () => onePlan(el), true);
-  acik[anahtar] = el;
 
-  const tab = document.createElement('div');
-  tab.className = 'tab';
-  tab.dataset.anahtar = anahtar;
-  tab.innerHTML = ayar.ikon + '<span class="tYaz">' + ayar.bas + '</span>';
-  tab.onclick = () => {
-    if (el.classList.contains('gizli')) pencereGoster(el);
-    else if (tab.classList.contains('pasif')) pencereGoster(el);
-    else pencereGizle(el);
-  };
-  cubukTabs.appendChild(tab);
-  pencereGoster(el);
-  govdeYaz(anahtar, el.querySelector('.pGovde'));
-}
-function yerDuzenle([x, y], g, h) {
-  return [Math.max(8, Math.min(x, window.innerWidth - g - 16)), Math.max(8, Math.min(y, window.innerHeight - h - 64))];
-}
-function menuKapa() {
-  document.getElementById('bMenu').classList.remove('gorun');
-  document.getElementById('baglam').classList.remove('gorun');
-  document.getElementById('tkv').classList.remove('gorun');
-}
-function pencereSurukle(e, el) {
-  const geri = el.getBoundingClientRect();
-  const dx = e.clientX - geri.left, dy = e.clientY - geri.top;
-  el.classList.add('tasiniyor');
-  const hareket = ev => {
-    el.style.left = Math.max(-geri.width + 130, Math.min(ev.clientX - dx, window.innerWidth - 90)) + 'px';
-    el.style.top = Math.max(0, Math.min(ev.clientY - dy, window.innerHeight - 64)) + 'px';
-  };
-  const bitti = () => {
-    el.classList.remove('tasiniyor');
-    document.removeEventListener('pointermove', hareket);
-    document.removeEventListener('pointerup', bitti);
-  };
-  document.addEventListener('pointermove', hareket);
-  document.addEventListener('pointerup', bitti);
-}
+            var iknowitsafullscreenmode = false;
+            document.addEventListener("mousemove", function() {
+                if(window.innerHeight == screen.height) {
+                    if (iknowitsafullscreenmode) {} else {
+                        iknowitsafullscreenmode = true;
+                        var elms = document.getElementsByClassName("startmenu");
+                        for (let i = 0; i < elms.length; i++) {
+                            elms[i].style.top = "54.8%";
+                        }
+                    }
+                } else {
+                    iknowitsafullscreenmode = false;
+                    var elms = document.getElementsByClassName("startmenu");
+                    for (let i = 0; i < elms.length; i++) {
+                        elms[i].style.top = "48.8%";
+                    }
+                }
+            });
+            </script>
+        </div>
+        <div class="desktop" id="main-desktop" onclick="clickEvn(this.id)">
 
-/* ---- gövdeler ---- */
-function govdeYaz(anahtar, g) {
-  if (anahtar === 'not') {
-    g.innerHTML = '<textarea class="notDefteri" spellcheck="false" placeholder="Aero tarzı küçük not…"></textarea>';
-    const ta = g.querySelector('textarea');
-    ta.value = localStorage.getItem('k7_not') || '';
-    ta.addEventListener('input', () => localStorage.setItem('k7_not', ta.value));
-  } else if (anahtar === 'bilimsayar') {
-    g.innerHTML = '<div class="dGrid">' +
-      '<div class="ogr">' + SV.klasor + '<div>C sürücüsü</div></div>' +
-      '<div class="ogr">' + SV.klasor + '<div>kanka_klasör</div></div>' +
-      '<div class="ogr">' + SV.klasor + '<div>arsiv_2010</div></div></div>' +
-      '<p class="boIpucu">Aero tarzı keşit — sürücü dekoru.</p>';
-  } else if (anahtar === 'cop') {
-    g.innerHTML = '<p class="boIpucu">Aero kutusu: cam gibi, içerik boş. 🗑️</p>';
-  } else if (anahtar === 'hesap') {
-    hesapKur(g);
-  } else if (anahtar === 'cmd') {
-    cmdKur(g);
-  } else if (anahtar === 'web') {
-    g.innerHTML = '<div class="webGrid">' +
-      SITELER.map(s => '<a href="' + URL_BAZ + s[0] + '/" target="_blank"><b>' + s[1] + '</b>' + s[2] + '</a>').join('') +
-      '</div><p class="boIpucu">KankaWeb — masaüstünden kümemize köprü</p>';
-  } else if (anahtar === 'hakkinda') {
-    g.innerHTML = '<div class="hakMil"><b>Kanka7 v1 özenti yapım</b><br>' +
-      'Aero görsel dili esin kaynağı; cam, blur ve renkler sıfırdan CSS ile yapıldı.<br>' +
-      'Microsoft ile bağ yok; Windows 7\'ye sadece saygı duruşu.<br><br>' +
-      'Bizden sırlar: yapışkan not, takvim kartı, KankaWeb, imzadaki renk döngüsü.<br>' +
-      'İmza: kanka 🩵</div>';
-  }
-}
-/* hesap makinesi */
-function hesapKur(g) {
-  g.innerHTML = '<div class="hesGov"><div class="kran">0</div><div class="takim"></div></div>';
-  const kr = g.querySelector('.kran');
-  const tk = g.querySelector('.takim');
-  let cur = '0', son = null, op = null, yeni = false;
-  const TUSLAR = ['C', '←', '/', '7', '8', '9', '*', '4', '5', '6', '-', '1', '2', '3', '+', '0', '.', '=', '±'];
-  tk.innerHTML = TUSLAR.map(t => '<button data-t="' + t + '">' + t + '</button>').join('');
-  const hes = (a, o, b) => o === '+' ? a + b : o === '-' ? a - b : o === '*' ? a * b : (b === 0 ? NaN : a / b);
-  function yaz() {
-    const s = isNaN(parseFloat(cur)) ? 'sıfıra bölünmez' : cur;
-    kr.textContent = s;
-  }
-  tk.addEventListener('click', e => {
-    const tu = e.target.dataset.t;
-    if (!tu) return;
-    if (tu === 'C') { cur = '0'; son = null; op = null; yeni = false; }
-    else if (tu === '←') cur = cur.length > 1 ? cur.slice(0, -1) : '0';
-    else if (tu === '±') cur = cur.startsWith('-') ? cur.slice(1) || '0' : '-' + cur;
-    else if ('+-*/'.indexOf(tu) > -1 && tu.length === 1) {
-      if (op !== null && son !== null && !yeni) son = hes(parseFloat(son), op, parseFloat(cur));
-      else son = cur;
-      if (isNaN(son)) { cur = 'sıfıra bölünmez'; op = null; son = null; yeni = false; yaz(); return; }
-      op = tu; yeni = true;
-      cur = String(son);
-    } else if (tu === '=') {
-      if (op !== null && son !== null) {
-        const r = hes(parseFloat(son), op, parseFloat(cur));
-        cur = isNaN(r) ? 'sıfıra bölünmez' : String(r);
-      }
-      op = null; son = null; yeni = true;
-    } else {
-      if (yeni) { cur = tu === '.' ? '0.' : tu; yeni = false; }
-      else if (tu === '.' && cur.includes('.')) { yaz(); return; }
-      else cur = cur === '0' && tu !== '.' ? tu : cur + tu;
-    }
-    yaz();
-  });
-  yaz();
-}
-/* cmd */
-function cmdKur(g) {
-  g.innerHTML = '<div class="cmdGov">Kanka7 komut satırı v1\n(help yaz, enter\'a bas)\n\n</div>' +
-    '<div class="cmdSat"><span class="ucret">C:\\kanka&gt;</span>' +
-    '<input class="cmdIn" spellcheck="false" autocomplete="off"></div>';
-  const kar = g.querySelector('.cmdGov');
-  const inp = g.querySelector('.cmdIn');
-  g.addEventListener('click', e => { if (!e.target.closest('input')) inp.focus(); });
-  inp.addEventListener('keydown', e => {
-    if (e.key !== 'Enter') return;
-    const met = inp.value.trim(); inp.value = '';
-    kar.textContent += 'C:\\kanka> ' + met + '\n';
-    const [cmd, ...p] = met.split(' ');
-    if (cmd === 'cls') { kar.textContent = ''; inp.focus(); return; }
-    let yanit = '"' + (cmd || '') + '" tanımıyor — help yaz\n';
-    if (cmd === 'help') yanit = 'komutlar: help, dir, echo, kanka, puan\n';
-    else if (cmd === 'dir') yanit = ' kanka_klasor   arsiv_2010   aero.css\n';
-    else if (cmd === 'echo') yanit = p.join(' ') + '\n';
-    else if (cmd === 'kanka') yanit = 'kanka! aero testi: cam ışığı tam 🩵\n';
-    else if (cmd === 'puan') {
-      yanit = 'puan sekmesi açılıyor...\n';
-      window.open(URL_BAZ + 'puan/', '_blank');
-    }
-    kar.textContent += yanit;
-    kar.scrollTop = kar.scrollHeight;
-  });
-}
-/* yapışkan not */
-function stickyAc(x, y) {
-  const el = document.createElement('div');
-  el.className = 'sticky';
-  el.contentEditable = 'true';
-  el.style.cssText = 'position:absolute; left:' + x + 'px; top:' + y + 'px; z-index:' + (++zTop);
-  el.textContent = localStorage.getItem('k7_sticky') || 'bu yapışkan not kanka — uykundan önce yazılmış 💡';
-  document.getElementById('pencereler').appendChild(el);
-  el.addEventListener('pointerdown', ev => {
-    const geri = el.getBoundingClientRect();
-    const dx = ev.clientX - geri.left, dy = ev.clientY - geri.top;
-    el.style.cursor = 'move';
-    const hareket = e => {
-      el.style.left = Math.max(0, e.clientX - dx) + 'px';
-      el.style.top = Math.max(0, e.clientY - dy) + 'px';
-    };
-    const bitti = () => {
-      el.style.cursor = 'text';
-      document.removeEventListener('pointermove', hareket);
-      document.removeEventListener('pointerup', bitti);
-    };
-    document.addEventListener('pointermove', hareket);
-    document.addEventListener('pointerup', bitti);
-  });
-  el.addEventListener('input', () => localStorage.setItem('k7_sticky', el.textContent));
-  el.addEventListener('dblclick', () => el.remove());
-}
+            <script type="text/javascript">
+                function repeat(func, times) {
+                    func();
+                    times && --times && repeat(func, times);
+                }
+                function openFullscreen(elem) {
+                    if (elem.requestFullscreen) {
+                        elem.requestFullscreen();
+                    } else if (elem.webkitRequestFullscreen) { /* Safari */
+                        elem.webkitRequestFullscreen();
+                    } else if (elem.msRequestFullscreen) { /* IE11 */
+                        elem.msRequestFullscreen();
+                    }
+                }
+                var md = document.getElementById("main-desktop");
+                var currentPositionX = 1;
+                var currentPositionY = 1;
+                const MAX_X = 16;
+                const MAX_Y = 11;
+                function addNew(args) {
+                    var de = document.createElement("div");
+                    md.appendChild(de);
+                    de.setAttribute("id", currentPositionY.toString() + "." + currentPositionX.toString());
+                    de.setAttribute("class", "desktopelement");
+                    de.setAttribute("style", "grid-column:" + currentPositionX.toString() + "; grid-row:" + currentPositionY.toString());
+                    if (!args['disableDragging']) de.setAttribute("draggable", "true");
+                    if (args['onclick']) de.setAttribute("onclick", args['onclick']);
 
-/* ---- masa etkileşimleri ---- */
-document.getElementById('baslaBtn').addEventListener('click', e => {
-  e.stopPropagation();
-  const m = document.getElementById('bMenu');
-  document.getElementById('tkv').classList.remove('gorun');
-  document.getElementById('baglam').classList.remove('gorun');
-  m.classList.toggle('gorun');
-  if (m.classList.contains('gorun')) { document.getElementById('ara').value = ''; menuYazIcerik(''); setTimeout(() => document.getElementById('ara').focus(), 50); }
-});
-document.getElementById('ara').addEventListener('input', e => menuYazIcerik(e.target.value.toLowerCase()));
-document.getElementById('tepsi').addEventListener('click', e => {
-  e.stopPropagation();
-  menuKapa();
-  takvimCiz();
-  document.getElementById('tkv').classList.toggle('gorun');
-});
-document.addEventListener('click', e => {
-  const kapatilacak = !e.target.closest('#bMenu') && !e.target.closest('#baslaBtn') &&
-    !e.target.closest('#baglam') && !e.target.closest('#tkv');
-  if (kapatilacak) menuKapa();
-  const ac = e.target.closest('[data-ac]');
-  if (ac) { openApp(ac.dataset.ac); return; }
-  const bg = e.target.closest('[data-bag]');
-  if (bg) {
-    const a = bg.dataset.bag;
-    menuKapa();
-    if (a === 'duvar') duvarCevir();
-    else if (a === 'sticky') stickyAc(200, 160);
-    else if (a === 'hakkinda') openApp('hakkinda');
-  }
-});
-document.addEventListener('dblclick', e => {
-  const ikon = e.target.closest('.ikon, .dGrid .ogr');
-  if (ikon) openApp(ikon.dataset.ikon);
-});
-document.getElementById('ikonlar').addEventListener('click', e => {
-  document.querySelectorAll('.ikon').forEach(i => i.classList.remove('sel'));
-  const ikon = e.target.closest('.ikon');
-  if (ikon) ikon.classList.add('sel');
-});
-masa.addEventListener('contextmenu', e => {
-  if (e.target.closest('.pencere') || e.target.closest('.sticky') || e.target.closest('#cubuk') || e.target.closest('#bMenu')) { menuKapa(); return; }
-  e.preventDefault();
-  const b = document.getElementById('baglam');
-  menuKapa();
-  b.classList.add('gorun');
-  b.style.left = Math.min(e.clientX, window.innerWidth - 206) + 'px';
-  b.style.top = Math.min(e.clientY, window.innerHeight - 170) + 'px';
-});
-document.querySelector('[data-kapat]').addEventListener('click', () => {
-  masa.style.opacity = '0.02';
-  setTimeout(() => location.reload(), 800);
-});
+                    if (args['icon']) {
+                        var icn = document.createElement("img");
+                        de.appendChild(icn);
+                        icn.setAttribute("src", args['icon']);
+                        icn.setAttribute("class", "elemicon");
+                    }
 
-function duvarCevir() {
-  const d = document.getElementById('duvar');
-  const turler = ['', 'have', 'gece'];
-  const ip = (parseInt(d.dataset.ip || '0') + 1) % 3;
-  d.dataset.ip = ip;
-  d.className = 'duvar ' + turler[ip];
-}
-function takvimCiz() {
-  const n = new Date();
-  const yil = n.getFullYear(), ay = n.getMonth();
-  const ilk = new Date(yil, ay, 1).getDay();
-  const adet = new Date(yil, ay + 1, 0).getDate();
-  const adlar = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'];
-  let h = '<div class="kBas">' + (ay + 1).toString().padStart(2, '0') + '.' + yil + '</div><div class="kGrid">';
-  adlar.forEach(a => h += '<span style="color:#9fdcff">' + a + '</span>');
-  for (let i = 0; i < ilk; i++) h += '<span></span>';
-  for (let i = 1; i <= adet; i++) h += '<span class="' + (i === n.getDate() ? 'kdn' : 'bgt') + '">' + i + '</span>';
-  h += '</div><p style="margin-top:9px; text-align:center; font-size:10.5px; color:#cfe2ff">' +
-    'Takvim kartı — Kanka7\'nin küçük sırrı 🩵</p>';
-  const tkv = document.getElementById('tkv');
-  tkv.innerHTML = h;
-}
-/* imza easter egg */
-document.getElementById('imza').addEventListener('click', () => {
-  const d = document.getElementById('duvar');
-  const f = (parseInt(d.dataset.hue || '0') + 72) % 360;
-  d.dataset.hue = f;
-  d.style.filter = f ? 'hue-rotate(' + f + 'deg)' : '';
-});
-/* saat */
-setInterval(() => {
-  const n = new Date();
-  let t = String(n.getHours()).padStart(2, '0') + ':' + String(n.getMinutes()).padStart(2, '0') +
-    '<small>' + String(n.getDate()).padStart(2, '0') + '.' + String(n.getMonth() + 1).padStart(2, '0') + '.' + n.getFullYear() + '</small>';
-  document.getElementById('saat').innerHTML = t;
-}, 1000);
-</script>
+                    var det = document.createElement("div");
+                    de.appendChild(det);
+                    det.setAttribute("class", "elemtext");
+                    det.setAttribute("id", currentPositionY.toString() + "." + currentPositionX.toString() + "icd");
+                    if (args['icon']) {} else {
+                        det.setAttribute("style", "margin-top: 85%")
+                    }
+                    det.innerHTML = "Element";
+                    if (args['text']) {
+                        det.innerHTML = args['text'];
+                    }
+                    if (currentPositionY == MAX_Y) {
+                        currentPositionY = 1;
+                        currentPositionX++;
+                    } else {
+                        currentPositionY++;
+                    }
+                    return de.id;
+                }
+
+                openFullscreen(document.documentElement);
+                addNew({"text": "My Computer", "icon": "https://i.imgur.com/UULStIq.png", "disableDragging": true});
+                addNew({"text": "Recycle Bin", "icon": "https://i.imgur.com/5lKwuH4.png", "disableDragging": true});
+                addNew({"text": "Explorer", "icon": "https://i.imgur.com/5VFN2av.png", 'onclick': 'addNew({\"text\": \"Test\", \"icon\": \"https://findicons.com/files/icons/2711/free_icons_for_windows8_metro/128/test_tube.png\"})'});
+                //addNew({"text": "Add new icon", "icon": "https://i.imgur.com/zSejle0.png"});
+            </script>
+        </div>
+
+        <div class="footer" id="main-taskbar" onclick="clickEvn(this.id)">
+            <div class="w7orb" id="orb" onclick="clickEvn(this.id)"></div>
+            <script>
+                // Orb script
+                // Normal:
+                // https://i.imgur.com/3AFt84R.png
+                // Hovered:
+                // https://i.imgur.com/Npx40cV.png
+                // Clicked:
+                // https://i.imgur.com/kx7b2ul.png
+
+                var orbclicked = true;
+                $("#orb").hover(
+                    function() {
+                        $(this)
+                        .css("background-image", "url(https://i.imgur.com/Npx40cV.png")
+                        if (orbclicked) {
+                            $(this).css("background-image", "url(https://i.imgur.com/kx7b2ul.png)")
+                        }
+                    },
+                    function() {
+                        $(this)
+                        .css("background-image", "url(https://i.imgur.com/3AFt84R.png")
+                        if (orbclicked) {
+                            $(this).css("background-image", "url(https://i.imgur.com/kx7b2ul.png)")
+                        }
+                    }
+                );
+
+                var orb = document.getElementById("orb");
+                orb.setAttribute("onclick", "toggleStartMenu()");
+                var smenu = document.getElementById("start-menu");
+                var orbclickedtime = Date.now();
+                function toggleStartMenu() {
+                    if (smenu.style.opacity < 1) {
+                        smenu.style.opacity = 255;
+                        $("#start-menu").css("display", "block");
+                        orbclicked = true;
+                        orbclickedtime = Date.now();
+                        $("#orb").css("background-image", "url(https://i.imgur.com/kx7b2ul.png)");
+                    } else {
+                        smenu.style.opacity = 0;
+                        $("#start-menu").css("display", "none");
+                        orbclicked = false;
+                        $("#orb").css("background-image", "url(https://i.imgur.com/3AFt84R.png)");
+                    }
+                }
+
+                function setStartMenu(wrapped) {
+                    if (wrapped == 'true') {
+                        $("#start-menu").css("display", "none");
+                        smenu.style.opacity = 0;
+                        orbclicked = false;
+                        $("#orb").css("background-image", "url(https://i.imgur.com/3AFt84R.png)");
+                    } if (wrapped == 'false') {
+                        smenu.style.opacity = 255;
+                        $("#start-menu").css("display", "block");
+                        orbclicked = true;
+                        $("#orb").css("background-image", "url(https://i.imgur.com/kx7b2ul.png)");
+                    } if (wrapped != 'true' && wrapped != 'false') {
+                        console.error("setStartMenu(wrapped) - wrapped takes only true or false")
+                    }
+                }
+
+                // start menu element on hover
+            </script>
+
+        </div>
+
+    
+<div kanka-uretim-imza style="position:fixed;right:10px;bottom:8px;z-index:2147483647;color:rgba(255,255,255,.85);font-size:11px;text-shadow:0 1px 3px rgba(0,0,0,.8);pointer-events:none;font-family:sans-serif">Kanka7 &bull; görünüm kaynağı: b1ek/win7-sim (MIT)</div>
 </body>
 </html>
