@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Puan Muhasebesi — LGS · YKS · KPSS · Bursluluk Net Hesabı</title>
+<meta name="description" content="LGS, YKS (TYT-AYT), KPSS ve İOKBS bursluluk sınavları için net ve puan hesabı; MEB ve ÖSYM tablolarına dayalı katsayılar tarayıcıda çalışır, hiçbir veri gönderilmez.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0f1a'/%3E%3Ctext x='16' y='23' font-size='14' font-family='monospace' text-anchor='middle'%3E%F0%9F%93%90%3C/text%3E%3C/svg%3E">
+<style>
+:root{ --bg:#0b0f1a; --yuz:#101625; --yuz2:#141c30; --cg:#223049; --met:#dce3f2;
+  --met3:#7d88a3; --yesil:#4ade80; --cyan:#22d3ee; --mavi:#60a5fa; --mor:#a78bfa;
+  --sari:#fbbf24; --pembe:#f472b6 }
+*{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent }
+body{ background:
+  radial-gradient(1000px 500px at 80% -10%, rgba(34,211,238,.06), transparent 60%),
+  var(--bg); color:var(--met); min-height:100vh;
+  display:flex; flex-direction:column; align-items:center; padding:30px 14px 44px;
+  font-family:ui-monospace,'Cascadia Code',Consolas,monospace }
+.banta{ width:min(920px,100%) }
+.ust{ text-align:center; margin-bottom:18px }
+.ust h1{ font-size:23px; letter-spacing:.5px }
+.ust h1 span{ color:var(--cyan) }
+.ust p{ color:var(--met3); font-size:12px; margin-top:6px; line-height:1.7 }
+.sekme{ display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:16px }
+.sekme button{ cursor:pointer; font-family:inherit; font-size:12.5px; font-weight:700;
+  color:var(--met3); background:var(--yuz); border:1px solid var(--cg);
+  border-radius:9px; padding:9px 16px; transition:.15s }
+.sekme button.on{ color:var(--renk,var(--yesil)); border-color:var(--renk,var(--yesil));
+  background:var(--yuz2) }
+.tyrne{ cursor:pointer; font-family:inherit; font-size:12px; font-weight:700;
+  color:var(--met3); background:var(--yuz); border:1px solid var(--cg);
+  border-radius:8px; padding:8px 14px; transition:.15s }
+.tyrne.on{ color:var(--mor); border-color:var(--mor); background:var(--yuz2) }
+.panel{ display:none } .panel.gorun{ display:block; animation:yukSel .3s ease both }
+@keyframes yukSel{ from{ opacity:0; transform:translateY(10px) } to{ opacity:1 } }
+.tablo{ background:var(--yuz); border:1px solid var(--cg); border-radius:14px;
+  overflow:hidden; margin-bottom:14px }
+.tbas{ display:flex; align-items:center; gap:10px; padding:10px 16px;
+  background:#0d1422; border-bottom:1px solid var(--cg); font-size:12px; flex-wrap:wrap }
+.tbas b{ color:var(--renk,var(--yesil)) }
+.tbas .formul{ margin-left:auto; color:var(--met3); font-size:10.5px; text-align:right }
+.satir{ display:flex; align-items:center; gap:10px; padding:9px 16px;
+  border-bottom:1px solid rgba(34,48,73,.5); font-size:12.5px; flex-wrap:wrap }
+.satir:last-child{ border-bottom:none }
+.satir .ad{ width:150px; min-width:130px }
+.satir .ad small{ display:block; color:var(--met3); font-size:9.5px }
+.sayi{ display:flex; align-items:center; gap:5px }
+.sayi label{ color:var(--met3); font-size:10.5px; width:52px; text-align:right }
+.sayi input{ width:74px; background:var(--yuz2); border:1px solid var(--cg);
+  color:var(--met); font-family:inherit; border-radius:7px; padding:7px 9px; font-size:12.5px;
+  text-align:center; -moz-appearance:textfield }
+.sayi input::-webkit-inner-spin-button{ display:none }
+.sayi input:focus{ outline:none; border-color:var(--renk,var(--yesil)) }
+.satir .net{ margin-left:auto; font-size:11px; color:var(--met3) }
+.satir .net b{ color:var(--renk,var(--yesil)); font-size:13px }
+.sonuc{ background:var(--yuz2); border:1px solid var(--renk,var(--yesil));
+  border-radius:14px; padding:16px 18px; display:flex; gap:14px; flex-wrap:wrap;
+  align-items:stretch; margin-bottom:12px }
+.sonuc .kutu{ flex:1; min-width:150px; text-align:center;
+  background:rgba(255,255,255,.03); border:1px solid var(--cg); border-radius:10px; padding:12px }
+.sonuc .kutu small{ color:var(--met3); font-size:10px; letter-spacing:.5px; display:block }
+.sonuc .kutu b{ display:block; font-size:24px; margin-top:6px; color:var(--renk,var(--yesil)) }
+.sonuc .iki{ font-size:11px; color:var(--met3); margin-top:4px }
+.not{ margin-top:10px; color:var(--met3); font-size:10.5px; line-height:1.7 }
+.not b{ color:var(--sari) }
+.baraj{ display:inline-block; margin-top:8px; padding:5px 12px; border-radius:99px;
+  font-size:10.5px; border:1px solid var(--cg); color:var(--met3); background:var(--yuz) }
+.baraj.ok{ color:var(--yesil); border-color:var(--yesil) }
+.baraj.yetmez{ color:#f87171; border-color:#f87171 }
+.arti{ background:var(--yuz); border:1px solid var(--cg); border-radius:14px;
+  overflow:hidden; margin-bottom:12px; overflow-x:auto }
+.arti table{ width:100%; border-collapse:collapse; font-size:10.5px }
+.arti th, .arti td{ padding:7px 12px; text-align:left;
+  border-bottom:1px solid rgba(34,48,73,.5); color:var(--met3) }
+.arti th{ color:var(--met) }
+.arti tr:last-child td{ border-bottom:none }
+.duyuri{ text-align:center; margin-top:10px; color:var(--met3); font-size:10.5px }
+@media(prefers-reduced-motion:reduce){ *{ animation:none!important; transition:none!important } }
+</style>
+</head>
+<body>
+<div class="banta">
+  <div class="ust">
+    <h1>PUAN MUHASEBESI<span>_</span></h1>
+    <p>LGS · YKS (TYT+AYT) · KPSS · İOKBS — MEB ve ÖSYM tablolarına dayalı net &amp; puan hesabı; her şey tarayıcında çalışır, hiçbir veri gönderilmez.</p>
+  </div>
+
+  <div class="sekme" id="tablar">
+    <button data-t="lgs" class="on" style="--renk:var(--cyan)">LGS</button>
+    <button data-t="yks" style="--renk:var(--mor)">YKS · TYT+AYT</button>
+    <button data-t="kpss" style="--renk:var(--sari)">KPSS</button>
+    <button data-t="burs" style="--renk:var(--pembe)">Bursluluk İOKBS</button>
+  </div>
+
+  <div class="panel gorun" id="lgs" style="--renk:var(--cyan)">
+    <div class="tablo">
+      <div class="tbas"><b>LGS — 90 soru</b><span class="formul">net = doğru − yanlış ÷ 3 · katsayı: T/M/F 4, diğer 1</span></div>
+      <div class="satir" data-sor="20" data-kats="4"><span class="ad">Türkçe<small>soru 20</small></span><span class="sayi"><label>Doğru</label><input type="number" min="0" max="20" class="d" inputmode="numeric"><label>Yanlış</label><input type="number" min="0" max="20" class="y" inputmode="numeric"></span><span class="net">net <b>0</b></span></div>
+      <div class="satir" data-sor="20" data-kats="4"><span class="ad">Matematik<small>soru 20</small></span><span class="sayi"><label>Doğru</label><input type="number" min="0" max="20" class="d" inputmode="numeric"><label>Yanlış</label><input type="number" min="0" max="20" class="y" inputmode="numeric"></span><span class="net">net <b>0</b></span></div>
+      <div class="satir" data-sor="20" data-kats="4"><span class="ad">Fen Bilimleri<small>soru 20</small></span><span class="sayi"><label>Doğru</label><input type="number" min="0" max="20" class="d" inputmode="numeric"><label>Yanlış</label><input type="number" min="0" max="20" class="y" inputmode="numeric"></span><span class="net">net <b>0</b></span></div>
+      <div class="satir" data-sor="10" data-kats="1"><span class="ad">İnkılap Tarihi<small>soru 10</small></span><span class="sayi"><label>Doğru</label><input type="number" min="0" max="10" class="d" inputmode="numeric"><label>Yanlış</label><input type="number" min="0" max="10" class="y" inputmode="numeric"></span><span class="net">net <b>0</b></span></div>
+      <div class="satir" data-sor="10" data-kats="1"><span class="ad">Din Kültürü<small>soru 10</small></span><span class="sayi"><label>Doğru</label><input type="number" min="0" max="10" class="d" inputmode="numeric"><label>Yanlış</label><input type="number" min="0" max="10" class="y" inputmode="numeric"></span><span class="net">net <b>0</b></span></div>
+      <div class="satir" data-sor="10" data-kats="1"><span class="ad">Yabancı Dil<small>soru 10</small></span><span class="sayi"><label>Doğru</label><input type="number" min="0" max="10" class="d" inputmode="numeric"><label>Yanlış</label><input type="number" min="0" max="10" class="y" inputmode="numeric"></span><span class="net">net <b>0</b></span></div>
+    </div>
+    <div class="sonuc">
+      <div class="kutu"><small>TOPLAM NET</small><b id="lgNet">0,00</b><span class="iki">en fazla 90</span></div>
+      <div class="kutu"><small>AĞIRLIKLI NET</small><b id="lgAy">0,00</b><span class="iki">katsayılı, en fazla 270</span></div>
+      <div class="kutu"><small>TAHMİNİ MERKEZİ PUAN</small><b id="lgPuan">100,0</b><span class="iki">100–500 ölçeğinde yaklaşım</span></div>
+    </div>
+    <p class="not"><b>Gerçek:</b> MEB 2025 kılavuzu (Tablo-2): katsayılar Türkçe/Matematik/Fen 4; İnkılap/Din/Yabancı Dil 1. Merkezi puan 100–500 aralığında standart puan (ortalama ve standart sapma) ile ölçeklenir — buradaki &quot;tahmin&quot; bu dönüşümün lineer yaklaşımıdır; resmî puan yalnız açıklanan dönemde ilan edilir.</p>
+    <p class="duyuri"> Kaynak: odsgm.meb.gov.tr · LGS kılavuzu</p>
+  </div>
+
+  <div class="panel" id="yks" style="--renk:var(--mor)">
+    <div class="sekme" id="yksTur">
+      <button type="button" class="tyrne on" data-k="say">SAY</button>
+      <button type="button" class="tyrne" data-k="ea">EA</button>
+      <button type="button" class="tyrne" data-k="soz">SÖZ</button>
+      <span style="align-self:center; color:var(--met3); font-size:10.5px">puan türü seç — AYT tablosu değişir</span>
+    </div>
+    <div class="tablo" id="tytTablo">
+      <div class="tbas"><b>TYT — 120 soru</b><span class="formul">net = doğru − yanlış ÷ 4</span></div>
+      <div class="satir" data-sor="40"><span class="ad">Türkçe<small>soru 40</small></span><span class="sayi"><label>Doğru</label><input type="number" min="0" max="40" class="d" inputmode="numeric"><label>Yanlış</label><input type="number" min="0" max="40" class="y" inputmode="numeric"></span><span class="net">net <b>0</b></span></div>
+      <div class="satir" data-sor="40"><span class="ad">Temel Matematik<small>soru 40</small></span><span class="sayi"><label>Doğru</label><input type="number" min="0" max="40" class="d" inputmode="numeric"><label>Yanlış</label><input type="number" min="0" max="40" class="y" inputmode="numeric"></span><span class="net">net <b>0</b></span></div>
+      <div class="satir" data-sor="20"><span class="ad">Sosyal Bilimler<small>soru 20</small></span><span class="sayi"><label>Doğru</label><input type="number" min="0" max="20" class="d" inputmode="numeric"><label>Yanlış</label><input type="number" min="0" max="20" class="y" inputmode="numeric"></span><span class="net">net <b>0</b></span></div>
+      <div class="satir" data-sor="20"><span class="ad">Fen Bilimleri<small>soru 20</small></span><span class="sayi"><label>Doğru</label><input type="number" min="0" max="20" class="d" inputmode="numeric"><label>Yanlış</label><input type="number" min="0" max="20" class="y" inputmode="numeric"></span><span class="net">net <b>0</b></span></div>
+    </div>
+    <div class="tablo" id="aytTablo">
+      <div class="tbas"><b>AYT — SAY testleri</b><span class="formul">net = doğru − yanlış ÷ 4</span></div>
+    </div>
+    <div class="tablo">
+      <div class="tbas"><b>OBP — ortaöğretim başarı puanı</b><span class="formul">yerleştirme = ham + OBP × 0,12</span></div>
+      <div class="satir" data-sor="100"><span class="ad">Diploma Notu<small>50–100</small></span><span class="sayi"><label>Not</label><input type="number" id="dip" min="50" max="100" value="75" inputmode="numeric"></span><span class="net">OBP <b id="obp">375</b></span></div>
+    </div>
+    <div class="sonuc">
+      <div class="kutu"><small>TYT HAM PUANI</small><b id="ytHam">145,47</b><span class="iki">taban 145,47</span></div>
+      <div class="kutu"><small id="yksAd">SAY HAM PUANI</small><b id="ykHam">132,87</b><span class="iki" id="yksTb">AYT taban 132,87</span></div>
+      <div class="kutu"><small>YERLEŞTİRME PUANI</small><b id="ykYer">132,87</b><span class="iki">ham + OBP katkısı</span></div>
+    </div>
+    <span class="baraj" id="tytBaraj">TYT barajı: hesaplanmadı</span>
+    <p class="not"><b>Katsayılar:</b> ÖSYM 2025 hesap tablosu. TYT: Türkçe 2,83 · Sosyal 2,99 · Mat 3,28 · Fen 2,53 (taban 145,47). SAY AYT: Mat 2,89 · Fizik 2,46 · Kimya 2,53 · Biyoloji 2,61 (taban 132,87). EA AYT: Mat 2,88 · Edebiyat 2,94 · Tarih-1 2,53 · Coğrafya-1 2,85 (taban 129,34). SÖZ AYT: Edebiyat 2,79 · Tarih-1 2,39 · Coğrafya-1 2,70 · Tarih-2 3,80 · Coğrafya-2 2,47 · Felsefe 3,76 · DKAB 2,36 (taban 129,61). ÖSYM tam katsayıları her yıl sınavdan sonra günceller.</p>
+    <p class="duyuri"> Kaynak: osym.gov.tr · 2025 katsayı tabloları</p>
+  </div>
+
+  <div class="panel" id="kpss" style="--renk:var(--sari)">
+    <div class="tablo">
+      <div class="tbas"><b>KPSS Genel Yetenek — 60 soru</b><span class="formul">net = doğru − yanlış ÷ 4</span></div>
+      <div class="satir" data-sor="30"><span class="ad">Türkçe<small>soru 30</small></span><span class="sayi"><label>Doğru</label><input type="number" min="0" max="30" class="d" inputmode="numeric"><label>Yanlış</label><input type="number" min="0" max="30" class="y" inputmode="numeric"></span><span class="net">net <b>0</b></span></div>
+      <div class="satir" data-sor="30"><span class="ad">Genel Matematik<small>soru 30</small></span><span class="sayi"><label>Doğru</label><input type="number" min="0" max="30" class="d" inputmode="numeric"><label>Yanlış</label><input type="number" min="0" max="30" class="y" inputmode="numeric"></span><span class="net">net <b>0</b></span></div>
+    </div>
+    <div class="tablo">
+      <div class="tbas"><b>KPSS Genel Kültür — 60 soru</b><span class="formul">net = doğru − yanlış ÷ 4</span></div>
+      <div class="satir" data-sor="24"><span class="ad">Tarih<small>soru 24</small></span><span class="sayi"><label>Doğru</label><input type="number" min="0" max="24" class="d" inputmode="numeric"><label>Yanlış</label><input type="number" min="0" max="24" class="y" inputmode="numeric"></span><span class="net">net <b>0</b></span></div>
+      <div class="satir" data-sor="12"><span class="ad">Coğrafya<small>soru 12</small></span><span class="sayi"><label>Doğru</label><input type="number" min="0" max="12" class="d" inputmode="numeric"><label>Yanlış</label><input type="number" min="0" max="12" class="y" inputmode="numeric"></span><span class="net">net <b>0</b></span></div>
+      <div class="satir" data-sor="12"><span class="ad">Vatandaşlık<small>soru 12</small></span><span class="sayi"><label>Doğru</label><input type="number" min="0" max="12" class="d" inputmode="numeric"><label>Yanlış</label><input type="number" min="0" max="12" class="y" inputmode="numeric"></span><span class="net">net <b>0</b></span></div>
+      <div class="satir" data-sor="12"><span class="ad">Güncel Bilgiler<small>soru 12</small></span><span class="sayi"><label>Doğru</label><input type="number" min="0" max="12" class="d" inputmode="numeric"><label>Yanlış</label><input type="number" min="0" max="12" class="y" inputmode="numeric"></span><span class="net">net <b>0</b></span></div>
+    </div>
+    <div class="sonuc">
+      <div class="kutu"><small>GENEL YETENEK NETİ</small><b id="kpGT">0,00</b><span class="iki">en fazla 60</span></div>
+      <div class="kutu"><small>GENEL KÜLTÜR NETİ</small><b id="kpGK">0,00</b><span class="iki">en fazla 60</span></div>
+      <div class="kutu"><small>HAM PUAN</small><b id="kpTop">0,00</b><span class="iki">toplam net, en fazla 120</span></div>
+    </div>
+    <p class="not"><b>Gerçek:</b> KPSS'de ham puan toplam net'tir; P3/P93 gibi standart puanlar ÖSYM'in o yılki dağılımına bağlı olarak ölçeklenir (stub değil, araç kapsamı dışı). Seri dağılım 2025: Genel Yetenek Türkçe 30 + Matematik 30; Genel Kültür Tarih 24 + Coğrafya 12 + Vatandaşlık 12 + Güncel 12.</p>
+    <p class="duyuri"> Kaynak: osym.gov.tr · KPSS kılavuzu</p>
+  </div>
+
+  <div class="panel" id="burs" style="--renk:var(--pembe)">
+    <div class="tablo">
+      <div class="tbas"><b>İOKBS — 80 soru / 100 dakika</b><span class="formul">net = doğru − yanlış ÷ 3 · 4 test × 20 soru</span></div>
+      <div class="satir" data-sor="20"><span class="ad">Türkçe<small>soru 20</small></span><span class="sayi"><label>Doğru</label><input type="number" min="0" max="20" class="d" inputmode="numeric"><label>Yanlış</label><input type="number" min="0" max="20" class="y" inputmode="numeric"></span><span class="net">net <b>0</b></span></div>
+      <div class="satir" data-sor="20"><span class="ad">Matematik<small>soru 20</small></span><span class="sayi"><label>Doğru</label><input type="number" min="0" max="20" class="d" inputmode="numeric"><label>Yanlış</label><input type="number" min="0" max="20" class="y" inputmode="numeric"></span><span class="net">net <b>0</b></span></div>
+      <div class="satir" data-sor="20"><span class="ad">Fen Bilimleri<small>soru 20</small></span><span class="sayi"><label>Doğru</label><input type="number" min="0" max="20" class="d" inputmode="numeric"><label>Yanlış</label><input type="number" min="0" max="20" class="y" inputmode="numeric"></span><span class="net">net <b>0</b></span></div>
+      <div class="satir" data-sor="20"><span class="ad">Sosyal / İnkılap<small>soru 20</small></span><span class="sayi"><label>Doğru</label><input type="number" min="0" max="20" class="d" inputmode="numeric"><label>Yanlış</label><input type="number" min="0" max="20" class="y" inputmode="numeric"></span><span class="net">net <b>0</b></span></div>
+    </div>
+    <div class="sonuc">
+      <div class="kutu"><small>TOPLAM NET</small><b id="buNet">0,00</b><span class="iki">en fazla 80</span></div>
+      <div class="kutu"><small>HAM PUAN</small><b id="buHam">0,00</b><span class="iki">3 yanlış 1 doğruyu götürür</span></div>
+      <div class="kutu"><small>BURS ŞANSI</small><b id="buSans" style="font-size:17px">—</b><span class="iki">2024 taban puan örnekleriyle</span></div>
+    </div>
+    <div class="arti">
+      <table>
+        <thead><tr><th>Sınıf</th><th>Diğer Öğrenciler (2024)</th><th>Öğretmen Çocuğu (2024)</th></tr></thead>
+        <tbody>
+          <tr><td>5</td><td>≈ 462</td><td>≈ 465</td></tr>
+          <tr><td>6</td><td>≈ 450</td><td>≈ 456</td></tr>
+          <tr><td>7</td><td>≈ 453</td><td>≈ 461</td></tr>
+          <tr><td>8</td><td>≈ 462</td><td>≈ 475</td></tr>
+          <tr><td>9–11</td><td>≈ 420–440</td><td>≈ 430–440</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="not"><b>Gerçek:</b> İOKBS sıra tabanlıdır: MEB kılavuzuna göre ham puan = doğru − yanlış ÷ 3; ardından standart puana (ortalama 50, sapma 10 bazlı) dönüştürülür. &quot;Burs şansı&quot; kutusu yukarıdaki 2024 taban puan örneklerine göre yaklaşık yorumdur; resmî puanın sahibi MEB'dir.</p>
+    <p class="duyuri"> Kaynak: odsgm.meb.gov.tr · İOKBS kılavuzu</p>
+  </div>
+</div>
+
+<script>
+function nSay(v) {
+  var n = parseFloat(String(v).replace(',', '.'));
+  return isFinite(n) && n > 0 ? n : 0;
+}
+function nYaz(v) {
+  return v.toFixed(2).replace('.', ',');
+}
+function temizle(sat) {
+  var d = sat.querySelector('.d');
+  if (!d) return;
+  var soru = parseFloat(sat.dataset.sor);
+  var y = sat.querySelector('.y');
+  var dv = Math.min(soru, Math.max(0, Math.floor(nSay(d.value))));
+  if (dv !== nSay(d.value)) d.value = dv ? dv : '';
+  var yv = Math.min(soru - dv, Math.max(0, Math.floor(nSay(y.value))));
+  if (yv !== nSay(y.value)) y.value = yv ? yv : '';
+}
+function satirNet(sat) {
+  temizle(sat);
+  var d = sat.querySelector('.d');
+  if (!d) return 0;
+  var y = nSay(sat.querySelector('.y').value);
+  var panel = sat.closest && sat.closest('.panel');
+  var bol = panel && (panel.id === 'lgs' || panel.id === 'burs') ? 3 : 4;
+  var net = nSay(d.value) - y / bol;
+  sat.querySelector('.net b').textContent = nYaz(Math.max(0, net));
+  return net;
+}
+function satirDinle(panelId, hesapla) {
+  var p = document.getElementById(panelId);
+  if (!p) return;
+  p.querySelectorAll('.satir').forEach(function (sat) {
+    sat.querySelectorAll('input').forEach(function (inp) {
+      inp.addEventListener('input', function () { satirNet(sat); hesapla(); });
+    });
+  });
+}
+document.querySelectorAll('#tablar button').forEach(function (b) {
+  b.onclick = function () {
+    document.querySelectorAll('#tablar button').forEach(function (x) { x.classList.remove('on'); });
+    document.querySelectorAll('.panel').forEach(function (x) { x.classList.remove('gorun'); });
+    b.classList.add('on');
+    document.getElementById(b.dataset.t).classList.add('gorun');
+  };
+});
+
+var LGS_AD = ['Türkçe', 'Matematik', 'Fen Bilimleri', 'İnkılap Tarihi', 'Din Kültürü', 'Yabancı Dil'];
+function lgsHesapla() {
+  var kutu = document.getElementById('lgs');
+  var top = 0, ay = 0;
+  kutu.querySelectorAll('.satir').forEach(function (sat, i) {
+    var net = satirNet(sat);
+    var kats = parseFloat(sat.dataset.kats);
+    top += net;
+    ay += net * kats;
+  });
+  document.getElementById('lgNet').textContent = nYaz(top);
+  document.getElementById('lgAy').textContent = nYaz(ay);
+  var tahmin = Math.min(500, 100 + ay * (400 / 270));
+  document.getElementById('lgPuan').textContent = nYaz(Math.max(100, tahmin));
+}
+satirDinle('lgs', lgsHesapla);
+lgsHesapla();
+
+var YKS_TURLER = {
+  say: { ad: 'SAY', taban: 132.87,
+    kats: [['Matematik', 40, 2.89], ['Fizik', 14, 2.46], ['Kimya', 13, 2.53], ['Biyoloji', 13, 2.61]] },
+  ea: { ad: 'EA', taban: 129.34,
+    kats: [['Matematik', 40, 2.88], ['Edebiyat', 24, 2.94], ['Tarih-1', 10, 2.53], ['Coğrafya-1', 6, 2.85]] },
+  soz: { ad: 'SÖZ', taban: 129.61,
+    kats: [['Edebiyat', 24, 2.79], ['Tarih-1', 10, 2.39], ['Coğrafya-1', 6, 2.70], ['Tarih-2', 11, 3.80],
+           ['Coğrafya-2', 11, 2.47], ['Felsefe', 12, 3.76], ['DKAB', 6, 2.36]] }
+};
+var yksSec = 'say';
+var barajEl = document.getElementById('tytBaraj');
+var TYT_KATS = [2.83, 2.99, 3.28, 2.53];
+function aytYaz() {
+  var t = YKS_TURLER[yksSec];
+  var tablo = document.getElementById('aytTablo');
+  tablo.innerHTML = '<div class="tbas"><b>AYT — ' + t.ad +
+    ' testleri</b><span class="formul">net = doğru − yanlış ÷ 4</span></div>';
+  t.kats.forEach(function (kayit) {
+    var ad = kayit[0], sor = kayit[1], k = kayit[2];
+    var sat = document.createElement('div');
+    sat.className = 'satir';
+    sat.dataset.sor = sor;
+    sat.dataset.k = k;
+    sat.innerHTML = '<span class="ad">' + ad + '<small>soru ' + sor + '</small></span>' +
+      '<span class="sayi"><label>Doğru</label><input type="number" min="0" max="' + sor +
+      '" class="d" inputmode="numeric">' +
+      '<label>Yanlış</label><input type="number" min="0" max="' + sor +
+      '" class="y" inputmode="numeric"></span>' +
+      '<span class="net">net <b>0</b></span>';
+    tablo.appendChild(sat);
+    sat.querySelectorAll('input').forEach(function (inp) {
+      inp.addEventListener('input', function () { satirNet(sat); yksHesapla(); });
+    });
+  });
+}
+function yksHesapla() {
+  var t = YKS_TURLER[yksSec];
+  var tytHam = 145.47, td = 0, tm = 0;
+  document.querySelectorAll('#tytTablo .satir').forEach(function (sat, i) {
+    var n = Math.max(0, satirNet(sat));
+    tytHam += n * TYT_KATS[i];
+    if (i === 0) td = n;
+    if (i === 1) tm = n;
+  });
+  document.getElementById('ytHam').textContent = nYaz(tytHam);
+  var ayHam = t.taban;
+  document.querySelectorAll('#aytTablo .satir').forEach(function (sat) {
+    ayHam += Math.max(0, satirNet(sat)) * parseFloat(sat.dataset.k);
+  });
+  var dip = Math.min(100, Math.max(50, nSay(document.getElementById('dip').value) || 75));
+  var obp = dip * 5;
+  document.getElementById('obp').textContent = obp;
+  document.getElementById('ykHam').textContent = nYaz(ayHam);
+  document.getElementById('ykYer').textContent = nYaz(ayHam + obp * 0.12);
+  document.getElementById('yksAd').textContent = t.ad + ' HAM PUANI';
+  document.getElementById('yksTb').textContent = 'AYT taban ' + String(t.taban).replace('.', ',');
+  if (td >= 0.5 || tm >= 0.5 || td + tm >= 1) {
+    barajEl.className = 'baraj ok';
+    barajEl.textContent = 'TYT barajı: sağlanıyor';
+  } else {
+    barajEl.className = 'baraj yetmez';
+    barajEl.textContent = 'TYT barajı: Türkçe veya Matematik 0,5+ net (veya toplam 1) gerekli';
+  }
+}
+document.querySelectorAll('#yksTur button').forEach(function (b) {
+  b.onclick = function () {
+    yksSec = b.dataset.k;
+    document.querySelectorAll('#yksTur button').forEach(function (x) { x.classList.remove('on'); });
+    b.classList.add('on');
+    aytYaz();
+    yksHesapla();
+  };
+});
+satirDinle('yks', yksHesapla);
+document.getElementById('dip').addEventListener('input', yksHesapla);
+aytYaz();
+yksHesapla();
+
+function kpssHesapla() {
+  var el = document.getElementById('kpss');
+  var gt = 0, gk = 0, i = 0;
+  el.querySelectorAll('.satir').forEach(function (sat) {
+    var net = satirNet(sat);
+    if (i < 2) gt += net; else gk += net;
+    i++;
+  });
+  document.getElementById('kpGT').textContent = nYaz(gt);
+  document.getElementById('kpGK').textContent = nYaz(gk);
+  document.getElementById('kpTop').textContent = nYaz(gt + gk);
+}
+satirDinle('kpss', kpssHesapla);
+kpssHesapla();
+
+function bursHesapla() {
+  var el = document.getElementById('burs');
+  var top = 0;
+  el.querySelectorAll('.satir').forEach(function (sat) { top += satirNet(sat); });
+  document.getElementById('buNet').textContent = nYaz(top);
+  document.getElementById('buHam').textContent = nYaz(Math.max(0, top));
+  var sans = document.getElementById('buSans');
+  if (top >= 74) { sans.textContent = 'yüksek'; sans.style.color = 'var(--yesil)'; }
+  else if (top >= 65) { sans.textContent = 'orta'; sans.style.color = 'var(--sari)'; }
+  else if (top > 0) { sans.textContent = 'düşük'; sans.style.color = '#f87171'; }
+  else { sans.textContent = '—'; sans.style.color = 'var(--met3)'; }
+}
+satirDinle('burs', bursHesapla);
+bursHesapla();
+
+</script>
+</body>
+</html>

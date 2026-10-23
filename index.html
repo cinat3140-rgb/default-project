@@ -128,7 +128,7 @@ body::before{ content:''; position:fixed; inset:0; pointer-events:none; z-index:
 
     <a class="siteler" style="--renk:var(--cyan)" href="manifest/" target="_blank" rel="noopener">
       <span class="yol">🛠️ <b>~/manifest/</b><span class="n"> steam</span></span>
-      <span class="ac">Steam App ID sorgu: künye, oyuncu sayısı, fiyat kıyasi, 195 bin oyunluk katalogu.</span>
+      <span class="ac">Steam App ID sorgu: künye, oyuncu sayısı, fiyat geçmişi, 195 bin oyunluk katalog.</span>
       <span class="komut">gir --yeni-sekme</span>
     </a>
 
@@ -158,13 +158,19 @@ body::before{ content:''; position:fixed; inset:0; pointer-events:none; z-index:
 
     <a class="siteler" style="--renk:var(--mavi)" href="mavi-ekran/" target="_blank" rel="noopener">
       <span class="yol">🫤 <b>~/mavi-ekran/</b><span class="n"> şaka</span></span>
-      <span class="ac">Gerçek rengi ve tipografisiyle sahte duraklama; arkadaşı arkadaşı şaşırtmak için birebir birebir.</span>
+      <span class="ac">Gerçek rengi ve tipografisiyle sahte duraklama; arkadaşını şaşırtmak için tam bir birebir.</span>
       <span class="komut">gir --yeni-sekme</span>
     </a>
 
     <a class="siteler" style="--renk:var(--pembe)" href="virus/" target="_blank" rel="noopener">
       <span class="yol">🗄️ <b>~/virus/</b><span class="n"> şaka</span></span>
       <span class="ac">Klasik Windows penceresi: dosyaları silemez, sadece tiye alır.</span>
+      <span class="komut">gir --yeni-sekme</span>
+    </a>
+
+    <a class="siteler" style="--renk:var(--mor)" href="puan/" target="_blank" rel="noopener">
+      <span class="yol">📐 <b>~/puan/</b><span class="n"> hesap</span></span>
+      <span class="ac">LGS · YKS · KPSS · Bursluluk net hesabı — MEB ve ÖSYM katsayılarıyla anlık puan.</span>
       <span class="komut">gir --yeni-sekme</span>
     </a>
 
@@ -180,7 +186,7 @@ body::before{ content:''; position:fixed; inset:0; pointer-events:none; z-index:
 <script>
 const SELAMLAR = [
   'merkez-1.2 Loading proje ağacı ...\u2713',
-  '12 site dizine eklendi \u2713  |  statik mod: PATCH',
+  '13 site dizine eklendi \u2713  |  statik mod: PATCH',
   'run: anasayfa \u2192 hazir \u2713'
 ];
 (function yaz() {
@@ -208,7 +214,7 @@ const SELAMLAR = [
   const t = setInterval(() => {
     a++;
     if (s1) s1.textContent = Math.min(st, a);
-    if (s2 && a >= st) { s2.textContent = '6'; clearInterval(t); }
+    if (s2 && a >= st) { s2.textContent = '9'; clearInterval(t); }
   }, 70);
 })();
 </script>
